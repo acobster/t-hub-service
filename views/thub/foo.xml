@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<REQUEST Version="2.8">
+<Command>GetOrders</Command>
+<UserID>myloginId</UserID>
+<Password>myPassword</Password>
+<Status>all</Status>
+<Provider>YAHOO</Provider> <LimitOrderCount>25</LimitOrderCount> <OrderStartNumber>1066</OrderStartNumber> <NumberOfDays>5</NumberOfDays>
+<DownloadStartDate>4/8/2014 04:02:33 AM</DownloadStartDate> <SecurityKey>xyz</SecurityKey>
+</REQUEST>

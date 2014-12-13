@@ -1,0 +1,12 @@
+{
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "dependencies": {
+    "grunt": "^0.4.5"
+  },
+  "devDependencies": {
+    "grunt-phpunit": "^0.3.6",
+    "grunt-contrib-watch": "^0.6.1"
+  }
+}
