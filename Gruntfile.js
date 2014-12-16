@@ -15,6 +15,7 @@ module.exports = function(grunt) {
       },
       options: {
         bin: '/usr/bin/env phpunit',
+        bootstrap: 'test/integration/bootstrap.php',
         colors: true
       }
     }
@@ -23,5 +24,7 @@ module.exports = function(grunt) {
   // These plugins provide necessary tasks.
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-phpunit');
+
+  grunt.task.registerTask( 'default', 'watch' );
 
 };

@@ -2,6 +2,6 @@
 
 namespace THub;
 
-class AuthException extends RuntimeException {}
+class AuthException extends \RuntimeException {}
 
 ?>

@@ -3,6 +3,7 @@
 namespace THub;
 
 use THub\AuthException;
+use THub\BadRequestException;
 
 /**
  * A Library that implements the T-HUB Service Specifications as described in:
@@ -60,7 +61,12 @@ class THubService {
    * @return [type]
    */
   public function parseRequest( $requestXml ) {
-    $request = new \SimpleXMLElement( $requestXml );
+    try {
+      $request = new \SimpleXMLElement( $requestXml );
+    } catch( \Exception $e ) {
+      throw new BadRequestException( $e->getMessage() );
+    }
+
     // throw an exception if unable to authenticate
     if( ! $this->authenticate(
         $request->UserID,
