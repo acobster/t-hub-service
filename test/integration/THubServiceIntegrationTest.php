@@ -8,7 +8,7 @@ class THubServiceIntegrationTest extends PHPUnit_Framework_TestCase {
     $requests = array(
       self::BAD_XML,
       self::BAD_PASSWORD_XML,
-      // self::NORMAL_REQUEST_XML,
+      self::NORMAL_REQUEST_XML,
     );
 
     foreach( $requests as $request ) {
