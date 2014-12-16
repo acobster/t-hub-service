@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Test the server response at a high level
+ */
 class THubServiceIntegrationTest extends PHPUnit_Framework_TestCase {
   public function testBadXml() {
     $response = $this->postTHub( 'foo' );

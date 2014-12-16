@@ -27,7 +27,8 @@ echo sprintf(
     $pid
 ) . PHP_EOL;
 
-sleep(3);
+// wait for the server to start listening...
+usleep(70000);
 
 // Kill the web server when the process ends
 register_shutdown_function(function() use ($pid) {
