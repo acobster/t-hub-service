@@ -1,26 +1,24 @@
 <?php
 
 require './autoload.php';
-
-if( file_exists('./tweb_config.php') ) {
-  require './tweb_config.php';
-}
+if( file_exists('./tweb_config.php') ) require './tweb_config.php';
 
 try {
-  if( $_POST['XML'] ) {
+  if( !empty($_POST) ) {
     // TODO implement or import OrderProvider
     $orderProvider = array();
 
     $thub = new THub\THubService( $orderProvider );
     echo $thub->parseRequest( $_POST['XML'] );
   } else {
-    header("HTTP/1.0 404 Not Found");
-    echo "404 Not Found";
+    header('Allow: POST');
+    http_response_code(405);
+    echo "Please use the HTTP POST method!";
   }
 } catch( THub\AuthException $e ) {
-  header("HTTP/1.0 401 Unauthorized");
+  http_response_code(401);
   echo "401 Unauthorized";
 } catch( THub\BadRequestException $e ) {
   http_response_code(400);
-  echo "400 Bad Request";
+  echo "400 Bad Request: " . $e->getMessage();
 }

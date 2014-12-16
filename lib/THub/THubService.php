@@ -12,7 +12,6 @@ use THub\BadRequestException;
  * Example usage:
  *
  *  THub\THubService::config( array(
- *    'libDir' => 'path/to/lib',
  *    'viewDir' => 'path/to/views'
  *  ));
  *
@@ -25,16 +24,36 @@ class THubService {
   const DEFAULT_LIMIT_ORDER_COUNT = 25;
   const DEFAULT_NUM_DAYS = 0;
 
-  protected static $config = array(
-    'libDir' => './lib/',
-    'viewDir' => './views/'
+  const STATUS_CODE_OK = '0';
+  const STATUS_CODE_NO_ORDERS = '1000';
+
+  const STATUS_MESSAGE_OK = 'All Ok';
+  const STATUS_MESSAGE_NO_ORDERS = 'No new orders';
+
+  const PROVIDER_GENERIC = 'GENERIC';
+
+  const TYPE_SALE = 'Sale';
+  const TYPE_RETURN = 'Return';
+
+  const COMMAND_GET_ORDERS              = 'GetOrders';
+  const COMMAND_UPDATE_SHIPPING_STATUS  = 'UpdateOrdersShippingStatus';
+  const COMMAND_UPDATE_INVENTORY        = 'UpdateInventory';
+
+  protected static $CONFIG = array(
+    'viewDir'         => './views/',
+    'user'            => 'user',
+    'password'        => 'password',
+    'securityKey'     => 'xyz',
+    'requireKey'      => true,
   );
 
   protected static $validCommands = array(
-    'GetOrders',
-    'UpdateOrdersShippingStatus',
-    'UpdateInventory',
+    self::COMMAND_GET_ORDERS,
+    self::COMMAND_UPDATE_SHIPPING_STATUS,
+    self::COMMAND_UPDATE_INVENTORY,
   );
+
+  protected $thirdPartyProvider = self::PROVIDER_GENERIC;
 
   /**
    * Configure the THub Service.
@@ -43,15 +62,15 @@ class THubService {
    * @param  array $settings array of settings
    */
   public static function config( $settings ) {
-    foreach( self::$config as $key => $setting ) {
+    foreach( self::$CONFIG as $key => $setting ) {
       if( !empty($settings[$key]) ) {
-        self::$config[$key] = $setting;
+        self::$CONFIG[$key] = $setting;
       }
     }
   }
 
-  public function __construct( $provider ) {
-    $this->provider = $provider;
+  public function __construct( $orderProvider ) {
+    $this->orderProvider = $orderProvider;
   }
 
   /**
@@ -61,6 +80,7 @@ class THubService {
    * @return [type]
    */
   public function parseRequest( $requestXml ) {
+    // catch & throw more specific exception if XML is bad
     try {
       $request = new \SimpleXMLElement( $requestXml );
     } catch( \Exception $e ) {
@@ -75,23 +95,33 @@ class THubService {
       )) {
       throw new AuthException('Unable to authenticate');
     }
-    $command = $request->Envelope->Command;
 
-    if( in_array($command, self::$validCommands) ) {
-      $method = "action{$command}";
-      return $this->$method( $request );
-    } else {
-      return '';
+    $command = $request->Command;
+    if( ! $this->isValidCommand($command) ) {
+      throw new BadRequestException( "No such command: {$command}" );
     }
+
+    $method = "action{$command}";
+    return $this->$method( $request );
   }
 
   public function actionGetOrders( $request ) {
-    $newOrders = $this->provider->getNewOrders();
-    return $this->renderView( 'get_orders' );
+    $this->orders   = $this->orderProvider->getNewOrders();
+    $this->command  = self:: COMMAND_GET_ORDERS;
+
+    if( empty($this->orders) ) {
+      $this->statusCode     = self::STATUS_CODE_NO_ORDERS;
+      $this->statusMessage  = self::STATUS_MESSAGE_NO_ORDERS;
+    } else {
+      $this->statusCode     = self::STATUS_CODE_OK;
+      $this->statusMessage  = self::STATUS_MESSAGE_OK;
+    }
+
+    return $this->renderView( 'response' );
   }
 
   protected function renderView( $name ) {
-    $file = self::$config['viewDir'] . "thub/{$name}.php";
+    $file = self::$CONFIG['viewDir'] . "thub/{$name}.php";
 
     ob_start();
     if( file_exists($file) ) {
@@ -100,6 +130,21 @@ class THubService {
       throw new \RuntimeException("File not found: {$file}");
     }
     return ob_get_clean();
+  }
+
+  protected function authenticate( $user, $pw, $securityKey ) {
+    $valid =    $user == self::$CONFIG['user']
+             && $pw   == self::$CONFIG['password'];
+
+    if( $valid && self::$CONFIG['requireKey'] ) {
+      $valid = self::$CONFIG['securityKey'] == $securityKey;
+    }
+
+    return $valid;
+  }
+
+  protected function isValidCommand( $command ) {
+    return in_array( $command, self::$validCommands );
   }
 
   /**

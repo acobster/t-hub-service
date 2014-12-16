@@ -11,11 +11,11 @@ module.exports = function(grunt) {
     },
     phpunit: {
       classes: {
-        dir: 'test/'
+        dir: 'test/unit'
       },
       options: {
         bin: '/usr/bin/env phpunit',
-        bootstrap: 'test/integration/bootstrap.php',
+        // bootstrap: 'test/integration/bootstrap.php',
         colors: true
       }
     }
