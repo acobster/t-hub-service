@@ -18,7 +18,13 @@ class THubServiceIntegrationTest extends PHPUnit_Framework_TestCase {
   }
 
   protected function getParsedResponse( $request ) {
-    return new SimpleXMLElement( $this->postTHub($request) );
+    try {
+      $response = $this->postTHub($request);
+      return new SimpleXMLElement( $response );
+    } catch( Exception $e ) {
+      $this->fail( "couldn't parse response:" . PHP_EOL
+        . $response . PHP_EOL );
+    }
   }
 
   protected function postTHub( $requestXml ) {

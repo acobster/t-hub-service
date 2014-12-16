@@ -6,9 +6,7 @@ require './autoload.php';
 if( file_exists('./tweb_config.php') ) require './tweb_config.php';
 
 if( !empty($_POST) ) {
-  // TODO implement or import OrderProvider
-  $orderProvider = array();
-
+  $orderProvider = new OrderModel();
   $thub = new THub\THubService( $orderProvider );
   echo $thub->parseRequest( $_POST['XML'] );
 } else {

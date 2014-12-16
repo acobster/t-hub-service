@@ -15,6 +15,7 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
 
   public function setUp() {
     $this->mockProvider = $this->getMockBuilder('OrderModel')
+      ->setMockClassName( 'OrderProvider' )
       ->setMethods( array('getNewOrders') )
       ->getMock();
     $this->thub = new THub\THubService( $this->mockProvider );
