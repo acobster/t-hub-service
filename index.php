@@ -1,5 +1,7 @@
 <?php
 
+error_reporting( E_ERROR | E_PARSE );
+
 require './autoload.php';
 if( file_exists('./tweb_config.php') ) require './tweb_config.php';
 

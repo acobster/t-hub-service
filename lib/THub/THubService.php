@@ -2,9 +2,6 @@
 
 namespace THub;
 
-use THub\AuthException;
-use THub\BadRequestException;
-
 /**
  * A Library that implements the T-HUB Service Specifications as described in:
  *   http://www.atandra.com/downloads/THUB_Service_Spec_43.pdf
@@ -24,11 +21,14 @@ class THubService {
   const DEFAULT_LIMIT_ORDER_COUNT = 25;
   const DEFAULT_NUM_DAYS = 0;
 
-  const STATUS_CODE_OK = '0';
-  const STATUS_CODE_NO_ORDERS = '1000';
+  const STATUS_CODE_OK              = '0';
+  const STATUS_CODE_NO_ORDERS       = '1000';
+  const STATUS_CODE_LOGIN_FAILURE   = '9000';
+  const STATUS_CODE_OTHER           = '9999';
 
-  const STATUS_MESSAGE_OK = 'All Ok';
-  const STATUS_MESSAGE_NO_ORDERS = 'No new orders';
+  const STATUS_MESSAGE_OK             = 'All Ok';
+  const STATUS_MESSAGE_NO_ORDERS      = 'No new orders';
+  const STATUS_MESSAGE_LOGIN_FAILURE  = 'Login failed';
 
   const PROVIDER_GENERIC = 'GENERIC';
 
@@ -54,6 +54,7 @@ class THubService {
   );
 
   protected $thirdPartyProvider = self::PROVIDER_GENERIC;
+  protected $command = 'UNKNOWN';
 
   /**
    * Configure the THub Service.
@@ -84,7 +85,13 @@ class THubService {
     try {
       $request = new \SimpleXMLElement( $requestXml );
     } catch( \Exception $e ) {
-      throw new BadRequestException( $e->getMessage() );
+      return $this->renderBadRequest( $e->getMessage() );
+    }
+
+    // determine command
+    $this->command = $request->Command;
+    if( ! $this->isValidCommand($this->command) ) {
+      return $this->renderBadRequest( "No such command: {$this->command}" );
     }
 
     // throw an exception if unable to authenticate
@@ -93,19 +100,14 @@ class THubService {
         $request->Password,
         $request->SecurityKey
       )) {
-      throw new AuthException('Unable to authenticate');
+      return $this->renderLoginFailure();
     }
 
-    $command = $request->Command;
-    if( ! $this->isValidCommand($command) ) {
-      throw new BadRequestException( "No such command: {$command}" );
-    }
-
-    $method = "action{$command}";
+    $method = "render{$this->command}";
     return $this->$method( $request );
   }
 
-  public function actionGetOrders( $request ) {
+  public function renderGetOrders( $request ) {
     $this->orders   = $this->orderProvider->getNewOrders();
     $this->command  = self:: COMMAND_GET_ORDERS;
 
@@ -117,6 +119,18 @@ class THubService {
       $this->statusMessage  = self::STATUS_MESSAGE_OK;
     }
 
+    return $this->renderView( 'response' );
+  }
+
+  protected function renderbadRequest( $message ) {
+    $this->statusMessage = $message;
+    $this->statusCode = self::STATUS_CODE_OTHER;
+    return $this->renderView( 'response' );
+  }
+
+  protected function renderLoginFailure() {
+    $this->statusMessage  = self::STATUS_MESSAGE_LOGIN_FAILURE;
+    $this->statusCode     = self::STATUS_CODE_LOGIN_FAILURE;
     return $this->renderView( 'response' );
   }
 
@@ -133,8 +147,8 @@ class THubService {
   }
 
   protected function authenticate( $user, $pw, $securityKey ) {
-    $valid =    $user == self::$CONFIG['user']
-             && $pw   == self::$CONFIG['password'];
+    $valid  = $user == self::$CONFIG['user']
+            && $pw == self::$CONFIG['password'];
 
     if( $valid && self::$CONFIG['requireKey'] ) {
       $valid = self::$CONFIG['securityKey'] == $securityKey;
