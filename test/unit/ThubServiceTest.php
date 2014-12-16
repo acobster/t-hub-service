@@ -14,8 +14,8 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
   );
 
   public function setUp() {
-    $this->mockProvider = $this->getMockBuilder('OrderModel')
-      ->setMockClassName( 'OrderProvider' )
+    $this->mockProvider = $this->getMockBuilder('OrderProvider')
+      ->setMockClassName( 'OrderModel' )
       ->setMethods( array('getNewOrders') )
       ->getMock();
     $this->thub = new THub\THubService( $this->mockProvider );
@@ -23,6 +23,7 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
 
   public function testParseRequestWithBadXml() {
     $parsed = $this->getParsedResponse( self::BAD_XML );
+    $this->assertEquals( 'UNKNOWN', $parsed->Envelope->Command );
     $this->assertEquals( '9999', $parsed->Envelope->StatusCode );
     $this->assertEquals( 'String could not be parsed as XML',
       $parsed->Envelope->StatusMessage );
