@@ -267,6 +267,14 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
     $this->assertOrder( self::$orders[1], $orders[1] );
   }
 
+  public function testUpdateOrdersShippingStatus() {
+    $this->markTestIncomplete();
+  }
+
+  public function testUpdateInventory() {
+    $this->markTestIncomplete();
+  }
+
   public function testDecodeElement() {
     $simple = new SimpleXMLElement( self::BASE64_ENCODED_XML );
 
