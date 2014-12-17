@@ -59,14 +59,50 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
       ),
       'items' => array(
         array(
-
+          'item_code'           => 'ASDF',
+          'item_description'    => 'An awesome product',
+          'quantity'            => '3',
+          'unit_price'          => '4.50',
+          'unit_cost'           => '4.50',
+          'vendor'              => 'ACME',
+          'item_total'          => '13.50',
+          'item_unit_weight'    => '7',
+          // No custom fields for now...
+          // But let's use options for kicks:
+          'item_options'        => array(
+            'foo' => 'bar',
+            'qux' => 'tal',
+          ),
         ),
         array(
-
+          'item_code'           => 'SDGE',
+          'item_description'    => 'Woot woot',
+          'quantity'            => '1',
+          'unit_price'          => '4.50',
+          'unit_cost'           => '4.50',
+          'vendor'              => 'StrexCorp',
+          'item_total'          => '13.50',
         ),
       ),
       'charges' => array(
-        'coupons' => array(
+        'shipping'          => '4.20',
+        'handling'          => '3.00',
+        'tax'               => '1.00',
+        'discount'          => '0.50',
+        'total'             => '100.00',
+        'tax_other'         => '1.20',
+        'channel_fee'       => '0.75',
+        'payment_fee'       => '2.00',
+        'gift_certificate'  => '10.00',
+        'other_charge'      => '0.30',
+        'item_sub_total'    => '80.00',
+        'coupons'   => array(
+          array(
+            'coupon_code'         => 'XCVB',
+            'coupon_id'           => '98766',
+            'coupon_description'  => 'foo',
+            'coupon_value'        => '5.00',
+          ),
         ),
       ),
     ),
@@ -118,15 +154,34 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
       ),
       'items' => array(
         array(
-
+          'item_code'           => 'ERTEY',
+          'item_description'    => 'Blah Blah Blah...',
+          'quantity'            => '2',
+          'unit_price'          => '3.50',
+          'item_total'          => '10.50',
         ),
         array(
-
+          'item_code'           => 'OSHGNG',
+          'item_description'    => 'asbnwoviwongoahf ...',
+          'quantity'            => '10',
+          'unit_price'          => '5.50',
+          'unit_cost'           => '5.50',
+          'item_total'          => '16.50',
+          'item_unit_weight'    => '7',
         ),
       ),
       'charges' => array(
-        'coupons' => array(
-        ),
+        'shipping'          => '4.20',
+        'handling'          => '3.00',
+        'tax'               => '1.00',
+        'discount'          => '0.50',
+        'total'             => '100.00',
+        'tax_other'         => '1.20',
+        'channel_fee'       => '0.75',
+        'payment_fee'       => '2.00',
+        'gift_certificate'  => '10.00',
+        'other_charge'      => '0.30',
+        'item_sub_total'    => '80.00',
       ),
     ),
   );
@@ -229,6 +284,9 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
     }
   }
 
+
+  /* CUSTOM ASSERTIONS */
+
   protected function assertOrder( $expected, $actual ) {
     $this->assertEquals( $expected['id'],               $actual->OrderID );
     $this->assertEquals( $expected['ref_id'],           $actual->ProviderOrderRef );
@@ -240,8 +298,8 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
 
     $this->assertOrderBill( $expected['bill'],          $actual->Bill );
     $this->assertOrderShip( $expected['ship'],          $actual->Ship );
-    // $this->assertOrderItems( $expected['items'],        $actual->OrderItems );
-    // $this->assertOrderCharges( $expected['charges'],    $actual->OrderCharges );
+    $this->assertOrderItems( $expected['items'],        $actual->OrderItems );
+    $this->assertOrderCharges( $expected['charges'],    $actual->Charges );
   }
 
   protected function assertOrderBill( $expected, $actual ) {
@@ -305,11 +363,75 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
   }
 
   protected function assertOrderItems( $expected, $actual ) {
+    $itemCount = count($expected);
+    $this->assertEquals( 2, $actual->children()->count() );
 
+    for( $i=0; $i<$itemCount; $i++ ) {
+      $this->assertSingleOrderItem( $expected[$i], $actual->children()[$i] );
+    }
+  }
+
+  protected function assertSingleOrderItem( $expected, $actual ) {
+    $this->assertEquals( $expected['item_code'],          $actual->ItemCode );
+    $this->assertEquals( $expected['item_description'],   $actual->ItemDescription );
+    $this->assertEquals( $expected['quantity'],           $actual->Quantity );
+    $this->assertEquals( $expected['unit_price'],         $actual->UnitPrice );
+    $this->assertEquals( $expected['item_total'],         $actual->ItemTotal );
+
+    $this->assertEqualsIfPresent( $expected['unit_cost'],   $actual->UnitCost );
+    $this->assertEqualsIfPresent( $expected['vendor'],      $actual->Vendor );
+    $this->assertEqualsIfPresent( $expected['unit_weight'], $actual->UnitWeight );
+
+    // options
+    if( $options = $expected['item_options'] ) {
+      $optionCount = count( $options );
+      $this->assertEquals( $optionCount, $actual->ItemOptions->children()->count() );
+
+      $i = 0;
+      foreach( $options as $k => $v ) {
+        $this->assertEquals(
+          $k,
+          $actual->ItemOptions->children()[$i]['Name']
+        );
+        $this->assertEquals(
+          $v,
+          $actual->ItemOptions->children()[$i]['Value']
+        );
+        $i++;
+      }
+    }
   }
 
   protected function assertOrderCharges( $expected, $actual ) {
+    $this->assertEquals( $expected['shipping'],   $actual->Shipping );
+    $this->assertEquals( $expected['handling'],   $actual->Handling );
+    $this->assertEquals( $expected['tax'],        $actual->Tax );
+    $this->assertEquals( $expected['discount'],   $actual->Discount );
+    $this->assertEquals( $expected['total'],      $actual->Total );
 
+    $this->assertEqualsIfPresent( $expected['tax_other'],         $actual->TaxOther );
+    $this->assertEqualsIfPresent( $expected['channel_fee'],       $actual->ChannelFee );
+    $this->assertEqualsIfPresent( $expected['payment_fee'],       $actual->PaymentFee );
+    $this->assertEqualsIfPresent( $expected['gift_certificate'],  $actual->GiftCertificate );
+    $this->assertEqualsIfPresent( $expected['other_charge'],      $actual->OtherCharge );
+    $this->assertEqualsIfPresent( $expected['item_sub_total'],    $actual->ItemSubTotal );
+
+    if( $expected['coupons'] ) {
+      $this->assertOrderCoupons( $expected['coupons'], $actual->Coupons );
+    }
+  }
+
+  protected function assertOrderCoupons( $expected, $actual ) {
+    $couponCount = count( $expected );
+    $this->assertEquals( $couponCount, $actual->children()->count() );
+
+    foreach( $expected as $i => $coupon ) {
+      $actualCoupon = $actual->children()[$i];
+      $this->assertEquals( $coupon['coupon_code'],         $actualCoupon->CouponCode );
+      $this->assertEquals( $coupon['coupon_id'],           $actualCoupon->CouponID );
+      $this->assertEquals( $coupon['coupon_description'],  $actualCoupon->CouponDescription );
+      $this->assertEquals( $coupon['coupon_value'],        $actualCoupon->CouponValue );
+    }
   }
 
   protected function assertEqualsIfPresent( $expected, $actual ) {
@@ -317,6 +439,9 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
       $this->assertEquals( $expected, $actual );
     }
   }
+
+
+  /* UTILITY METHODS */
 
   protected function getParsedResponse( $request ) {
     return new SimpleXMLElement( $this->thub->parseRequest($request) );
@@ -329,6 +454,9 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
 
     return $method->invokeArgs( $this->thub, $params );
   }
+
+
+  /* EXAMPLE XML REQUESTS */
 
   const BASE64_ENCODED_XML = <<<_XML_
 <?xml version="1.0" encoding="ISO-8859-1"?>

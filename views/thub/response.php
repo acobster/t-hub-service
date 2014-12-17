@@ -116,12 +116,90 @@
             <?php endif; ?>
           </Ship>
 
-          <Items>
+          <OrderItems>
+            <?php foreach( $order['items'] as $item ) : ?>
+              <Item>
+                <ItemCode><?= $item['item_code'] ?></ItemCode>
+                <ItemCode><?= $item['item_code'] ?></ItemCode>
+                <ItemDescription><?= $item['item_description'] ?></ItemDescription>
+                <Quantity><?= $item['quantity'] ?></Quantity>
+                <UnitPrice><?= $item['unit_price'] ?></UnitPrice>
+                <ItemTotal><?= $item['item_total'] ?></ItemTotal>
 
-          </Items>
+                <?php if( $item['unit_cost'] ) : ?>
+                  <UnitCost><?= $item['unit_cost'] ?></UnitCost>
+                <?php endif; ?>
+
+                <?php if( $item['vendor'] ) : ?>
+                  <Vendor><?= $item['vendor'] ?></Vendor>
+                <?php endif; ?>
+
+                <?php if( $item['unit_weight'] ) : ?>
+                  <UnitWeight><?= $item['unit_weight'] ?></UnitWeight>
+                <?php endif; ?>
+
+                <!-- currently not used for anything... -->
+                <CustomField1 />
+                <CustomField2 />
+                <CustomField3 />
+                <CustomField4 />
+                <CustomField5 />
+
+                <?php if( $options = $item['item_options'] ) : ?>
+                  <ItemOptions>
+                    <?php foreach( $options as $k => $v ) : ?>
+                      <Option Name="<?= $k ?>" Value="<?= $v ?>" />
+                    <?php endforeach; ?>
+                  </ItemOptions>
+                <?php endif; ?>
+              </Item>
+            <?php endforeach; ?>
+          </OrderItems>
 
           <Charges>
+            <?php $charges = $order['charges']; ?>
+            <Shipping><?= $charges['shipping'] ?></Shipping>
+            <Handling><?= $charges['handling'] ?></Handling>
+            <Tax><?= $charges['tax'] ?></Tax>
+            <Discount><?= $charges['discount'] ?></Discount>
+            <Total><?= $charges['total'] ?></Total>
 
+            <?php if( $charges['tax_other'] ) : ?>
+              <TaxOther><?= $charges['tax_other'] ?></TaxOther>
+            <?php endif; ?>
+
+            <?php if( $charges['channel_fee'] ) : ?>
+              <ChannelFee><?= $charges['channel_fee'] ?></ChannelFee>
+            <?php endif; ?>
+
+            <?php if( $charges['payment_fee'] ) : ?>
+              <PaymentFee><?= $charges['payment_fee'] ?></PaymentFee>
+            <?php endif; ?>
+
+            <?php if( $charges['gift_certificate'] ) : ?>
+              <GiftCertificate><?= $charges['gift_certificate'] ?></GiftCertificate>
+            <?php endif; ?>
+
+            <?php if( $charges['other_charge'] ) : ?>
+              <OtherCharge><?= $charges['other_charge'] ?></OtherCharge>
+            <?php endif; ?>
+
+            <?php if( $charges['item_sub_total'] ) : ?>
+              <ItemSubTotal><?= $charges['item_sub_total'] ?></ItemSubTotal>
+            <?php endif; ?>
+
+            <?php if( $coupons = $charges['coupons'] ) : ?>
+              <Coupons>
+                <?php foreach( $coupons as $coupon ) : ?>
+                  <Coupon>
+                    <CouponCode><?= $coupon['coupon_code'] ?></CouponCode>
+                    <CouponID><?= $coupon['coupon_id'] ?></CouponID>
+                    <CouponDescription><?= $coupon['coupon_description'] ?></CouponDescription>
+                    <CouponValue><?= $coupon['coupon_value'] ?></CouponValue>
+                  </Coupon>
+                <?php endforeach; ?>
+              </Coupons>
+            <?php endif; ?>
           </Charges>
         </Order>
       <?php endforeach; ?>
