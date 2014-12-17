@@ -57,7 +57,7 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
         'email'             => 'me@email.com',
         'phone'             => '123-456-2345',
       ),
-      'items' => array(
+      'order_items' => array(
         array(
           'item_code'           => 'ASDF',
           'item_description'    => 'An awesome product',
@@ -152,7 +152,7 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
         'email'             => 'me@email.com',
         'phone'             => '123-456-2345',
       ),
-      'items' => array(
+      'order_items' => array(
         array(
           'item_code'           => 'ERTEY',
           'item_description'    => 'Blah Blah Blah...',
@@ -298,7 +298,7 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
 
     $this->assertOrderBill( $expected['bill'],          $actual->Bill );
     $this->assertOrderShip( $expected['ship'],          $actual->Ship );
-    $this->assertOrderItems( $expected['items'],        $actual->OrderItems );
+    $this->assertOrderItems( $expected['order_items'],        $actual->OrderItems );
     $this->assertOrderCharges( $expected['charges'],    $actual->Charges );
   }
 
