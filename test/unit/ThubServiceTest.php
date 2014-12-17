@@ -5,30 +5,30 @@ require 'lib/THub/ThubService.php';
 class THubServiceTest extends PHPUnit_Framework_TestCase {
   public static $orders = array(
     array(
-      'id'                => '1',
-      'ref_id'            => '123456789',
-      'transaction_type'  => 'Sale',
-      'date'              => '2014-16-12',
-      'time'              => '11:40:21',
-      'time_zone'         => 'PST',
-      'updated_on'        => '2014-16-12 22:40:21',
-      'bill'              => array(
-        'pay_method'        => 'CreditCard',
-        'pay_status'        => 'Pending',
-        'pay_date'          => '2014-16-12',
-        'first_name'        => 'Bob',
-        'last_name'         => 'Barker',
-        'middle_name'       => 'Billy',
-        'company_name'      => 'ACME',
-        'address1'          => '123 Fake St.',
-        'address2'          => 'Ste. 500',
-        'city'              => 'Tacoma',
-        'state'             => 'WA',
-        'zip'               => '12345',
-        'country'           => 'USA',
-        'email'             => 'me@email.com',
-        'phone'             => '123-456-2345',
-        'po_number'         => '1234',
+      'order_id'            => '1',
+      'provider_order_ref'  => '123456789',
+      'transaction_type'    => 'Sale',
+      'date'                => '2014-16-12',
+      'time'                => '11:40:21',
+      'time_zone'           => 'PST',
+      'updated_on'          => '2014-16-12 22:40:21',
+      'bill'                => array(
+        'pay_method'          => 'CreditCard',
+        'pay_status'          => 'Pending',
+        'pay_date'            => '2014-16-12',
+        'first_name'          => 'Bob',
+        'last_name'           => 'Barker',
+        'middle_name'         => 'Billy',
+        'company_name'        => 'ACME',
+        'address1'            => '123 Fake St.',
+        'address2'            => 'Ste. 500',
+        'city'                => 'Tacoma',
+        'state'               => 'WA',
+        'zip'                 => '12345',
+        'country'             => 'USA',
+        'email'               => 'me@email.com',
+        'phone'               => '123-456-2345',
+        'po_number'           => '1234',
         'credit_card'             => array(
           'credit_card_type'      => 'VISA',
           'credit_card_charge'    => '100.00',
@@ -107,30 +107,30 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
       ),
     ),
     array(
-      'id'                => '2',
-      'ref_id'            => '234567890',
-      'transaction_type'  => 'Sale',
-      'date'              => '2014-16-12',
-      'time'              => '11:45:21',
-      'time_zone'         => 'PST',
-      'updated_on'        => '2014-16-12 22:45:21',
-      'bill'              => array(
-        'pay_method'        => 'CreditCard',
-        'pay_status'        => 'Pending',
-        'pay_date'          => '2014-16-12',
-        'first_name'        => 'Bob',
-        'last_name'         => 'Barker',
-        'middle_name'       => 'Billy',
-        'company_name'      => 'ACME',
-        'address1'          => '123 Fake St.',
-        'address2'          => 'Ste. 500',
-        'city'              => 'Tacoma',
-        'state'             => 'WA',
-        'zip'               => '12345',
-        'country'           => 'USA',
-        'email'             => 'me@email.com',
-        'phone'             => '123-456-2345',
-        'po_number'         => '1234',
+      'order_id'            => '2',
+      'provider_order_ref'  => '234567890',
+      'transaction_type'    => 'Sale',
+      'date'                => '2014-16-12',
+      'time'                => '11:45:21',
+      'time_zone'           => 'PST',
+      'updated_on'          => '2014-16-12 22:45:21',
+      'bill'                => array(
+        'pay_method'          => 'CreditCard',
+        'pay_status'          => 'Pending',
+        'pay_date'            => '2014-16-12',
+        'first_name'          => 'Bob',
+        'last_name'           => 'Barker',
+        'middle_name'         => 'Billy',
+        'company_name'        => 'ACME',
+        'address1'            => '123 Fake St.',
+        'address2'            => 'Ste. 500',
+        'city'                => 'Tacoma',
+        'state'               => 'WA',
+        'zip'                 => '12345',
+        'country'             => 'USA',
+        'email'               => 'me@email.com',
+        'phone'               => '123-456-2345',
+        'po_number'           => '1234',
       ),
       'ship' => array(
         'ship_status'       => 'Shipped',
@@ -296,13 +296,13 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
   /* CUSTOM ASSERTIONS */
 
   protected function assertOrder( $expected, $actual ) {
-    $this->assertEquals( $expected['id'],               $actual->OrderID );
-    $this->assertEquals( $expected['ref_id'],           $actual->ProviderOrderRef );
-    $this->assertEquals( $expected['transaction_type'], $actual->TransactionType );
-    $this->assertEquals( $expected['date'],             $actual->Date );
-    $this->assertEquals( $expected['time'],             $actual->Time );
-    $this->assertEquals( $expected['time_zone'],        $actual->TimeZone );
-    $this->assertEquals( $expected['updated_on'],       $actual->UpdatedOn );
+    $this->assertEquals( $expected['order_id'],           $actual->OrderID );
+    $this->assertEquals( $expected['provider_order_ref'], $actual->ProviderOrderRef );
+    $this->assertEquals( $expected['transaction_type'],   $actual->TransactionType );
+    $this->assertEquals( $expected['date'],               $actual->Date );
+    $this->assertEquals( $expected['time'],               $actual->Time );
+    $this->assertEquals( $expected['time_zone'],          $actual->TimeZone );
+    $this->assertEquals( $expected['updated_on'],         $actual->UpdatedOn );
 
     $this->assertOrderBill( $expected['bill'],          $actual->Bill );
     $this->assertOrderShip( $expected['ship'],          $actual->Ship );

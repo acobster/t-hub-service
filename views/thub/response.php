@@ -10,8 +10,8 @@
     <Orders>
       <?php foreach( $this->orders as $order ) : ?>
         <Order>
-          <OrderID><?= $order['id'] ?></OrderID>
-          <ProviderOrderRef><?= $order['ref_id'] ?></ProviderOrderRef>
+          <OrderID><?= $order['order_id'] ?></OrderID>
+          <ProviderOrderRef><?= $order['provider_order_ref'] ?></ProviderOrderRef>
           <TransactionType><?= $order['transaction_type'] ?></TransactionType>
 
           <?php if( $order['transaction_type'] == self::TYPE_RETURN ) : ?>

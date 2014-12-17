@@ -128,7 +128,7 @@ class THubService {
    */
   public function renderGetOrders( $request ) {
     $this->orders   = $this->orderProvider->getNewOrders();
-    $this->command  = self:: COMMAND_GET_ORDERS;
+    $this->command  = self::COMMAND_GET_ORDERS;
 
     if( empty($this->orders) ) {
       $this->statusCode     = self::STATUS_CODE_NO_ORDERS;
