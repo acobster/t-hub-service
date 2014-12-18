@@ -1,9 +1,7 @@
 <?php
 
-require 'lib/THub/ThubService.php';
-require 'test/shared/TestData.php';
-
-use TestData;
+require_once 'lib/THub/ThubService.php';
+require_once 'test/shared/TestData.php';
 
 class THubServiceTest extends PHPUnit_Framework_TestCase {
   public function setUp() {

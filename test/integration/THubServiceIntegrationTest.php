@@ -1,14 +1,16 @@
 <?php
 
+require_once 'test/shared/TestData.php';
+
 /**
  * Test the server response at a high level
  */
 class THubServiceIntegrationTest extends PHPUnit_Framework_TestCase {
   public function testResponseIsXml() {
     $requests = array(
-      self::BAD_XML,
-      self::BAD_PASSWORD_XML,
-      self::NORMAL_REQUEST_XML,
+      TestData::BAD_XML,
+      TestData::BAD_PASSWORD_XML,
+      TestData::GET_ORDERS_REQUEST_XML,
     );
 
     foreach( $requests as $request ) {
@@ -49,29 +51,5 @@ class THubServiceIntegrationTest extends PHPUnit_Framework_TestCase {
     curl_close( $handle );
     return $out;
   }
-
-  const BAD_XML = 'foo';
-
-  const NORMAL_REQUEST_XML = <<<_XML_
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<REQUEST Version="2.8">
-   <Command>GetOrders</Command>
-   <UserID>user</UserID>
-   <Password>password</Password>
-   <Status>all</Status>
-   <SecurityKey>xyz</SecurityKey>
-</REQUEST>
-_XML_;
-
-  const BAD_PASSWORD_XML = <<<_XML_
-<?xml version="1.0" encoding="ISO-8859-1"?>
-<REQUEST Version="2.8">
-   <Command>GetOrders</Command>
-   <UserID>user</UserID>
-   <Password>BAD</Password>
-   <Status>all</Status>
-   <SecurityKey>xyz</SecurityKey>
-</REQUEST>
-_XML_;
 
 }
