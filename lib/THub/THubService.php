@@ -38,6 +38,7 @@ class THubService {
   const STATUS_MESSAGE_OK             = 'All Ok';
   const STATUS_MESSAGE_NO_ORDERS      = 'No new orders';
   const STATUS_MESSAGE_LOGIN_FAILURE  = 'Login failed';
+  const STATUS_MESSAGE_NO_ORDERS_RECEIVED = 'No orders were specificed in the update';
 
   const PROVIDER_GENERIC = 'GENERIC';
 
@@ -123,7 +124,7 @@ class THubService {
 
   /**
    * Respond to the GetOrders command with XML
-   * @param  string $request the XML from Atandra
+   * @param  SimpleXMLElement $request the parsed XML from Atandra
    * @return string GetOrders XML
    */
   public function renderGetOrders( $request ) {
@@ -136,6 +137,24 @@ class THubService {
     } else {
       $this->statusCode     = self::STATUS_CODE_OK;
       $this->statusMessage  = self::STATUS_MESSAGE_OK;
+    }
+
+    return $this->renderView( 'response' );
+  }
+
+  /**
+   * Respond to the UpdateOrdersShippingStatus command with XML
+   * @param  SimpleXMLElement $request the parsed XML from Atandra
+   * @return string UpdateOrdersShippingStatus XML
+   */
+  public function renderUpdateOrdersShippingStatus( $request ) {
+    $this->command = self::COMMAND_UPDATE_SHIPPING_STATUS;
+
+    $requestedOrders = $request->orders;
+
+    if( empty($requestedOrders) ) {
+      $this->statusCode = self::STATUS_CODE_OTHER;
+      $this->statusMessage = self::STATUS_MESSAGE_NO_ORDERS_RECEIVED;
     }
 
     return $this->renderView( 'response' );

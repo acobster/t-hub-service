@@ -85,8 +85,26 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
     $this->assertOrder( TestData::$orders[1], $orders[1] );
   }
 
+  public function testUpdateOrdersShippingStatusWithNoOrders() {
+    $cases = array(
+      TestData::UPDATE_ORDERS_SHIPPING_STATUS_NO_ORDER_CHILDREN_REQUEST_XML,
+      TestData::UPDATE_ORDERS_SHIPPING_STATUS_NO_ORDERS_REQUEST_XML,
+    );
+
+    foreach( $cases as $case ) {
+      $parsed = $this->getParsedResponse( $case );
+      $this->assertEquals( 'UpdateOrdersShippingStatus', $parsed->Envelope->Command );
+      $this->assertEquals( '9999', $parsed->Envelope->StatusCode );
+      $this->assertEquals( 'No orders were specificed in the update', $parsed->Envelope->StatusMessage );
+    }
+  }
+
   public function testUpdateOrdersShippingStatus() {
-    $this->markTestIncomplete();
+    $this->mockProvider->method('updateOrdersShippingStatus')
+      ->willReturn( array() );
+
+    $parsed = $this->getParsedResponse( TestData::UPDATE_ORDERS_SHIPPING_STATUS_REQUEST_XML );
+    $this->assertEquals( 'UpdateOrdersShippingStatus', $parsed->Envelope->Command );
   }
 
   public function testDecodeElement() {

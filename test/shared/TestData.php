@@ -207,6 +207,42 @@ _XML_;
 </REQUEST>
 _XML_;
 
+  const UPDATE_ORDERS_SHIPPING_STATUS_REQUEST_XML = <<<_XML_
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<REQUEST Version="2.8">
+   <Command>UpdateOrdersShippingStatus</Command>
+   <UserID>user</UserID>
+   <Password>password</Password>
+   <Status>all</Status>
+   <SecurityKey>xyz</SecurityKey>
+   <Orders>
+
+   </Orders>
+</REQUEST>
+_XML_;
+
+  const UPDATE_ORDERS_SHIPPING_STATUS_NO_ORDERS_REQUEST_XML = <<<_XML_
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<REQUEST Version="2.8">
+   <Command>UpdateOrdersShippingStatus</Command>
+   <UserID>user</UserID>
+   <Password>password</Password>
+   <Status>all</Status>
+   <SecurityKey>xyz</SecurityKey>
+</REQUEST>
+_XML_;
+
+  const UPDATE_ORDERS_SHIPPING_STATUS_NO_ORDER_CHILDREN_REQUEST_XML = <<<_XML_
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<REQUEST Version="2.8">
+   <Command>UpdateOrdersShippingStatus</Command>
+   <UserID>user</UserID>
+   <Password>password</Password>
+   <Status>all</Status>
+   <SecurityKey>xyz</SecurityKey>
+</REQUEST>
+_XML_;
+
   const BAD_XML = '<xml>bad xml</wtf>';
 
   const BAD_COMMAND_XML = <<<_XML_
