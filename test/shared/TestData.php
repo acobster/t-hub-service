@@ -184,6 +184,27 @@ class TestData {
     ),
   );
 
+  public static $ordersToUpdate = array(
+    array(
+      'host_order_id' => '1234',
+      'local_order_id' => '2345',
+      'nofity_customer' => 'Yes',
+      'shipped_on' => '12/01/2014',
+      'shipped_via' => 'UPS',
+      'service_used' => 'Ground',
+      'tracking_number' => 'VNKV45356',
+    ),
+    array(
+      'host_order_id' => '3456',
+      'local_order_id' => '4567',
+      'nofity_customer' => 'No',
+      'shipped_on' => '12/01/2014',
+      'shipped_via' => 'FEDEX',
+      'service_used' => 'Next day air',
+      'tracking_number' => 'ZDSF2356',
+    ),
+  );
+
 
   const BASE64_ENCODED_XML = <<<_XML_
 <?xml version="1.0" encoding="ISO-8859-1"?>
@@ -210,36 +231,54 @@ _XML_;
   const UPDATE_ORDERS_SHIPPING_STATUS_REQUEST_XML = <<<_XML_
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <REQUEST Version="2.8">
-   <Command>UpdateOrdersShippingStatus</Command>
-   <UserID>user</UserID>
-   <Password>password</Password>
-   <Status>all</Status>
-   <SecurityKey>xyz</SecurityKey>
-   <Orders>
-
-   </Orders>
+  <Command>UpdateOrdersShippingStatus</Command>
+  <UserID>user</UserID>
+  <Password>password</Password>
+  <Status>all</Status>
+  <SecurityKey>xyz</SecurityKey>
+  <Orders>
+    <Order>
+      <HostOrderID>34088</HostOrderID>
+      <LocalOrderID>4122</LocalOrderID>
+      <NotifyCustomer>Yes</NotifyCustomer>
+      <ShippedOn>12/05/2005</ShippedOn>
+      <ShippedVia>UPS</ShippedVia>
+      <ServiceUsed>Ground</ServiceUsed>
+      <TrackingNumber>Z3121231213243455</TrackingNumber>
+    </Order>
+    <Order>
+      <HostOrderID>34089</HostOrderID>
+      <LocalOrderID>4123</LocalOrderID>
+      <NotifyCustomer>No</NotifyCustomer>
+      <ShippedOn>12/04/2005</ShippedOn>
+      <ShippedVia>FEDEX</ShippedVia>
+      <ServiceUsed>2nd Day Air</ServiceUsed>
+      <TrackingNumber>F334523234234555</TrackingNumber>
+    </Order>
+  </Orders>
 </REQUEST>
 _XML_;
 
   const UPDATE_ORDERS_SHIPPING_STATUS_NO_ORDERS_REQUEST_XML = <<<_XML_
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <REQUEST Version="2.8">
-   <Command>UpdateOrdersShippingStatus</Command>
-   <UserID>user</UserID>
-   <Password>password</Password>
-   <Status>all</Status>
-   <SecurityKey>xyz</SecurityKey>
+  <Command>UpdateOrdersShippingStatus</Command>
+  <UserID>user</UserID>
+  <Password>password</Password>
+  <Status>all</Status>
+  <SecurityKey>xyz</SecurityKey>
 </REQUEST>
 _XML_;
 
   const UPDATE_ORDERS_SHIPPING_STATUS_NO_ORDER_CHILDREN_REQUEST_XML = <<<_XML_
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <REQUEST Version="2.8">
-   <Command>UpdateOrdersShippingStatus</Command>
-   <UserID>user</UserID>
-   <Password>password</Password>
-   <Status>all</Status>
-   <SecurityKey>xyz</SecurityKey>
+  <Command>UpdateOrdersShippingStatus</Command>
+  <UserID>user</UserID>
+  <Password>password</Password>
+  <Status>all</Status>
+  <SecurityKey>xyz</SecurityKey>
+  <Orders></Orders>
 </REQUEST>
 _XML_;
 

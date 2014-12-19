@@ -107,6 +107,28 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals( 'UpdateOrdersShippingStatus', $parsed->Envelope->Command );
   }
 
+  public function testGetOrdersFromXml() {
+    $simple = new SimpleXMLElement( TestData::UPDATE_ORDERS_SHIPPING_STATUS_REQUEST_XML );
+    $ordersXml = $simple->Orders;
+
+    $orders = $this->callProtectedMethod(
+      'getOrdersFromXml',
+      array($ordersXml)
+    );
+
+    foreach( $orders as $i => $order ) {
+      $orderXml = $ordersXml->children()[$i];
+      $this->assertEquals( $orderXml->HostOrderID,      $order['host_order_id'] );
+      $this->assertEquals( $orderXml->LocalOrderID,     $order['local_order_id'] );
+      $this->assertEquals( $orderXml->ShippedOn,        $order['shipped_on'] );
+      $this->assertEquals( $orderXml->ShippedVia,       $order['shipped_via'] );
+      $this->assertEquals( $orderXml->TrackingNumber,   $order['tracking_number'] );
+
+      $this->assertEqualsIfPresent( $orderXml->NotifyCustomer,  $order['notify_customer'] );
+      $this->assertEqualsIfPresent( $orderXml->ServiceUsed,     $order['service_used'] );
+    }
+  }
+
   public function testDecodeElement() {
     $simple = new SimpleXMLElement( TestData::BASE64_ENCODED_XML );
 

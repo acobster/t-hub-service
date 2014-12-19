@@ -150,14 +150,41 @@ class THubService {
   public function renderUpdateOrdersShippingStatus( $request ) {
     $this->command = self::COMMAND_UPDATE_SHIPPING_STATUS;
 
-    $requestedOrders = $request->orders;
+    $requestedOrders = $request->Orders;
 
-    if( empty($requestedOrders) ) {
+    if( empty($requestedOrders) || empty($requestedOrders->children()) ) {
       $this->statusCode = self::STATUS_CODE_OTHER;
       $this->statusMessage = self::STATUS_MESSAGE_NO_ORDERS_RECEIVED;
+    } else {
+      $orders = $this->getOrdersFromXml( $requestedOrders );
+      // $this->orderProvider->updateOrders( $orders );
     }
 
     return $this->renderView( 'response' );
+  }
+
+  protected function getOrdersFromXml( $xml ) {
+    $orders = array();
+    foreach( $xml->children() as $orderXml ) {
+      $order = array(
+        'host_order_id'     => $orderXml->HostOrderID,
+        'local_order_id'    => $orderXml->LocalOrderID,
+        'shipped_on'        => $orderXml->ShippedOn,
+        'shipped_via'       => $orderXml->ShippedVia,
+        'tracking_number'   => $orderXml->TrackingNumber,
+      );
+
+      if( !empty($orderXml->NotifyCustomer) ) {
+        $order['notify_customer'] = $orderXml->NotifyCustomer;
+      }
+      if( !empty($orderXml->ServiceUsed) ) {
+        $order['service_used'] = $orderXml->ServiceUsed;
+      }
+
+      $orders[] = $order;
+    }
+
+    return $orders;
   }
 
   /**
