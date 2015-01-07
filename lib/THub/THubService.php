@@ -131,12 +131,12 @@ class THubService {
     $this->orders   = $this->orderProvider->getNewOrders();
     $this->command  = self::COMMAND_GET_ORDERS;
 
-    if( empty($this->orders) ) {
-      $this->statusCode     = self::STATUS_CODE_NO_ORDERS;
-      $this->statusMessage  = self::STATUS_MESSAGE_NO_ORDERS;
-    } else {
+    if( $this->orders ) {
       $this->statusCode     = self::STATUS_CODE_OK;
       $this->statusMessage  = self::STATUS_MESSAGE_OK;
+    } else {
+      $this->statusCode     = self::STATUS_CODE_NO_ORDERS;
+      $this->statusMessage  = self::STATUS_MESSAGE_NO_ORDERS;
     }
 
     return $this->renderView( 'response' );
@@ -152,12 +152,12 @@ class THubService {
 
     $requestedOrders = $request->Orders;
 
-    if( empty($requestedOrders) || empty($requestedOrders->children()) ) {
-      $this->statusCode = self::STATUS_CODE_OTHER;
-      $this->statusMessage = self::STATUS_MESSAGE_NO_ORDERS_RECEIVED;
-    } else {
+    if( $requestedOrders && $requestedOrders->children() ) {
       $orders = $this->getOrdersFromXml( $requestedOrders );
       // $this->orderProvider->updateOrders( $orders );
+    } else {
+      $this->statusCode = self::STATUS_CODE_OTHER;
+      $this->statusMessage = self::STATUS_MESSAGE_NO_ORDERS_RECEIVED;
     }
 
     return $this->renderView( 'response' );
