@@ -73,12 +73,13 @@ class THubService {
    * TRAILING SLASHES ARE REQUIRED FOR DIRECTORY SETTINGS.
    * @param  array $settings array of settings
    */
-  public static function config( $settings ) {
+  public static function config( $settings=array() ) {
     foreach( self::$CONFIG as $key => $setting ) {
-      if( !empty($settings[$key]) ) {
-        self::$CONFIG[$key] = $setting;
+      if( isset($settings[$key]) ) {
+        self::$CONFIG[$key] = $settings[$key];
       }
     }
+    return self::$CONFIG;
   }
 
   /**

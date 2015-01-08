@@ -12,6 +12,26 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
     $this->thub = new THub\THubService( $this->mockProvider );
   }
 
+  public function testConfig() {
+    $originalConfig = THub\THubService::config();
+
+    $newConfig = array(
+      'viewDir'         => './some/other/dir/',
+      'user'            => 'abneorgw',
+      'password'        => '2orginwg',
+      'securityKey'     => 'aosigh',
+      'requireKey'      => false,
+    );
+
+    // Test it returns correctly the first time
+    $this->assertEquals( $newConfig, THub\THubService::config( $newConfig ) );
+    // Test that static property is actually persisted
+    $this->assertEquals( $newConfig, THub\THubService::config() );
+
+    // restore original settings...
+    THub\THubService::config( $originalConfig );
+  }
+
   public function testParseRequestWithBadXml() {
     $parsed = $this->getParsedResponse( TestData::BAD_XML );
     $this->assertEquals( 'UNKNOWN', $parsed->Envelope->Command );
