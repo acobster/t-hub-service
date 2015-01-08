@@ -15,8 +15,8 @@ class OrderModel implements OrderProvider {
     } elseif( $options['start_id'] ) {
       $whereClause = "invoices.ID > {$options['start_id']}";
     } elseif( $options['num_days'] ) {
-      $startDate = new DateTime();
-      $days = new DateInterval("P{$options['num_days']}D");
+      $startDate = new \DateTime();
+      $days = new \DateInterval("P{$options['num_days']}D");
       $startDate->sub( $days );
       $formatted = $startDate->format('Y-m-d H:i:s');
       $whereClause = "invoices.CREATED > '{$formatted}'";
@@ -35,6 +35,7 @@ SELECT invoices.*, card.PAYMENT_TYPE, ship.SHIPPED,
 _SQL_;
 
     $results = $this->db->read( $sql );
+    // var_dump($results);
 
     $structuredOrders = array();
     foreach( $results as $order ) {
@@ -49,15 +50,15 @@ _SQL_;
     $sql = <<<_SQL_
 SELECT invoices_details.*, inventory.SKU FROM invoices_details
   LEFT JOIN inventory ON (invoices_details.INVENTORYID = inventory.ID)
-  WHERE INVOICEID = ${$order['ID']}
+  WHERE INVOICEID = {$order['ID']}
 _SQL_;
 
     return $this->db->read( $sql );
   }
 
   protected function structureOrderData( $data ) {
-    $dateTime = new DateTime( $data['CREATED'] );
-    $updatedOnDateTime = new DateTime( $data['LASTUPDATED'] );
+    $dateTime = new \DateTime( $data['CREATED'] );
+    $updatedOnDateTime = new \DateTime( $data['LASTUPDATED'] );
 
     $order = array(
       'order_id'            => $data['ID'],
@@ -113,7 +114,6 @@ _SQL_;
       'order_items' => array(),
     );
 
-
     foreach( $data['items'] as $item ) {
       $order['order_items'][] = array(
         'item_code'           => $item['SKU'], // TODO ?
@@ -123,6 +123,8 @@ _SQL_;
         'item_total'          => $item['LINE_TOTAL'],
       );
     }
+
+    return $order;
   }
 }
 

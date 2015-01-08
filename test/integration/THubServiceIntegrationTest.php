@@ -1,11 +1,16 @@
 <?php
 
 require_once 'test/shared/TestData.php';
+require_once 'test/integration/OrderFixtures.php';
 
 /**
  * Test the server response at a high level
  */
 class THubServiceIntegrationTest extends PHPUnit_Framework_TestCase {
+  public function tearDown() {
+    OrderFixtures::truncateAll();
+  }
+
   public function testResponseIsXml() {
     $requests = array(
       TestData::BAD_XML,
@@ -26,9 +31,10 @@ class THubServiceIntegrationTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testGetOrdersResponse() {
+    OrderFixtures::insertOrders( TestData::$orders );
     $parsed = $this->getParsedResponse( TestData::GET_ORDERS_REQUEST_XML );
     $this->assertEquals( 'GetOrders', $parsed->Envelope->Command );
-    // $this->assertEquals( 'All Ok', $parsed->Envelope->StatusMessage );
+    $this->assertEquals( 'All Ok', $parsed->Envelope->StatusMessage );
   }
 
   protected function getParsedResponse( $request ) {

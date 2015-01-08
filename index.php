@@ -1,5 +1,6 @@
 <?php
 
+date_default_timezone_set('UTC');
 error_reporting( E_ERROR | E_PARSE | E_RECOVERABLE_ERROR );
 
 require './autoload.php';

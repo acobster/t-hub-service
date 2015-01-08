@@ -8,7 +8,7 @@ class DBException extends \Exception {
     $message = sprintf(
       "Database error: %s (%s:%d)", $info[2], $info[0], $info[1]
     );
-    throw new DBException( $message );
+    return new DBException( $message );
   }
 }
 

@@ -31,7 +31,7 @@ class DB {
     $query = $this->pdo->query( $sql );
 
     if( !$query ) {
-      DBException::fromPDO( $this->pdo );
+      throw DBException::fromPDO( $this->pdo );
     }
 
     return $query->fetchAll( \PDO::FETCH_ASSOC );
