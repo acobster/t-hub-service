@@ -5,7 +5,7 @@ require_once 'test/shared/TestData.php';
 
 class THubServiceTest extends PHPUnit_Framework_TestCase {
   public function setUp() {
-    $this->mockProvider = $this->getMockBuilder('OrderProvider')
+    $this->mockProvider = $this->getMockBuilder('Data\OrderProvider')
       ->setMockClassName( 'OrderModel' )
       ->setMethods( array('getNewOrders') )
       ->getMock();
@@ -217,7 +217,7 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
 
     $this->assertEqualsIfPresent( $expected['ship_status'],     $actual->ShipStatus );
     $this->assertEqualsIfPresent( $expected['ship_date'],       $actual->ShipDate );
-    $this->assertEqualsIfPresent( $expected['ship_tracking'],   $actual->ShipTracking );
+    $this->assertEqualsIfPresent( $expected['tracking'],        $actual->Tracking );
     $this->assertEqualsIfPresent( $expected['ship_cost'],       $actual->ShipCost );
     $this->assertEqualsIfPresent( $expected['middle_name'],     $actual->MiddleName );
     $this->assertEqualsIfPresent( $expected['company_name'],    $actual->CompanyName );

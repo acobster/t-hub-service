@@ -1,6 +1,6 @@
 <?php
 
-use DB;
+namespace Data;
 
 class OrderModel implements OrderProvider {
   protected $db;

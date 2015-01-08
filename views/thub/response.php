@@ -47,6 +47,7 @@
                   <CreditCardType><?= $card['credit_card_type'] ?></CreditCardType>
                   <CreditCardCharge><?= $card['credit_card_charge'] ?></CreditCardCharge>
                   <ExpirationDate><?= $card['expiration_date'] ?></ExpirationDate>
+                  <CreditCardName><?= $card['credit_card_name'] ?></CreditCardName>
                   <CreditCardNumber><?= $card['credit_card_number'] ?></CreditCardNumber>
 
                   <?php if( $card['cvv2'] ) : ?>
@@ -97,8 +98,8 @@
                 <ShipDate><?= $ship['ship_date'] ?></ShipDate>
               <?php endif; ?>
 
-              <?php if( $ship['ship_tracking'] ) : ?>
-                <ShipTracking><?= $ship['ship_tracking'] ?></ShipTracking>
+              <?php if( $ship['tracking'] ) : ?>
+                <Tracking><?= $ship['tracking'] ?></Tracking>
               <?php endif; ?>
 
               <?php if( $ship['ship_cost'] ) : ?>

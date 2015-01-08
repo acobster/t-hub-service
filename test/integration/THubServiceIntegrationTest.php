@@ -19,6 +19,18 @@ class THubServiceIntegrationTest extends PHPUnit_Framework_TestCase {
     }
   }
 
+  public function testEmptyGetOrdersResponse() {
+    $parsed = $this->getParsedResponse( TestData::GET_ORDERS_REQUEST_XML );
+    $this->assertEquals( 'GetOrders', $parsed->Envelope->Command );
+    $this->assertEquals( 'No new orders', $parsed->Envelope->StatusMessage );
+  }
+
+  public function testGetOrdersResponse() {
+    $parsed = $this->getParsedResponse( TestData::GET_ORDERS_REQUEST_XML );
+    $this->assertEquals( 'GetOrders', $parsed->Envelope->Command );
+    // $this->assertEquals( 'All Ok', $parsed->Envelope->StatusMessage );
+  }
+
   protected function getParsedResponse( $request ) {
     try {
       $response = $this->postTHub($request);

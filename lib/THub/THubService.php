@@ -2,7 +2,7 @@
 
 namespace THub;
 
-use \OrderProvider;
+use Data\OrderProvider as OrderProvider;
 
 /**
  * A Library that implements the T-HUB Service Specifications as described in:
@@ -28,7 +28,7 @@ use \OrderProvider;
  */
 class THubService {
   const DEFAULT_LIMIT_ORDER_COUNT = 25;
-  const DEFAULT_NUM_DAYS = 0;
+  const DEFAULT_START_ORDER_ID = 0;
 
   const STATUS_CODE_OK              = '0';
   const STATUS_CODE_NO_ORDERS       = '1000';
@@ -86,7 +86,7 @@ class THubService {
    * @param OrderProvider $orderProvider An instance of the OrderProvider
    * interface, so we have access to the order data/
    */
-  public function __construct( \OrderProvider $orderProvider ) {
+  public function __construct( OrderProvider $orderProvider ) {
     $this->orderProvider = $orderProvider;
   }
 
@@ -96,18 +96,19 @@ class THubService {
    * @return string the XML to send back
    */
   public function parseRequest( $requestXml ) {
-    // catch & throw more specific exception if XML is bad
     try {
       $request = new \SimpleXMLElement( $requestXml );
     } catch( \Exception $e ) {
-      return $this->renderBadRequest( $e->getMessage() );
+      return $this->renderError( $e->getMessage() );
     }
 
     // determine command
     $this->command = $request->Command;
     if( ! $this->isValidCommand($this->command) ) {
-      return $this->renderBadRequest( "No such command: {$this->command}" );
+      return $this->renderError( "No such command: {$this->command}" );
     }
+
+    // TODO Query params validation
 
     // throw an exception if unable to authenticate
     if( ! $this->authenticate(
@@ -128,8 +129,16 @@ class THubService {
    * @return string GetOrders XML
    */
   public function renderGetOrders( $request ) {
-    $this->orders   = $this->orderProvider->getNewOrders();
     $this->command  = self::COMMAND_GET_ORDERS;
+
+    try {
+      $queryOptions   = $this->getQueryOptions( $request );
+      $this->orders   = $this->orderProvider->getNewOrders( $queryOptions );
+    } catch( \PDOException $e ) {
+      return $this->renderError(
+        'There was a database error. Please contact the website administrator.'
+      );
+    }
 
     if( $this->orders ) {
       $this->statusCode     = self::STATUS_CODE_OK;
@@ -163,6 +172,38 @@ class THubService {
     return $this->renderView( 'response' );
   }
 
+  /**
+   * This method takes the query approach recommended in the THub Service Spec:
+   *   - Default to 25-order limit
+   *   - Use DownloadStartDate to download historical data starting with a
+   *     specific order date
+   *   - The service should return all orders whose Order number in database >
+   *     OrderStartNumber; default OrderStartNumber is 0
+   *   - When OrderStartNumber = 0 then use the value sent in NumberOfDays to
+   *     return last x days orders as specified by NumberOfDays parameter.
+   *   - When OrderStartNumber > 0 then ignore the NumberOfDays parameter and
+   *     send orders based on OrderNumber >= OrderStartNumber
+   * NOTE: This method assumes all necessary validation has already occurred!
+   * @return array an array of options to pass to OrderProvider::getNewOrders()
+   */
+  protected function getQueryOptions( $request ) {
+    $options = array(
+      'limit'       => self::DEFAULT_LIMIT_ORDER_COUNT,
+      'start_id'    => self::DEFAULT_START_ORDER_ID,
+    );
+
+    if( $request->DownloadStartDate ) {
+      $date = new DateTime( $request->DownloadStartDate );
+      $options['start_date'] = $date->format('Y-m-d H:i:s');
+    } elseif( $request->OrderStartNumber ) {
+      $options['start_id'] = $request->OrderStartNumber;
+    } elseif( $request->NumberOfDays ) {
+      $options['num_days'] = $request->NumberOfDays;
+    }
+
+    return $options;
+  }
+
   protected function getOrdersFromXml( $xml ) {
     $orders = array();
     foreach( $xml->children() as $orderXml ) {
@@ -192,7 +233,7 @@ class THubService {
    * @param  string $message the StatusMessage to report
    * @return string the XML to send back
    */
-  protected function renderbadRequest( $message ) {
+  protected function renderError( $message ) {
     $this->statusMessage = $message;
     $this->statusCode = self::STATUS_CODE_OTHER;
     return $this->renderView( 'response' );

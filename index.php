@@ -1,12 +1,12 @@
 <?php
 
-error_reporting( E_ERROR | E_PARSE );
+error_reporting( E_ERROR | E_PARSE | E_RECOVERABLE_ERROR );
 
 require './autoload.php';
-if( file_exists('./tweb_config.php') ) require './tweb_config.php';
+if( file_exists('./tweb_config.php') ) require_once './tweb_config.php';
 
-if( !empty($_POST) ) {
-  $orderProvider = new OrderModel();
+if( $_POST ) {
+  $orderProvider = new Data\OrderModel();
   $thub = new THub\THubService( $orderProvider );
   echo $thub->parseRequest( $_POST['XML'] );
 } else {
