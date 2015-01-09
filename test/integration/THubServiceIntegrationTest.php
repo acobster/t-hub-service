@@ -1,5 +1,6 @@
 <?php
 
+require_once 'test/shared/CustomAssertions.php';
 require_once 'test/shared/TestData.php';
 require_once 'test/integration/OrderFixtures.php';
 
@@ -7,6 +8,8 @@ require_once 'test/integration/OrderFixtures.php';
  * Test the server response at a high level
  */
 class THubServiceIntegrationTest extends PHPUnit_Framework_TestCase {
+  use CustomAssertions;
+
   public function tearDown() {
     OrderFixtures::truncateAll();
   }
@@ -35,6 +38,11 @@ class THubServiceIntegrationTest extends PHPUnit_Framework_TestCase {
     $parsed = $this->getParsedResponse( TestData::GET_ORDERS_REQUEST_XML );
     $this->assertEquals( 'GetOrders', $parsed->Envelope->Command );
     $this->assertEquals( 'All Ok', $parsed->Envelope->StatusMessage );
+
+    $orders = $parsed->Orders->Order;
+
+    $this->assertOrder( TestData::$orders[0], $orders[0] );
+    $this->assertOrder( TestData::$orders[1], $orders[1] );
   }
 
   protected function getParsedResponse( $request ) {

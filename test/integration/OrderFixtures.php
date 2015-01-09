@@ -26,23 +26,24 @@ class OrderFixtures {
     $ship     = $order['ship'];
     $charges  = $order['charges'];
 
-    if( $ship['ship_date'] ) {
-      $dt = new DateTime( $ship['ship_date'] );
-      $shipDate = "'{$dt->format('Y-m-d')}'";
+    if( $bill['pay_date'] ) {
+      $dt = new DateTime( $bill['pay_date'] );
+      $payDate = "'{$dt->format('Y-m-d H:i:s')}'";
     } else {
-      $shipDate = 'CURDATE()';
+      $payDate = "'0000-00-00 00:00:00'";
     }
 
     $createdDT = new DateTime( $order['date'] . ' ' . $order['time'] );
-    $created = $createdDT->format( 'Y-m-d' );
+    $created = $createdDT->format( 'Y-m-d H:i:s' );
     $updatedDT = new DateTime( $order['updated_on'] );
-    $updated = $updatedDT->format( 'Y-m-d' );
+    $updated = $updatedDT->format( 'Y-m-d H:i:s' );
 
     $sql = <<<_SQL_
 INSERT INTO invoices SET INVOICE_NUMBER='9876',
   FIRST='{$bill['first_name']}',
   LAST='{$bill['last_name']}',
-  PAID_DATETIME='{$bill['pay_date']}',
+  PAID_DATETIME={$payDate},
+  PAYSTATUS='{$bill['pay_status']}',
   CREATED='{$created}',
   LASTUPDATED='{$updated}',
   ORGANIZATION='{$bill['company_name']}',
@@ -63,7 +64,6 @@ INSERT INTO invoices SET INVOICE_NUMBER='9876',
   SHIPPING_STATE='{$ship['state']}',
   SHIPPING_ZIP='{$ship['zip']}',
   SHIPPING_COUNTRY='{$ship['country']}',
-  SHIPPING_DATE={$shipDate},
   PHONE='{$ship['phone']}',
   EMAIL='{$ship['email']}',
   SUBTOTAL={$charges['item_sub_total']},
@@ -80,20 +80,59 @@ _SQL_;
     self::write( $sql );
     $orderId = self::lastId();
 
+    self::insertCard( $order, $orderId );
+    self::insertShipping( $order, $orderId );
+
     foreach( $order['order_items'] as $item ) {
       self::insertOrderItem( $item, $orderId );
     }
   }
 
-  public static function insertOrderItem( $item, $orderId ) {
-      $order['order_items'][] = array(
-        'item_code'           => $item['SKU'], // TODO ?
-        'item_description'    => $item['DESCRIPTION'],
-        'quantity'            => $item['QUANTITY'],
-        'unit_price'          => $item['RATE'],
-        'item_total'          => $item['LINE_TOTAL'],
-      );
+  public static function insertCard( $order, $orderId ) {
+    $card = $order['bill']['credit_card'];
+    $cardType = ( $card && $card['credit_card_type'] )
+      ? $card['credit_card_type']
+      : '';
 
+    $sql = <<<_SQL_
+INSERT INTO invoices_activity SET INVOICEID={$orderId},
+  PAYMENT_TYPE='{$order['bill']['pay_method']}',
+  CCTYPE='{$cardType}',
+  CONTACTID=234, ADMINID=987, NOTES='foo', TRANSACTIONID='1234',
+  LAST4CC='1234', CHECK_NUMBER='123', PAYMENT=2.00,
+  IP_ADDRESS='1.2.3.4', CITY='Springfield', STATE='IL', COUNTRY='USA',
+  CREATED=NOW()
+_SQL_;
+
+    self::write( $sql );
+  }
+
+  public static function insertShipping( $order, $orderId ) {
+    $shipping = $order['ship'];
+
+    if( $shipping['ship_date'] ) {
+      $dt = new DateTime( $shipping['ship_date'] );
+      $shipDate = "{$dt->format('Y-m-d')}";
+    } else {
+      $shipDate = "0000-00-00";
+    }
+
+    $shipped = ( $shipping['ship_status'] == 'Shipped' ) ? 1 : 0;
+
+    $sql = <<<_SQL_
+INSERT INTO invoices_shipping_tracking SET INVOICEID={$orderId},
+  CARRIER = '{$shipping['ship_carrier_name']}',
+  SHIPPING_METHOD = '{$shipping['ship_method']}',
+  TRACKING_NUMBER = '{$shipping['tracking']}',
+  SHIPPED_DATE = '{$shipDate}',
+  SHIPPED = {$shipped},
+  SHIPPED_EMAIL_NOTICE = 0
+_SQL_;
+
+    self::write( $sql );
+  }
+
+  public static function insertOrderItem( $item, $orderId ) {
     $inventoryId = self::insertInventory( $item, $orderId );
 
     $sql = <<<_SQL_
@@ -112,7 +151,7 @@ _SQL_;
 
   public static function insertInventory( $item ) {
     $sql = <<<_SQL_
-INSERT INTO inventory SET SKU='{$item['SKU']}',
+INSERT INTO inventory SET SKU='{$item['item_code']}',
   CONTENTID=123, PARENT_INVENTORYID=10, RETAIL_PRICE=2.00, OUR_PRICE=1.00,
   SHIPPING_WEIGHT=10.0, ADDITIONAL_SHIPPING=1.00, LABEL='foo',
   CONNECTION='something'

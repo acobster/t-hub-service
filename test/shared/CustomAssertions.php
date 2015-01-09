@@ -3,7 +3,7 @@
 trait CustomAssertions {
   protected function assertOrder( $expected, $actual ) {
     $this->assertEquals( $expected['order_id'],           $actual->OrderID );
-    $this->assertEquals( $expected['provider_order_ref'], $actual->ProviderOrderRef );
+    $this->assertEquals( $expected['provider_order_ref'], $actual->OrderID );
     $this->assertEquals( $expected['transaction_type'],   $actual->TransactionType );
     $this->assertEquals( $expected['date'],               $actual->Date );
     $this->assertEquals( $expected['time'],               $actual->Time );
@@ -149,7 +149,7 @@ trait CustomAssertions {
   }
 
   protected function assertEqualsIfPresent( $expected, $actual ) {
-    if( !empty($expected) ) {
+    if( $expected ) {
       $this->assertEquals( $expected, $actual );
     }
   }

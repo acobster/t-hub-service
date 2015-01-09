@@ -3,6 +3,13 @@
 namespace Data;
 
 class OrderModel implements OrderProvider {
+  const TRANSACTION_TYPE_SALE = 'Sale';
+  const SHIP_STATUS_SHIPPED = 'Shipped';
+  const SHIP_STATUS_NEW = 'New';
+
+  const DEFAULT_HANDLING = 0.00;
+  const DEFAULT_DISCOUNT = 0.00;
+
   protected $db;
 
   public function __construct() {
@@ -16,6 +23,7 @@ class OrderModel implements OrderProvider {
       $whereClause = "invoices.ID > {$options['start_id']}";
     } elseif( $options['num_days'] ) {
       $startDate = new \DateTime();
+      $startDate->setTimezone( new DateTimeZone('GST') );
       $days = new \DateInterval("P{$options['num_days']}D");
       $startDate->sub( $days );
       $formatted = $startDate->format('Y-m-d H:i:s');
@@ -35,7 +43,6 @@ SELECT invoices.*, card.PAYMENT_TYPE, ship.SHIPPED,
 _SQL_;
 
     $results = $this->db->read( $sql );
-    // var_dump($results);
 
     $structuredOrders = array();
     foreach( $results as $order ) {
@@ -57,13 +64,23 @@ _SQL_;
   }
 
   protected function structureOrderData( $data ) {
-    $dateTime = new \DateTime( $data['CREATED'] );
-    $updatedOnDateTime = new \DateTime( $data['LASTUPDATED'] );
+    $gst = new \DateTimeZone('GST');
+
+    $dateTime = new \DateTime( $data['CREATED'], $gst );
+    $updatedOnDateTime = new \DateTime( $data['LASTUPDATED'], $gst );
+    $payDateTime = new \DateTime( $data['PAID_DATETIME'], $gst );
+    $shipDate = new \DateTime( $data['SHIPPED_DATE'], $gst );
+
+    $shipStatus = $data['SHIPPED']
+      ? self::SHIP_STATUS_SHIPPED
+      : self::SHIP_STATUS_NEW;
+
+    $trackingNumber = $data['TRACKING_NUMBER'] ?: null;
 
     $order = array(
       'order_id'            => $data['ID'],
       'provider_order_ref'  => $data['ID'],
-      'transaction_type'    => 'Sale',
+      'transaction_type'    => self::TRANSACTION_TYPE_SALE,
       'date'                => $dateTime->format('Y-m-d'),
       'time'                => $dateTime->format('H:i:s'),
       'time_zone'           => $dateTime->format('T'),
@@ -71,7 +88,7 @@ _SQL_;
       'bill' => array(
         'pay_method'        => $data['PAYMENT_TYPE'],
         'pay_status'        => $data['PAYSTATUS'],
-        'pay_date'          => $data['PAID_DATETIME'],
+        'pay_date'          => $payDateTime->format('Y-m-d'),
         'first_name'        => $data['FIRST'],
         'last_name'         => $data['LAST'],
         'company_name'      => $data['ORGANIZATION'],
@@ -87,8 +104,11 @@ _SQL_;
         // No credit card info for now.
       ),
       'ship' => array(
-        'ship_status'         => $data['SHIPPED'],
+        'ship_status'         => $shipStatus,
+        'ship_date'           => $shipDate->format('Y-m-d'),
         'ship_carrier_name'   => $data['CARRIER'],
+        'tracking'            => $trackingNumber,
+        'ship_cost'           => $data['SHIPPING'],
         'ship_method'         => $data['SHIPPING_METHOD'],
         'first_name'          => $data['SHIPPING_FIRST'],
         'last_name'           => $data['SHIPPING_LAST'],
@@ -104,9 +124,9 @@ _SQL_;
       ),
       'charges' => array(
         'shipping'            => $data['SHIPPING'],
-        'handling'            => 0, // TODO ?
+        'handling'            => self::DEFAULT_HANDLING,
         'tax'                 => $data['TAX'],
-        'discount'            => 0, // TODO ?
+        'discount'            => self::DEFAULT_DISCOUNT,
         'total'               => $data['TOTAL'],
         'item_sub_total'      => $data['SUBTOTAL'],
         // no coupon data for now
