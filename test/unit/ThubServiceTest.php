@@ -45,9 +45,23 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
       $parsed->Envelope->StatusMessage );
   }
 
-  public function testBadCommandResponse() {
+  public function testValidation() {
     $parsed = $this->getParsedResponse( TestData::BAD_COMMAND_XML );
     $this->assertEquals( 'No such command: FOO', $parsed->Envelope->StatusMessage );
+
+    $cases = array(
+      TestData::BAD_START_DATE_XML      => 'Invalid DownloadStartDate',
+      TestData::BAD_NUM_DAYS            => 'Invalid NumberOfDays',
+      TestData::BAD_LIMIT_ORDER_COUNT   => 'Invalid LimitOrderCount',
+      TestData::BAD_ORDER_START_NUMBER  => 'Invalid OrderStartNumber',
+    );
+
+    foreach( $cases as $xml => $message) {
+      $parsed = $this->getParsedResponse( $xml );
+      $this->assertEquals( 'GetOrders', $parsed->Envelope->Command );
+      $this->assertEquals( '9999', $parsed->Envelope->StatusCode );
+      $this->assertEquals( $message, $parsed->Envelope->StatusMessage );
+    }
   }
 
   public function testAuthenticate() {

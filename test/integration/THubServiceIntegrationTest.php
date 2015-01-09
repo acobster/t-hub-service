@@ -15,31 +15,9 @@ class THubServiceIntegrationTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testResponseIsXml() {
-    $requests = array(
-      TestData::BAD_XML,
-      TestData::BAD_PASSWORD_XML,
-      TestData::GET_ORDERS_REQUEST_XML,
-    );
-
-    foreach( $requests as $request ) {
+    foreach( TestData::$ALL_CASES as $request ) {
       $parsed = $this->getParsedResponse( $request );
       $this->assertInstanceOf( 'SimpleXMLElement', $parsed );
-    }
-  }
-
-  public function testValidation() {
-    $cases = array(
-      TestData::BAD_START_DATE_XML      => 'Invalid DownloadStartDate',
-      TestData::BAD_NUM_DAYS            => 'Invalid NumberOfDays',
-      TestData::BAD_LIMIT_ORDER_COUNT   => 'Invalid LimitOrderCount',
-      TestData::BAD_ORDER_START_NUMBER  => 'Invalid OrderStartNumber',
-    );
-
-    foreach( $cases as $xml => $message) {
-      $parsed = $this->getParsedResponse( $xml );
-      $this->assertEquals( 'GetOrders', $parsed->Envelope->Command );
-      $this->assertEquals( '9999', $parsed->Envelope->StatusCode );
-      $this->assertEquals( $message, $parsed->Envelope->StatusMessage );
     }
   }
 
@@ -101,8 +79,12 @@ class THubServiceIntegrationTest extends PHPUnit_Framework_TestCase {
       $response = $this->postTHub($request);
       return new SimpleXMLElement( $response );
     } catch( Exception $e ) {
-      $this->fail( "couldn't parse response:" . PHP_EOL
-        . $response . PHP_EOL );
+      if( $response ) {
+        $this->fail( "couldn't parse response:" . PHP_EOL
+          . $response . PHP_EOL );
+      } else {
+        $this->fail( "Response is empty" );
+      }
     }
   }
 

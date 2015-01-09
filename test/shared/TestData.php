@@ -211,6 +211,27 @@ class TestData {
     return $allOrders;
   }
 
+  public static $ALL_CASES = array(
+    self::BASE64_ENCODED_XML,
+    self::GET_ORDERS_REQUEST_XML,
+    self::GET_ORDERS_REQUEST_XML_BY_ORDER_START_NUMBER,
+    self::GET_ORDERS_REQUEST_XML_BY_NUM_DAYS,
+    self::UPDATE_ORDERS_SHIPPING_STATUS_REQUEST_XML,
+    self::UPDATE_ORDERS_SHIPPING_STATUS_NO_ORDERS_REQUEST_XML,
+    self::UPDATE_ORDERS_SHIPPING_STATUS_NO_ORDER_CHILDREN_REQUEST_XML,
+    self::BAD_XML,
+    self::BAD_START_DATE_XML,
+    self::BAD_NUM_DAYS,
+    self::BAD_LIMIT_ORDER_COUNT,
+    self::BAD_ORDER_START_NUMBER,
+    self::BAD_COMMAND_XML,
+    self::BAD_PASSWORD_XML,
+    self::BAD_USER_XML,
+    self::BAD_SECURITY_KEY_XML,
+    self::MISSING_PASSWORD_XML,
+    self::MISSING_USER_XML,
+  );
+
   const BASE64_ENCODED_XML = <<<_XML_
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <Foo>
