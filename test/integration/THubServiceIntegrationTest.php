@@ -27,6 +27,19 @@ class THubServiceIntegrationTest extends PHPUnit_Framework_TestCase {
     }
   }
 
+  public function testValidation() {
+    $cases = array(
+      TestData::BAD_START_DATE_XML => 'Invalid DownloadStartDate',
+    );
+
+    foreach( $cases as $xml => $message) {
+      $parsed = $this->getParsedResponse( $xml );
+      $this->assertEquals( 'GetOrders', $parsed->Envelope->Command );
+      $this->assertEquals( '9999', $parsed->Envelope->StatusCode );
+      $this->assertEquals( $message, $parsed->Envelope->StatusMessage );
+    }
+  }
+
   public function testEmptyGetOrdersResponse() {
     $parsed = $this->getParsedResponse( TestData::GET_ORDERS_REQUEST_XML );
     $this->assertEquals( 'GetOrders', $parsed->Envelope->Command );

@@ -314,6 +314,18 @@ _XML_;
 
   const BAD_XML = '<xml>bad xml</wtf>';
 
+  const BAD_START_DATE_XML = <<<_XML_
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<REQUEST Version="2.8">
+   <Command>GetOrders</Command>
+   <UserID>user</UserID>
+   <Password>password</Password>
+   <Status>all</Status>
+   <SecurityKey>xyz</SecurityKey>
+   <DownloadStartDate>blah</DownloadStartDate>
+</REQUEST>
+_XML_;
+
   const BAD_COMMAND_XML = <<<_XML_
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <REQUEST Version="2.8">

@@ -103,25 +103,24 @@ class THubService {
       return $this->renderError( $e->getMessage() );
     }
 
-    // determine command
-    $this->command = $request->Command;
-    if( ! $this->isValidCommand($this->command) ) {
-      return $this->renderError( "No such command: {$this->command}" );
-    }
+    try {
+      $this->validateRequest( $request );
 
-    // TODO Query params validation
-
-    // throw an exception if unable to authenticate
-    if( ! $this->authenticate(
+      $this->authenticate(
         $request->UserID,
         $request->Password,
         $request->SecurityKey
-      )) {
-      return $this->renderLoginFailure();
-    }
+      );
 
-    $method = "render{$this->command}";
-    return $this->$method( $request );
+      $method = "render{$this->command}";
+      return $this->$method( $request );
+
+    } catch( AuthError $e ) {
+      return $this->renderLoginFailure();
+
+    } catch( InvalidParamError $e ) {
+      return $this->renderError( $e->getMessage() );
+    }
   }
 
   /**
@@ -184,7 +183,7 @@ class THubService {
    *     return last x days orders as specified by NumberOfDays parameter.
    *   - When OrderStartNumber > 0 then ignore the NumberOfDays parameter and
    *     send orders based on OrderNumber >= OrderStartNumber
-   * NOTE: This method assumes all necessary validation has already occurred!
+   * @param  SimpleXMLElement $request the parse XML from Atandra
    * @return array an array of options to pass to OrderProvider::getNewOrders()
    */
   protected function getQueryOptions( $request ) {
@@ -194,7 +193,7 @@ class THubService {
     );
 
     if( $request->DownloadStartDate ) {
-      $date = new DateTime( $request->DownloadStartDate );
+      $date = new \DateTime( $request->DownloadStartDate );
       $options['start_date'] = $date->format('Y-m-d H:i:s');
     } elseif( intval($request->OrderStartNumber) ) {
       $options['start_id'] = intval( $request->OrderStartNumber );
@@ -268,13 +267,40 @@ class THubService {
   }
 
   /**
+   * Throw an error if request is invalid.
+   * @param  SimpleXMLElement $request the XML from Atandra
+   * @throws InvalidParamError if any of the request params is invalid
+   */
+  protected function validateRequest( $request ) {
+    // determine command
+    $this->command = $request->Command;
+    if( ! $this->isValidCommand($this->command) ) {
+      throw new InvalidParamError( "No such command: {$this->command}" );
+    }
+
+    $startDate = $request->DownloadStartDate;
+    if( $startDate && !$this->isValidDate( $startDate )) {
+      throw new InvalidParamError( 'Invalid DownloadStartDate' );
+    }
+  }
+
+  /**
+   * Validate a date string.
+   * @param  string $date
+   * @return boolean whether $date is a valid date string
+   */
+  protected function isValidDate( $date, $format='m/d/Y H:i:s A' ) {
+    return \DateTime::createFromFormat( $format, $date ) !== false;
+  }
+
+  /**
    * Check provided user/password against current configuration.
    * If CONFIG[requireKey] is set to true, this will check securityKey as well;
    * otherwise securityKey will be ignored.
    * @param  string $user the UserID passed in by Atandra
    * @param  string $pw the Password passed in by Atandra
    * @param  string $securityKey the SecurityKey passed in by Atandra
-   * @return boolean true if credentials are valid.
+   * @throws THub\AuthError if authentication fails
    */
   protected function authenticate( $user, $pw, $securityKey ) {
     $valid  = $user == self::$CONFIG['user']
@@ -284,7 +310,11 @@ class THubService {
       $valid = self::$CONFIG['securityKey'] == $securityKey;
     }
 
-    return $valid;
+    if( ! $valid ) {
+      throw new AuthError( 'Authentication failed' );
+    }
+
+    return true;
   }
 
   /**

@@ -1,6 +1,8 @@
 <?php
 
 require_once 'test/shared/CustomAssertions.php';
+require_once 'lib/THub/AuthError.php';
+require_once 'lib/THub/InvalidParamError.php';
 require_once 'lib/THub/ThubService.php';
 require_once 'test/shared/TestData.php';
 
@@ -51,16 +53,6 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
   public function testAuthenticate() {
     $creds = array('user', 'password', 'xyz');
     $this->assertTrue( $this->callProtectedMethod('authenticate', $creds) );
-
-    $badAttempts = array(
-      array('', 'password', 'xyz'),
-      array('user', '', 'xyz'),
-      array('user', 'password', ''),
-    );
-
-    foreach( $badAttempts as $attempt ) {
-      $this->assertFalse( $this->callProtectedMethod('authenticate', $attempt) );
-    }
 
     $cases = array(
       TestData::MISSING_USER_XML,
