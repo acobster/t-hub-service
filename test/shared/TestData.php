@@ -184,6 +184,32 @@ class TestData {
     ),
   );
 
+  /**
+   * Dynamically create some new and old orders
+   * @return [type] [description]
+   */
+  public static function newAndOldOrders( $numEach=3 ) {
+    $allOrders = array();
+    for( $i=1; $i<=$numEach; $i++ ) {
+      // Some week-old orders
+      $oldOrder = self::$orders[1];
+      $oldOrder['order_id'] = $i;
+      $dt = new DateTime();
+      $dt->sub( new DateInterval('P7D') );
+      $oldOrder['date'] = $dt->format('Y-m-d');
+      $oldOrder['time'] = $dt->format('H:i:s');
+      $allOrders[] = $oldOrder;
+
+      // Some orders from today
+      $newOrder = self::$orders[0];
+      $newOrder['order_id'] = $i+$numEach;
+      $newOrder['date'] = date('Y-m-d');
+      $newOrder['time'] = date('H:i:s');
+      $allOrders[] = $newOrder;
+    }
+
+    return $allOrders;
+  }
 
   const BASE64_ENCODED_XML = <<<_XML_
 <?xml version="1.0" encoding="ISO-8859-1"?>
@@ -204,6 +230,31 @@ _XML_;
    <Password>password</Password>
    <Status>all</Status>
    <SecurityKey>xyz</SecurityKey>
+</REQUEST>
+_XML_;
+
+  const GET_ORDERS_REQUEST_XML_BY_ORDER_START_NUMBER = <<<_XML_
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<REQUEST Version="2.8">
+   <Command>GetOrders</Command>
+   <UserID>user</UserID>
+   <Password>password</Password>
+   <Status>all</Status>
+   <SecurityKey>xyz</SecurityKey>
+   <OrderStartNumber>3</OrderStartNumber>
+</REQUEST>
+_XML_;
+
+  const GET_ORDERS_REQUEST_XML_BY_NUM_DAYS = <<<_XML_
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<REQUEST Version="2.8">
+   <Command>GetOrders</Command>
+   <UserID>user</UserID>
+   <Password>password</Password>
+   <Status>all</Status>
+   <SecurityKey>xyz</SecurityKey>
+   <OrderStartNumber>0</OrderStartNumber>
+   <NumberOfDays>5</NumberOfDays>
 </REQUEST>
 _XML_;
 
