@@ -31,6 +31,7 @@ class THubServiceIntegrationTest extends PHPUnit_Framework_TestCase {
     $parsed = $this->getParsedResponse( TestData::GET_ORDERS_REQUEST_XML );
     $this->assertEquals( 'GetOrders', $parsed->Envelope->Command );
     $this->assertEquals( 'No new orders', $parsed->Envelope->StatusMessage );
+    $this->assertEmpty( $parsed->Order );
   }
 
   public function testGetOrdersResponse() {
@@ -74,7 +75,6 @@ class THubServiceIntegrationTest extends PHPUnit_Framework_TestCase {
     $nDaysAgo = new DateTime();
     $nDaysAgo->sub( new DateInterval('P5D') );
     foreach( $orders = $parsed->Orders->Order as $order ) {
-      echo "{$order->OrderID} {$order->Date}\n";
       $orderDate = new DateTime( $order->Date );
       $this->assertGreaterThanOrEqual( $nDaysAgo, $orderDate );
     }
