@@ -282,6 +282,19 @@ class THubService {
     if( $startDate && !$this->isValidDate( $startDate )) {
       throw new InvalidParamError( 'Invalid DownloadStartDate' );
     }
+
+    $intParams = array(
+      'NumberOfDays',
+      'LimitOrderCount',
+      'OrderStartNumber',
+    );
+
+    foreach( $intParams as $param ) {
+      $val = $request->$param;
+      if( $val && filter_var($val, FILTER_VALIDATE_INT) === false ) {
+        throw new InvalidParamError( "Invalid $param" );
+      }
+    }
   }
 
   /**

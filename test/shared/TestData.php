@@ -326,6 +326,42 @@ _XML_;
 </REQUEST>
 _XML_;
 
+  const BAD_NUM_DAYS = <<<_XML_
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<REQUEST Version="2.8">
+   <Command>GetOrders</Command>
+   <UserID>user</UserID>
+   <Password>password</Password>
+   <Status>all</Status>
+   <SecurityKey>xyz</SecurityKey>
+   <NumberOfDays>blah</NumberOfDays>
+</REQUEST>
+_XML_;
+
+  const BAD_LIMIT_ORDER_COUNT = <<<_XML_
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<REQUEST Version="2.8">
+   <Command>GetOrders</Command>
+   <UserID>user</UserID>
+   <Password>password</Password>
+   <Status>all</Status>
+   <SecurityKey>xyz</SecurityKey>
+   <LimitOrderCount>blah</LimitOrderCount>
+</REQUEST>
+_XML_;
+
+  const BAD_ORDER_START_NUMBER = <<<_XML_
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<REQUEST Version="2.8">
+   <Command>GetOrders</Command>
+   <UserID>user</UserID>
+   <Password>password</Password>
+   <Status>all</Status>
+   <SecurityKey>xyz</SecurityKey>
+   <OrderStartNumber>blah</OrderStartNumber>
+</REQUEST>
+_XML_;
+
   const BAD_COMMAND_XML = <<<_XML_
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <REQUEST Version="2.8">

@@ -29,7 +29,10 @@ class THubServiceIntegrationTest extends PHPUnit_Framework_TestCase {
 
   public function testValidation() {
     $cases = array(
-      TestData::BAD_START_DATE_XML => 'Invalid DownloadStartDate',
+      TestData::BAD_START_DATE_XML      => 'Invalid DownloadStartDate',
+      TestData::BAD_NUM_DAYS            => 'Invalid NumberOfDays',
+      TestData::BAD_LIMIT_ORDER_COUNT   => 'Invalid LimitOrderCount',
+      TestData::BAD_ORDER_START_NUMBER  => 'Invalid OrderStartNumber',
     );
 
     foreach( $cases as $xml => $message) {
