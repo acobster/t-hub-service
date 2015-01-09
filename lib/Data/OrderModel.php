@@ -19,15 +19,11 @@ class OrderModel implements OrderProvider {
   public function getNewOrders( $options ) {
     if( $options['start_date'] ) {
       $whereClause = "invoices.CREATED > '{$options['start_date']}'";
-    } elseif( $options['start_id'] ) {
+    } elseif( intval($options['start_id']) ) {
       $whereClause = "invoices.ID > {$options['start_id']}";
     } elseif( $options['num_days'] ) {
-      $startDate = new \DateTime();
-      $startDate->setTimezone( new DateTimeZone('GST') );
-      $days = new \DateInterval("P{$options['num_days']}D");
-      $startDate->sub( $days );
-      $formatted = $startDate->format('Y-m-d H:i:s');
-      $whereClause = "invoices.CREATED > '{$formatted}'";
+      $days = intval( $options['num_days'] );
+      $whereClause = "invoices.CREATED > DATE_SUB( CURDATE(), INTERVAL $days DAY )";
     } else {
       $whereClause = "invoices.ID > 0";
     }

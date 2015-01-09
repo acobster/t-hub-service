@@ -41,8 +41,43 @@ class THubServiceIntegrationTest extends PHPUnit_Framework_TestCase {
 
     $orders = $parsed->Orders->Order;
 
+    $this->assertEquals( 2, $orders->count() );
     $this->assertOrder( TestData::$orders[0], $orders[0] );
     $this->assertOrder( TestData::$orders[1], $orders[1] );
+  }
+
+  public function testGetOrdersResponseByOrderStartNumber() {
+    OrderFixtures::insertOrders( TestData::newAndOldOrders() );
+    $parsed = $this->getParsedResponse(
+      TestData::GET_ORDERS_REQUEST_XML_BY_ORDER_START_NUMBER );
+    $this->assertEquals( 'GetOrders', $parsed->Envelope->Command );
+    $this->assertEquals( 'All Ok', $parsed->Envelope->StatusMessage );
+
+    $orders = $parsed->Orders->Order;
+
+    $this->assertEquals( 3, $orders->count() );
+    foreach( $orders as $order ) {
+      $this->assertGreaterThanOrEqual( 3, $order->OrderID );
+    }
+  }
+
+  public function testGetOrdersResponseByNumDays() {
+    OrderFixtures::insertOrders( TestData::newAndOldOrders() );
+    $parsed = $this->getParsedResponse(
+      TestData::GET_ORDERS_REQUEST_XML_BY_NUM_DAYS );
+    $this->assertEquals( 'GetOrders', $parsed->Envelope->Command );
+    $this->assertEquals( 'All Ok', $parsed->Envelope->StatusMessage );
+
+    $orders = $parsed->Orders->Order;
+
+    $this->assertEquals( 3, $orders->count() );
+    $nDaysAgo = new DateTime();
+    $nDaysAgo->sub( new DateInterval('P5D') );
+    foreach( $orders = $parsed->Orders->Order as $order ) {
+      echo "{$order->OrderID} {$order->Date}\n";
+      $orderDate = new DateTime( $order->Date );
+      $this->assertGreaterThanOrEqual( $nDaysAgo, $orderDate );
+    }
   }
 
   protected function getParsedResponse( $request ) {

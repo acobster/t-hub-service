@@ -196,10 +196,10 @@ class THubService {
     if( $request->DownloadStartDate ) {
       $date = new DateTime( $request->DownloadStartDate );
       $options['start_date'] = $date->format('Y-m-d H:i:s');
-    } elseif( $request->OrderStartNumber ) {
-      $options['start_id'] = $request->OrderStartNumber;
-    } elseif( $request->NumberOfDays ) {
-      $options['num_days'] = $request->NumberOfDays;
+    } elseif( intval($request->OrderStartNumber) ) {
+      $options['start_id'] = intval( $request->OrderStartNumber );
+    } elseif( intval($request->NumberOfDays) ) {
+      $options['num_days'] = intval( $request->NumberOfDays );
     }
 
     return $options;
