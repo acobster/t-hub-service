@@ -117,7 +117,7 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
   public function testUpdateOrdersShippingStatusWithNoOrders() {
     $cases = array(
       TestData::UPDATE_ORDERS_SHIPPING_STATUS_NO_ORDER_CHILDREN_REQUEST_XML,
-      // TestData::UPDATE_ORDERS_SHIPPING_STATUS_NO_ORDERS_REQUEST_XML,
+      TestData::UPDATE_ORDERS_SHIPPING_STATUS_NO_ORDERS_REQUEST_XML,
     );
 
     foreach( $cases as $case ) {
