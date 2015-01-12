@@ -4,24 +4,33 @@
     <Command><?= $this->command ?></Command>
     <StatusCode><?= $this->statusCode ?></StatusCode>
     <StatusMessage><?= $this->statusMessage ?></StatusMessage>
-    <Provider><?= $this->thirdPartyProvider ?></Provider>
+
+    <?php if( $this->command == self::COMMAND_GET_ORDERS ) : ?>
+      <Provider><?= $this->thirdPartyProvider ?></Provider>
+    <?php endif; ?>
   </Envelope>
-  <?php if( !empty($this->orders) ) : ?>
+  <?php if( $this->orders ) : ?>
     <Orders>
       <?php foreach( $this->orders as $order ) : ?>
         <Order>
-          <OrderID><?= $order['order_id'] ?></OrderID>
-          <ProviderOrderRef><?= $order['provider_order_ref'] ?></ProviderOrderRef>
-          <TransactionType><?= $order['transaction_type'] ?></TransactionType>
+          <?php if( $this->command == self::COMMAND_GET_ORDERS ) : ?>
+            <OrderID><?= $order['order_id'] ?></OrderID>
+            <ProviderOrderRef><?= $order['provider_order_ref'] ?></ProviderOrderRef>
+            <TransactionType><?= $order['transaction_type'] ?></TransactionType>
 
-          <?php if( $order['transaction_type'] == self::TYPE_RETURN ) : ?>
-            <OrigOrderID><?= $order['orig_id'] ?></OrigOrderID>
+            <?php if( $order['transaction_type'] == self::TYPE_RETURN ) : ?>
+              <OrigOrderID><?= $order['orig_id'] ?></OrigOrderID>
+            <?php endif; ?>
+
+            <Date><?= $order['date'] ?></Date>
+            <Time><?= $order['time'] ?></Time>
+            <TimeZone><?= $order['time_zone'] ?></TimeZone>
+            <UpdatedOn><?= $order['updated_on'] ?></UpdatedOn>
+          <?php elseif( $this->command == self::COMMAND_UPDATE_SHIPPING_STATUS ) : ?>
+            <HostOrderID><?= $order['order_id'] ?></HostOrderID>
+            <LocalOrderID><?= $order['local_order_id'] ?></LocalOrderID>
+            <HostStatus><?= $order['host_status'] ?></HostStatus>
           <?php endif; ?>
-
-          <Date><?= $order['date'] ?></Date>
-          <Time><?= $order['time'] ?></Time>
-          <TimeZone><?= $order['time_zone'] ?></TimeZone>
-          <UpdatedOn><?= $order['updated_on'] ?></UpdatedOn>
 
           <?php if( $bill = $order['bill'] ) : ?>
             <Bill>

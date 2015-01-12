@@ -12,7 +12,7 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
   public function setUp() {
     $this->mockProvider = $this->getMockBuilder('Data\OrderProvider')
       ->setMockClassName( 'OrderModel' )
-      ->setMethods( array('getNewOrders') )
+      ->setMethods( array('getNewOrders', 'updateOrders') )
       ->getMock();
     $this->thub = new THub\THubService( $this->mockProvider );
   }
@@ -117,7 +117,7 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
   public function testUpdateOrdersShippingStatusWithNoOrders() {
     $cases = array(
       TestData::UPDATE_ORDERS_SHIPPING_STATUS_NO_ORDER_CHILDREN_REQUEST_XML,
-      TestData::UPDATE_ORDERS_SHIPPING_STATUS_NO_ORDERS_REQUEST_XML,
+      // TestData::UPDATE_ORDERS_SHIPPING_STATUS_NO_ORDERS_REQUEST_XML,
     );
 
     foreach( $cases as $case ) {
@@ -130,10 +130,13 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
 
   public function testUpdateOrdersShippingStatus() {
     $this->mockProvider->method('updateOrdersShippingStatus')
-      ->willReturn( array() );
+      ->willReturn( TestData::$updatedOrders );
 
-    $parsed = $this->getParsedResponse( TestData::UPDATE_ORDERS_SHIPPING_STATUS_REQUEST_XML );
-    $this->assertEquals( 'UpdateOrdersShippingStatus', $parsed->Envelope->Command );
+    $parsed = $this->getParsedResponse(
+      TestData::UPDATE_ORDERS_SHIPPING_STATUS_REQUEST_XML );
+    $this->assertEquals( 'UpdateOrdersShippingStatus',
+      $parsed->Envelope->Command );
+    $this->assertEquals( 'All Ok', $parsed->Envelope->StatusMessage );
   }
 
   public function testGetOrdersFromXml() {
@@ -179,7 +182,16 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
   /* UTILITY METHODS */
 
   protected function getParsedResponse( $request ) {
-    return new SimpleXMLElement( $this->thub->parseRequest($request) );
+    try {
+      $response = $this->thub->parseRequest( $request );
+      return new SimpleXMLElement( $response );
+    } catch( Exception $e ) {
+      if( $response ) {
+        $this->fail( "could not parse response: {$response}" );
+      } else {
+        $this->fail( 'empty response' );
+      }
+    }
   }
 
   protected function callProtectedMethod( $name, $params=array() ) {

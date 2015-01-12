@@ -163,24 +163,21 @@ class TestData {
     ),
   );
 
-  public static $ordersToUpdate = array(
+  public static $updatedOrders = array(
     array(
-      'host_order_id' => '1234',
+      'host_order_id' => '4',
       'local_order_id' => '2345',
-      'nofity_customer' => 'Yes',
-      'shipped_on' => '12/01/2014',
-      'shipped_via' => 'UPS',
-      'service_used' => 'Ground',
-      'tracking_number' => 'VNKV45356',
+      'success' => true,
     ),
     array(
-      'host_order_id' => '3456',
+      'host_order_id' => '5',
       'local_order_id' => '4567',
-      'nofity_customer' => 'No',
-      'shipped_on' => '12/01/2014',
-      'shipped_via' => 'FEDEX',
-      'service_used' => 'Next day air',
-      'tracking_number' => 'ZDSF2356',
+      'success' => true,
+    ),
+    array(
+      'host_order_id' => '6',
+      'local_order_id' => '4568',
+      'success' => true,
     ),
   );
 
@@ -198,6 +195,10 @@ class TestData {
       $dt->sub( new DateInterval('P7D') );
       $oldOrder['date'] = $dt->format('Y-m-d');
       $oldOrder['time'] = $dt->format('H:i:s');
+      $oldOrder['ship'] = array(
+        'ship_date' => $dt->format('Y-m-d H:i:s'),
+        'ship_status' => 'Shipped',
+      );
       $allOrders[] = $oldOrder;
 
       // Some orders from today
@@ -205,10 +206,18 @@ class TestData {
       $newOrder['order_id'] = $i+$numEach;
       $newOrder['date'] = date('Y-m-d');
       $newOrder['time'] = date('H:i:s');
+      $oldOrder['ship'] = array(
+        'ship_date' => '0000-00-00 00:00:00',
+        'ship_status' => 'New',
+      );
       $allOrders[] = $newOrder;
     }
 
     return $allOrders;
+  }
+
+  public static function newOrders( $numOrders ) {
+
   }
 
   public static $ALL_CASES = array(
@@ -289,7 +298,7 @@ _XML_;
   <SecurityKey>xyz</SecurityKey>
   <Orders>
     <Order>
-      <HostOrderID>34088</HostOrderID>
+      <HostOrderID>4</HostOrderID>
       <LocalOrderID>4122</LocalOrderID>
       <NotifyCustomer>Yes</NotifyCustomer>
       <ShippedOn>12/05/2005</ShippedOn>
@@ -298,7 +307,16 @@ _XML_;
       <TrackingNumber>Z3121231213243455</TrackingNumber>
     </Order>
     <Order>
-      <HostOrderID>34089</HostOrderID>
+      <HostOrderID>5</HostOrderID>
+      <LocalOrderID>4123</LocalOrderID>
+      <NotifyCustomer>No</NotifyCustomer>
+      <ShippedOn>12/04/2005</ShippedOn>
+      <ShippedVia>FEDEX</ShippedVia>
+      <ServiceUsed>2nd Day Air</ServiceUsed>
+      <TrackingNumber>F334523234234555</TrackingNumber>
+    </Order>
+    <Order>
+      <HostOrderID>6</HostOrderID>
       <LocalOrderID>4123</LocalOrderID>
       <NotifyCustomer>No</NotifyCustomer>
       <ShippedOn>12/04/2005</ShippedOn>

@@ -39,6 +39,7 @@ class THubService {
   const STATUS_MESSAGE_NO_ORDERS      = 'No new orders';
   const STATUS_MESSAGE_LOGIN_FAILURE  = 'Login failed';
   const STATUS_MESSAGE_NO_ORDERS_RECEIVED = 'No orders were specificed in the update';
+  const STATUS_MESSAGE_UNABLE_TO_UPDATE = 'There was a problem updating the orders';
 
   const PROVIDER_GENERIC = 'GENERIC';
 
@@ -162,14 +163,21 @@ class THubService {
     $requestedOrders = $request->Orders;
 
     if( $requestedOrders && $requestedOrders->children() ) {
-      $orders = $this->getOrdersFromXml( $requestedOrders );
-      // $this->orderProvider->updateOrders( $orders );
-    } else {
-      $this->statusCode = self::STATUS_CODE_OTHER;
-      $this->statusMessage = self::STATUS_MESSAGE_NO_ORDERS_RECEIVED;
-    }
+      try {
+        $orders = $this->getOrdersFromXml( $requestedOrders );
+        $this->orders = $this->orderProvider->updateOrders( $orders );
 
-    return $this->renderView( 'response' );
+        $this->statusCode = self::STATUS_CODE_OK;
+        $this->statusMessage = self::STATUS_MESSAGE_OK;
+
+        return $this->renderView( 'response' );
+
+      } catch( Exception $e ) {
+        return $this->renderError( self::STATUS_MESSAGE_UNABLE_TO_UPDATE );
+      }
+    } else {
+      return $this->renderError( self::STATUS_MESSAGE_NO_ORDERS_RECEIVED );
+    }
   }
 
   /**

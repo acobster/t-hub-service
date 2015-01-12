@@ -49,6 +49,14 @@ _SQL_;
     return $structuredOrders;
   }
 
+  public function updateOrders( $orders ) {
+    return array_map( function($order) {
+      $order['order_id']    = $order['host_order_id'];
+      $order['host_status'] = 'Success';
+      return $order;
+    }, $orders );
+  }
+
   protected function getOrderItems( $order ) {
     $sql = <<<_SQL_
 SELECT invoices_details.*, inventory.SKU FROM invoices_details
