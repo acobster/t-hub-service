@@ -54,11 +54,11 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
       TestData::BAD_NUM_DAYS            => 'Invalid NumberOfDays',
       TestData::BAD_LIMIT_ORDER_COUNT   => 'Invalid LimitOrderCount',
       TestData::BAD_ORDER_START_NUMBER  => 'Invalid OrderStartNumber',
+      TestData::BAD_SHIPPED_ON_XML      => 'Invalid ShippedOn',
     );
 
     foreach( $cases as $xml => $message) {
       $parsed = $this->getParsedResponse( $xml );
-      $this->assertEquals( 'GetOrders', $parsed->Envelope->Command );
       $this->assertEquals( '9999', $parsed->Envelope->StatusCode );
       $this->assertEquals( $message, $parsed->Envelope->StatusMessage );
     }
@@ -150,11 +150,11 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
 
     foreach( $orders as $i => $order ) {
       $orderXml = $ordersXml->children()[$i];
-      $this->assertEquals( $orderXml->HostOrderID,      $order['host_order_id'] );
-      $this->assertEquals( $orderXml->LocalOrderID,     $order['local_order_id'] );
-      $this->assertEquals( $orderXml->ShippedOn,        $order['shipped_on'] );
-      $this->assertEquals( $orderXml->ShippedVia,       $order['shipped_via'] );
-      $this->assertEquals( $orderXml->TrackingNumber,   $order['tracking_number'] );
+      $this->assertEquals( intval($orderXml->HostOrderID),      $order['host_order_id'] );
+      $this->assertEquals( intval($orderXml->LocalOrderID),     $order['local_order_id'] );
+      $this->assertEquals( $orderXml->ShippedOn,                $order['shipped_on'] );
+      $this->assertEquals( $orderXml->ShippedVia,               $order['shipped_via'] );
+      $this->assertEquals( $orderXml->TrackingNumber,           $order['tracking_number'] );
 
       $this->assertEqualsIfPresent( $orderXml->NotifyCustomer,  $order['notify_customer'] );
       $this->assertEqualsIfPresent( $orderXml->ServiceUsed,     $order['service_used'] );

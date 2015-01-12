@@ -22,6 +22,10 @@ class OrderFixtures {
   }
 
   public static function insertOrder( $order ) {
+    $setOrderId = $order['order_id']
+      ? "ID = {$order['order_id']},"
+      : '';
+
     $bill     = $order['bill'];
     $ship     = $order['ship'];
     $charges  = $order['charges'];
@@ -39,7 +43,8 @@ class OrderFixtures {
     $updated = $updatedDT->format( 'Y-m-d H:i:s' );
 
     $sql = <<<_SQL_
-INSERT INTO invoices SET INVOICE_NUMBER='9876',
+INSERT INTO invoices SET {$setOrderId}
+  INVOICE_NUMBER='9876',
   FIRST='{$bill['first_name']}',
   LAST='{$bill['last_name']}',
   PAID_DATETIME={$payDate},

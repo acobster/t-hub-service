@@ -172,7 +172,7 @@ class THubService {
 
         return $this->renderView( 'response' );
 
-      } catch( Exception $e ) {
+      } catch( \Data\DBException $e ) {
         return $this->renderError( self::STATUS_MESSAGE_UNABLE_TO_UPDATE );
       }
     } else {
@@ -214,20 +214,20 @@ class THubService {
 
   protected function getOrdersFromXml( $xml ) {
     $orders = array();
-    foreach( $xml->children() as $orderXml ) {
+    foreach( $xml->Order as $orderXml ) {
       $order = array(
-        'host_order_id'     => $orderXml->HostOrderID,
-        'local_order_id'    => $orderXml->LocalOrderID,
-        'shipped_on'        => $orderXml->ShippedOn,
-        'shipped_via'       => $orderXml->ShippedVia,
-        'tracking_number'   => $orderXml->TrackingNumber,
+        'host_order_id'     => intval( $orderXml->HostOrderID ),
+        'local_order_id'    => intval( $orderXml->LocalOrderID ),
+        'shipped_on'        => strval( $orderXml->ShippedOn ),
+        'shipped_via'       => strval( $orderXml->ShippedVia ),
+        'tracking_number'   => strval( $orderXml->TrackingNumber ),
       );
 
-      if( !empty($orderXml->NotifyCustomer) ) {
-        $order['notify_customer'] = $orderXml->NotifyCustomer;
+      if( $orderXml->NotifyCustomer ) {
+        $order['notify_customer'] = strval( $orderXml->NotifyCustomer );
       }
-      if( !empty($orderXml->ServiceUsed) ) {
-        $order['service_used'] = $orderXml->ServiceUsed;
+      if( $orderXml->ServiceUsed ) {
+        $order['service_used'] = strval( $orderXml->ServiceUsed );
       }
 
       $orders[] = $order;
@@ -301,6 +301,25 @@ class THubService {
       $val = $request->$param;
       if( $val && filter_var($val, FILTER_VALIDATE_INT) === false ) {
         throw new InvalidParamError( "Invalid $param" );
+      }
+    }
+
+    if( $request->Orders && $request->Orders->Order ) {
+      $this->validateOrders( $request->Orders->Order );
+    }
+  }
+
+  protected function validateOrders( $orders ) {
+    foreach( $orders as $order ) {
+      $hostOrderId = $order->HostOrderID;
+      if( $hostOrderId
+          && filter_var($hostOrderId, FILTER_VALIDATE_INT) === false ) {
+        throw new InvalidParamError( 'Invalid HostOrderID' );
+      }
+
+      $shippedOn = $order->ShippedOn;
+      if( $shippedOn && !$this->isValidDate($shippedOn, 'm/d/Y') ) {
+        throw new InvalidParamError( 'Invalid ShippedOn' );
       }
     }
   }

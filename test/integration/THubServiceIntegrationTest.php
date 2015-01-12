@@ -15,7 +15,7 @@ class THubServiceIntegrationTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testResponseIsXml() {
-    $this->markTestSkipped();
+    // TODO use reflection instead
     foreach( TestData::$ALL_CASES as $request ) {
       $parsed = $this->getParsedResponse( $request );
       $this->assertInstanceOf( 'SimpleXMLElement', $parsed );
@@ -77,6 +77,21 @@ class THubServiceIntegrationTest extends PHPUnit_Framework_TestCase {
 
   public function testUpdateOrdersShippingStatus() {
     OrderFixtures::insertOrders( TestData::newAndOldOrders() );
+
+    $parsed = $this->getParsedResponse(
+      TestData::GET_ORDERS_REQUEST_XML_BY_ORDER_START_NUMBER );
+    $orders = $parsed->Orders->Order;
+    $newOrderIds = array(4, 5, 6);
+
+    foreach( $orders as $order ) {
+      $this->assertContains( intval($order->OrderID), $newOrderIds );
+      // make sure there's actually some state for
+      // testUpdateOrdersShippingStatus to change
+      $this->assertEquals( 'New', $order->Ship->ShipStatus );
+      // TODO $this->assertEmpty( $order->Ship->ShipDate );
+      $this->assertEmpty( $order->Ship->Tracking );
+    }
+
     $parsed = $this->getParsedResponse(
       TestData::UPDATE_ORDERS_SHIPPING_STATUS_REQUEST_XML );
     $this->assertEquals( 'UpdateOrdersShippingStatus', $parsed->Envelope->Command );
@@ -87,11 +102,20 @@ class THubServiceIntegrationTest extends PHPUnit_Framework_TestCase {
 
     // check IDs and status
     foreach( $orders as $order ) {
-      $this->assertContains( intval($order->HostOrderID), array(4, 5, 6) );
+      $this->assertContains( intval($order->HostOrderID), $newOrderIds );
       $this->assertEquals( 'Success', $order->HostStatus );
     }
 
     // now test the persistence...
+    $parsed = $this->getParsedResponse(
+      TestData::GET_ORDERS_REQUEST_XML_BY_ORDER_START_NUMBER );
+    $orders = $parsed->Orders->Order;
+
+    foreach( $orders as $order ) {
+      $this->assertEquals( 'Shipped', $order->Ship->ShipStatus );
+      $this->assertNotEmpty( $order->Ship->ShipDate );
+      $this->assertNotEmpty( $order->Ship->Tracking );
+    }
   }
 
   protected function getParsedResponse( $request ) {

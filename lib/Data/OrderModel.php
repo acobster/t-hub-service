@@ -50,11 +50,36 @@ _SQL_;
   }
 
   public function updateOrders( $orders ) {
-    return array_map( function($order) {
-      $order['order_id']    = $order['host_order_id'];
-      $order['host_status'] = 'Success';
-      return $order;
-    }, $orders );
+    return array_map( array(&$this, 'updateOrder'), $orders );
+  }
+
+  protected function updateOrder( $order ) {
+    $shipDate = new \DateTime( $order['shipped_on'], new \DateTimeZone('GST') );
+    $formattedDate = $shipDate->format('Y-m-d');
+
+    $sql = <<<_SQL_
+UPDATE invoices_shipping_tracking SET SHIPPED = 1,
+  SHIPPED_DATE = :date,
+  CARRIER = :carrier,
+  SHIPPING_METHOD = :method,
+  TRACKING_NUMBER = :tracking
+  WHERE INVOICEID = :id LIMIT 1
+_SQL_;
+
+    if( ! $this->db->write( $sql, array(
+      ':id'       => intval( $order['host_order_id'] ),
+      ':date'     => $formattedDate,
+      ':carrier'  => $order['shipped_via'],
+      ':method'   => $order['service_used'],
+      ':tracking' => $order['tracking_number'],
+    ))) {
+      throw new \Data\DBException( 'Database error' );
+    }
+
+    return array(
+      'order_id'      => $order['host_order_id'],
+      'host_status'   => 'Success',
+    );
   }
 
   protected function getOrderItems( $order ) {

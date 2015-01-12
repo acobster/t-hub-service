@@ -23,8 +23,9 @@ class DB {
    * INSERT or UPDATE
    * @return int number of rows affected
    */
-  public function write( $sql ) {
-    return $sql;
+  public function write( $sql, $values ) {
+    $statement = $this->pdo->prepare( $sql );
+    return $statement->execute( $values );
   }
 
   public function read( $sql ) {

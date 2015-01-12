@@ -196,7 +196,7 @@ class TestData {
       $oldOrder['date'] = $dt->format('Y-m-d');
       $oldOrder['time'] = $dt->format('H:i:s');
       $oldOrder['ship'] = array(
-        'ship_date' => $dt->format('Y-m-d H:i:s'),
+        'ship_date' => $dt->format('Y-m-d'),
         'ship_status' => 'Shipped',
       );
       $allOrders[] = $oldOrder;
@@ -206,9 +206,10 @@ class TestData {
       $newOrder['order_id'] = $i+$numEach;
       $newOrder['date'] = date('Y-m-d');
       $newOrder['time'] = date('H:i:s');
-      $oldOrder['ship'] = array(
-        'ship_date' => '0000-00-00 00:00:00',
+      $newOrder['ship'] = array(
+        'ship_date'   => null,
         'ship_status' => 'New',
+        'tracking'    => '',
       );
       $allOrders[] = $newOrder;
     }
@@ -323,6 +324,28 @@ _XML_;
       <ShippedVia>FEDEX</ShippedVia>
       <ServiceUsed>2nd Day Air</ServiceUsed>
       <TrackingNumber>F334523234234555</TrackingNumber>
+    </Order>
+  </Orders>
+</REQUEST>
+_XML_;
+
+  const BAD_SHIPPED_ON_XML = <<<_XML_
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<REQUEST Version="2.8">
+  <Command>UpdateOrdersShippingStatus</Command>
+  <UserID>user</UserID>
+  <Password>password</Password>
+  <Status>all</Status>
+  <SecurityKey>xyz</SecurityKey>
+  <Orders>
+    <Order>
+      <HostOrderID>4</HostOrderID>
+      <LocalOrderID>4122</LocalOrderID>
+      <NotifyCustomer>Yes</NotifyCustomer>
+      <ShippedOn>bleh</ShippedOn>
+      <ShippedVia>UPS</ShippedVia>
+      <ServiceUsed>Ground</ServiceUsed>
+      <TrackingNumber>Z3121231213243455</TrackingNumber>
     </Order>
   </Orders>
 </REQUEST>
