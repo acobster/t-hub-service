@@ -77,9 +77,9 @@ INSERT INTO invoices SET {$setOrderId}
   TOTAL={$charges['total']},
   BALANCE=0.0, TAX_RATE=0.9, TAX_CODE='tax-code', TAX_CITY='Taxville',
   TAX_STATE='TX', TAX_COUNTRY='USA', COMMENTS='foo', PROMO_CODE='1235sdfg',
-  PROMO_DESCRIPTION='everythingallofthetime', STATUSID=99, AFFILIATE_CONTACTID=5,
-  FULFILLED=1, FULFILLED_ACCOUNTID=5, LOGINKEY='asdf', FOOTER_MESSAGE='hello',
-  BOTTOM_MESSAGE='hello', PACKING_MESSAGE='hello', ACCOUNTID=234, DATE=CURDATE()
+  PROMO_DESCRIPTION='everythingallofthetime', AFFILIATE_CONTACTID=5,
+  FULFILLED=1, FULFILLED_ACCOUNTID=5, LOGINKEY='asdf', ACCOUNTID=5432,
+  DATE=CURDATE()
 _SQL_;
 
     self::write( $sql );
@@ -99,14 +99,16 @@ _SQL_;
       ? $card['credit_card_type']
       : '';
 
+    $pmtType = ( $order['bill']['pay_method'] == 'CreditCard' )
+      ? 'Credit Card'
+      : $order['bill']['pay_method'];
+
     $sql = <<<_SQL_
 INSERT INTO invoices_activity SET INVOICEID={$orderId},
-  PAYMENT_TYPE='{$order['bill']['pay_method']}',
+  PAYMENT_TYPE='$pmtType',
   CCTYPE='{$cardType}',
-  CONTACTID=234, ADMINID=987, NOTES='foo', TRANSACTIONID='1234',
-  LAST4CC='1234', CHECK_NUMBER='123', PAYMENT=2.00,
-  IP_ADDRESS='1.2.3.4', CITY='Springfield', STATE='IL', COUNTRY='USA',
-  CREATED=NOW()
+  NOTES='foo', TRANSACTIONID='1234', LAST4CC='1234', CHECK_NUMBER='123',
+  PAYMENT=2.00, IP_ADDRESS='1.2.3.4', ACCOUNTID=4321, CREATED=NOW()
 _SQL_;
 
     self::write( $sql );

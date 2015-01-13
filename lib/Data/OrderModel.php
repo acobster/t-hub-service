@@ -54,6 +54,29 @@ _SQL_;
   }
 
   protected function updateOrder( $order ) {
+    $sql = <<<_SQL_
+UPDATE invoices SET QUICKBOOKS_ORDERID = :quickbooks_id, LASTUPDATED = NOW()
+  WHERE ID = :id LIMIT 1
+_SQL_;
+
+    $bindings = array(
+      ':id' =>  $order['host_order_id'],
+      ':quickbooks_id' => $order['local_order_id'],
+    );
+
+    if( ! $this->db->write( $sql, $bindings ) ) {
+      throw new \Data\DBException( 'Database error' );
+    }
+
+    $this->updateShipping( $order );
+
+    return array(
+      'order_id'      => $order['host_order_id'],
+      'host_status'   => 'Success',
+    );
+  }
+
+  protected function updateShipping( $order ) {
     $shipDate = new \DateTime( $order['shipped_on'], new \DateTimeZone('GST') );
     $formattedDate = $shipDate->format('Y-m-d');
 
@@ -75,11 +98,6 @@ _SQL_;
     ))) {
       throw new \Data\DBException( 'Database error' );
     }
-
-    return array(
-      'order_id'      => $order['host_order_id'],
-      'host_status'   => 'Success',
-    );
   }
 
   protected function getOrderItems( $order ) {
@@ -106,7 +124,8 @@ _SQL_;
       ? self::SHIP_STATUS_SHIPPED
       : self::SHIP_STATUS_NEW;
 
-    $trackingNumber = $data['TRACKING_NUMBER'] ?: null;
+    // "Credit Card" -> "CreditCard"
+    $method = str_replace( ' ', '', $data['PAYMENT_TYPE'] );
 
     $order = array(
       'order_id'            => $data['ID'],
@@ -117,7 +136,7 @@ _SQL_;
       'time_zone'           => 'UTC',
       'updated_on'          => $updatedOnDateTime->format('Y-m-d H:i:s'),
       'bill' => array(
-        'pay_method'        => $data['PAYMENT_TYPE'],
+        'pay_method'        => $method,
         'pay_status'        => $data['PAYSTATUS'],
         'pay_date'          => $payDateTime->format('Y-m-d'),
         'first_name'        => $data['FIRST'],
@@ -138,7 +157,7 @@ _SQL_;
         'ship_status'         => $shipStatus,
         'ship_date'           => $shipDate,
         'ship_carrier_name'   => $data['CARRIER'],
-        'tracking'            => $trackingNumber,
+        'tracking'            => $data['TRACKING_NUMBER'],
         'ship_cost'           => $data['SHIPPING'],
         'ship_method'         => $data['SHIPPING_METHOD'],
         'first_name'          => $data['SHIPPING_FIRST'],
