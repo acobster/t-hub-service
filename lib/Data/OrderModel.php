@@ -96,7 +96,11 @@ _SQL_;
     $dateTime = new \DateTime( $data['CREATED'] );
     $updatedOnDateTime = new \DateTime( $data['LASTUPDATED'] );
     $payDateTime = new \DateTime( $data['PAID_DATETIME'] );
-    $shipDate = new \DateTime( $data['SHIPPED_DATE'] );
+
+    if( $data['SHIPPED_DATE'] != '0000-00-00' ) {
+      $shipDate = new \DateTime( $data['SHIPPED_DATE'] );
+      $shipDate = $shipDate->format('Y-m-d');
+    }
 
     $shipStatus = $data['SHIPPED']
       ? self::SHIP_STATUS_SHIPPED
@@ -110,7 +114,7 @@ _SQL_;
       'transaction_type'    => self::TRANSACTION_TYPE_SALE,
       'date'                => $dateTime->format('Y-m-d'),
       'time'                => $dateTime->format('H:i:s'),
-      'time_zone'           => $dateTime->format('T'),
+      'time_zone'           => 'UTC',
       'updated_on'          => $updatedOnDateTime->format('Y-m-d H:i:s'),
       'bill' => array(
         'pay_method'        => $data['PAYMENT_TYPE'],
@@ -132,7 +136,7 @@ _SQL_;
       ),
       'ship' => array(
         'ship_status'         => $shipStatus,
-        'ship_date'           => $shipDate->format('Y-m-d'),
+        'ship_date'           => $shipDate,
         'ship_carrier_name'   => $data['CARRIER'],
         'tracking'            => $trackingNumber,
         'ship_cost'           => $data['SHIPPING'],
@@ -163,7 +167,7 @@ _SQL_;
 
     foreach( $data['items'] as $item ) {
       $order['order_items'][] = array(
-        'item_code'           => $item['SKU'], // TODO ?
+        'item_code'           => $item['SKU'],
         'item_description'    => $item['DESCRIPTION'],
         'quantity'            => $item['QUANTITY'],
         'unit_price'          => $item['RATE'],

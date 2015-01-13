@@ -88,7 +88,7 @@ class THubServiceIntegrationTest extends PHPUnit_Framework_TestCase {
       // make sure there's actually some state for
       // testUpdateOrdersShippingStatus to change
       $this->assertEquals( 'New', $order->Ship->ShipStatus );
-      // TODO $this->assertEmpty( $order->Ship->ShipDate );
+      $this->assertEmpty( $order->Ship->ShipDate );
       $this->assertEmpty( $order->Ship->Tracking );
     }
 
