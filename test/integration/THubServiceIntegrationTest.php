@@ -15,8 +15,10 @@ class THubServiceIntegrationTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testResponseIsXml() {
-    // TODO use reflection instead
-    foreach( TestData::$ALL_CASES as $request ) {
+    $reflection = new ReflectionClass( 'TestData' );
+    $cases = $reflection->getConstants();
+
+    foreach( $cases as $request ) {
       $parsed = $this->getParsedResponse( $request );
       $this->assertInstanceOf( 'SimpleXMLElement', $parsed );
     }
