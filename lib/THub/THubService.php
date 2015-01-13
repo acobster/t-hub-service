@@ -160,9 +160,9 @@ class THubService {
   public function renderUpdateOrdersShippingStatus( $request ) {
     $this->command = self::COMMAND_UPDATE_SHIPPING_STATUS;
 
-    $requestedOrders = $request->Orders;
+    $requestedOrders = $request->Orders->Order;
 
-    if( $requestedOrders && $requestedOrders->children() ) {
+    if( $requestedOrders ) {
       try {
         $orders = $this->getOrdersFromXml( $requestedOrders );
         $this->orders = $this->orderProvider->updateOrders( $orders );
@@ -212,9 +212,9 @@ class THubService {
     return $options;
   }
 
-  protected function getOrdersFromXml( $xml ) {
+  protected function getOrdersFromXml( $requested ) {
     $orders = array();
-    foreach( $xml->Order as $orderXml ) {
+    foreach( $requested as $orderXml ) {
       $order = array(
         'host_order_id'     => intval( $orderXml->HostOrderID ),
         'local_order_id'    => intval( $orderXml->LocalOrderID ),

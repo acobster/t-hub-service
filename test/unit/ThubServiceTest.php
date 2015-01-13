@@ -141,7 +141,7 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
 
   public function testGetOrdersFromXml() {
     $simple = new SimpleXMLElement( TestData::UPDATE_ORDERS_SHIPPING_STATUS_REQUEST_XML );
-    $ordersXml = $simple->Orders;
+    $ordersXml = $simple->Orders->Order;
 
     $orders = $this->callProtectedMethod(
       'getOrdersFromXml',
@@ -149,7 +149,7 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
     );
 
     foreach( $orders as $i => $order ) {
-      $orderXml = $ordersXml->children()[$i];
+      $orderXml = $ordersXml[$i];
       $this->assertEquals( intval($orderXml->HostOrderID),      $order['host_order_id'] );
       $this->assertEquals( intval($orderXml->LocalOrderID),     $order['local_order_id'] );
       $this->assertEquals( $orderXml->ShippedOn,                $order['shipped_on'] );
