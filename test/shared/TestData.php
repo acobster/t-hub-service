@@ -8,7 +8,7 @@ class TestData {
       'transaction_type'    => 'Sale',
       'date'                => '2014-12-16',
       'time'                => '11:40:21',
-      'time_zone'           => 'GST',
+      'time_zone'           => 'UTC',
       'updated_on'          => '2014-12-16 22:40:21',
       'bill'                => array(
         'pay_method'          => 'CreditCard',
@@ -101,7 +101,7 @@ class TestData {
       'transaction_type'    => 'Sale',
       'date'                => '2014-12-16',
       'time'                => '11:45:21',
-      'time_zone'           => 'GST',
+      'time_zone'           => 'UTC',
       'updated_on'          => '2014-12-16 22:45:21',
       'bill'                => array(
         'pay_method'          => 'CreditCard',

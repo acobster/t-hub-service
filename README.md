@@ -16,7 +16,7 @@ Clone the repo:
 
     $ git clone git@bitbucket.org:acobster/t-hub-service.git path/to/public/service/dir
 
-Configure the service by adding a file called `tweb_config.php` in the public service dir (it should be in the same directory as `index.php`):
+Configure the service by adding a file called `thub_config.php` in the public service dir (it should be in the same directory as `index.php`):
 
     <?php
 

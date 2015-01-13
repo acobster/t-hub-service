@@ -93,12 +93,10 @@ _SQL_;
   }
 
   protected function structureOrderData( $data ) {
-    $gst = new \DateTimeZone('GST');
-
-    $dateTime = new \DateTime( $data['CREATED'], $gst );
-    $updatedOnDateTime = new \DateTime( $data['LASTUPDATED'], $gst );
-    $payDateTime = new \DateTime( $data['PAID_DATETIME'], $gst );
-    $shipDate = new \DateTime( $data['SHIPPED_DATE'], $gst );
+    $dateTime = new \DateTime( $data['CREATED'] );
+    $updatedOnDateTime = new \DateTime( $data['LASTUPDATED'] );
+    $payDateTime = new \DateTime( $data['PAID_DATETIME'] );
+    $shipDate = new \DateTime( $data['SHIPPED_DATE'] );
 
     $shipStatus = $data['SHIPPED']
       ? self::SHIP_STATUS_SHIPPED

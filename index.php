@@ -4,7 +4,7 @@ date_default_timezone_set('UTC');
 error_reporting( E_ERROR | E_PARSE | E_RECOVERABLE_ERROR );
 
 require './autoload.php';
-if( file_exists('./tweb_config.php') ) require_once './tweb_config.php';
+if( file_exists('./thub_config.php') ) require_once './thub_config.php';
 
 if( $_POST ) {
   $orderProvider = new Data\OrderModel();
