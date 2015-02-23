@@ -12,6 +12,6 @@ if( $_POST ) {
   echo $thub->parseRequest( $_POST['XML'] );
 } else {
   header('Allow: POST');
-  http_response_code(405);
+  header('HTTP/1.0 405 Method Not Allowed');
   echo "Please use the HTTP POST method!";
 }
