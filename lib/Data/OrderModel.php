@@ -102,7 +102,7 @@ _SQL_;
 
   protected function getOrderItems( $order ) {
     $sql = <<<_SQL_
-SELECT invoices_details.*, inventory.SKU FROM invoices_details
+SELECT invoices_details.*, inventory.PRODUCT_CODE FROM invoices_details
   LEFT JOIN inventory ON (invoices_details.INVENTORYID = inventory.ID)
   WHERE INVOICEID = {$order['ID']}
 _SQL_;
@@ -186,7 +186,7 @@ _SQL_;
 
     foreach( $data['items'] as $item ) {
       $order['order_items'][] = array(
-        'item_code'           => $item['SKU'],
+        'item_code'           => $item['PRODUCT_CODE'],
         'item_description'    => $item['DESCRIPTION'],
         'quantity'            => $item['QUANTITY'],
         'unit_price'          => $item['RATE'],
