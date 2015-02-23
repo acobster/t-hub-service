@@ -158,7 +158,7 @@ _SQL_;
 
   public static function insertInventory( $item ) {
     $sql = <<<_SQL_
-INSERT INTO inventory SET SKU='{$item['item_code']}',
+INSERT INTO inventory SET PRODUCT_CODE='{$item['item_code']}',
   CONTENTID=123, PARENT_INVENTORYID=10, RETAIL_PRICE=2.00, OUR_PRICE=1.00,
   SHIPPING_WEIGHT=10.0, ADDITIONAL_SHIPPING=1.00, LABEL='foo',
   CONNECTION='something'
