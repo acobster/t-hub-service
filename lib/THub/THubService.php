@@ -53,7 +53,7 @@ class THubService {
   protected static $CONFIG = array(
     'viewDir'         => './views/',
     'user'            => 'user',
-    'password'        => 'password',
+    'passwordFile'    => '/path/to/file',
     'securityKey'     => 'xyz',
     'requireKey'      => true,
   );
@@ -343,8 +343,9 @@ class THubService {
    * @throws THub\AuthError if authentication fails
    */
   protected function authenticate( $user, $pw, $securityKey ) {
-    $valid  = $user == self::$CONFIG['user']
-            && $pw == self::$CONFIG['password'];
+   $hash = file_get_contents(self::$CONFIG['passwordFile']);
+   $valid  = $user == self::$CONFIG['user']
+            && password_verify($pw, $hash);
 
     if( $valid && self::$CONFIG['requireKey'] ) {
       $valid = self::$CONFIG['securityKey'] == $securityKey;
