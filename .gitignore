@@ -2,3 +2,4 @@ node_modules/
 *.sublime-project
 *.sublime-workspace
 thub_config.php
+error_log
