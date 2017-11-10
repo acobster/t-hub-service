@@ -1,0 +1,34 @@
+{
+	"info": {
+		"name": "T-HUB",
+		"_postman_id": "1385ca79-8029-94b2-43df-b5993ac40289",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GetOrders",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<REQUEST Version=\"2.8\">\n   <Command>GetOrders</Command>\n   <UserID>{{API_USERNAME}}</UserID>\n   <Password>{{API_PASSWORD}}</Password>\n   <Status>all</Status>\n   <SecurityKey>{{API_SECURITY_KEY}}</SecurityKey>\n</REQUEST>"
+				},
+				"url": {
+					"raw": "{{SERVICE_URL}}",
+					"host": [
+						"{{SERVICE_URL}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
