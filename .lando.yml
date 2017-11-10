@@ -1,0 +1,16 @@
+name: thub
+recipe: lamp
+config:
+  webroot: .
+
+services:
+  appserver:
+    build:
+      - "cd $LANDO_MOUNT && composer install"
+  db:
+    type: mysql
+    portforward: true
+    creds:
+      user: thub
+      password: thub
+      database: thub

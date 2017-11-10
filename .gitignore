@@ -3,3 +3,5 @@ node_modules/
 *.sublime-workspace
 thub_config.php
 error_log
+*.passwd
+/vendor/
