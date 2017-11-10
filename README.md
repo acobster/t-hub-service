@@ -14,7 +14,7 @@ Currently the implementation is tied to a specific database structure. Maybe in 
 
 Clone the repo:
 
-    $ git clone git@bitbucket.org:acobster/t-hub-service.git path/to/public/service/dir
+    $ git clone git@github.com:acobster/t-hub-service.git path/to/public/service/dir
 
 Configure the service by adding a file called `thub_config.php` in the public service dir (it should be in the same directory as `index.php`):
 
