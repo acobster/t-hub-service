@@ -99,7 +99,7 @@ class THubService {
    */
   public function parseRequest( $requestXml ) {
     try {
-      $request = new \SimpleXMLElement( $requestXml );
+      $request = new \SimpleXMLElement( $requestXml, LIBXML_NOENT );
     } catch( \Exception $e ) {
       return $this->renderError( $e->getMessage() );
     }
