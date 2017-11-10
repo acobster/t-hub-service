@@ -31,7 +31,7 @@ Configure the service by adding a file called `thub_config.php` in the public se
     THub\THubService::config(array(
     	'viewDir'		=> '/some/dir/',
     	'user'			=> 'thub-user',
-    	'password'		=> 'pw',
+    	'passwordFile'	=> '/path/to/thub.passwd',
     	'securityKey'	=> 'some-long-string',
     	'requireKey'	=> false // defaults to true
     ));
