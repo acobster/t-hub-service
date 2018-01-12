@@ -1,13 +1,15 @@
 <?php
 
-require_once 'test/shared/CustomAssertions.php';
-require_once 'test/shared/TestData.php';
-require_once 'test/integration/OrderFixtures.php';
+use PHPUnit\Framework\TestCase;
+
+require_once realpath(__DIR__.'/../shared/CustomAssertions.php');
+require_once realpath(__DIR__.'/../shared/TestData.php');
+require_once realpath(__DIR__.'/OrderFixtures.php');
 
 /**
  * Test the server response at a high level
  */
-class THubServiceIntegrationTest extends PHPUnit_Framework_TestCase {
+class THubServiceIntegrationTest extends TestCase {
   use CustomAssertions;
 
   public function tearDown() {

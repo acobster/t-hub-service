@@ -1,12 +1,14 @@
 <?php
 
-require_once 'test/shared/CustomAssertions.php';
-require_once 'lib/THub/AuthError.php';
-require_once 'lib/THub/InvalidParamError.php';
-require_once 'lib/THub/ThubService.php';
-require_once 'test/shared/TestData.php';
+use PHPUnit\Framework\TestCase;
 
-class THubServiceTest extends PHPUnit_Framework_TestCase {
+require_once realpath(__DIR__.'/../shared/CustomAssertions.php');
+require_once realpath(__DIR__.'/../../lib/THub/AuthError.php');
+require_once realpath(__DIR__.'/../../lib/THub/InvalidParamError.php');
+require_once realpath(__DIR__.'/../../lib/THub/THubService.php');
+require_once realpath(__DIR__.'/../shared/TestData.php');
+
+class THubServiceTest extends TestCase {
   use CustomAssertions;
 
   public function setUp() {
@@ -23,9 +25,9 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
     $newConfig = array(
       'viewDir'         => './some/other/dir/',
       'user'            => 'abneorgw',
-      'password'        => '2orginwg',
       'securityKey'     => 'aosigh',
       'requireKey'      => false,
+      'passwordFile'    => '/my/passwd/file',
     );
 
     // Test it returns correctly the first time
@@ -129,7 +131,7 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
   }
 
   public function testUpdateOrdersShippingStatus() {
-    $this->mockProvider->method('updateOrdersShippingStatus')
+    $this->mockProvider->method('updateOrders')
       ->willReturn( TestData::$updatedOrders );
 
     $parsed = $this->getParsedResponse(
@@ -186,7 +188,7 @@ class THubServiceTest extends PHPUnit_Framework_TestCase {
       $response = $this->thub->parseRequest( $request );
       return new SimpleXMLElement( $response );
     } catch( Exception $e ) {
-      if( $response ) {
+      if( !empty($response) ) {
         $this->fail( "could not parse response: {$response}" );
       } else {
         $this->fail( 'empty response' );

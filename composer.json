@@ -23,7 +23,7 @@
   },
   "scripts": {
     "test": [
-      "./vendor/bin/phpunit . || true"
+      "./vendor/bin/phpunit ./test || true"
     ]
   }
 }
