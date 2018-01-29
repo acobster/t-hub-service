@@ -113,7 +113,7 @@ _SQL_;
   protected function structureOrderData( $data ) {
     $dateTime = new \DateTime( $data['CREATED'] );
     $updatedOnDateTime = new \DateTime( $data['LASTUPDATED'] );
-    $payDateTime = new \DateTime( $data['PAID_DATETIME'] );
+    $payDateTime = $dateTime;
 
     if( $data['SHIPPED_DATE'] != '0000-00-00' && $data['SHIPPED_DATE'] != '1970-01-01' ) {
       $shipDate = new \DateTime( $data['SHIPPED_DATE'] );
@@ -150,7 +150,7 @@ _SQL_;
         'country'           => $data['COUNTRY'],
         'email'             => $data['EMAIL'],
         'phone'             => $data['PHONE'],
-        'po_number'         => $data['PONUMBER'],
+        //'po_number'         => $data['PONUMBER'],
         // No credit card info for now.
       ),
       'ship' => array(
