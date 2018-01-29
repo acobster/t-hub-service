@@ -27,19 +27,19 @@
             <TimeZone><?= $order['time_zone'] ?></TimeZone>
             <UpdatedOn><?= $order['updated_on'] ?></UpdatedOn>
           <?php elseif( $this->command == self::COMMAND_UPDATE_SHIPPING_STATUS ) : ?>
-            <HostOrderID><?= $order['order_id'] ?></HostOrderID>
+            <HostOrderID><?= $order['host_order_id'] ?></HostOrderID>
             <LocalOrderID><?= $order['local_order_id'] ?></LocalOrderID>
             <HostStatus><?= $order['host_status'] ?></HostStatus>
           <?php endif; ?>
 
-          <?php if( $bill = $order['bill'] ) : ?>
+          <?php if( isset($order['bill']) and $bill = $order['bill'] ) : ?>
             <Bill>
               <PayMethod><?= $bill['pay_method'] ?></PayMethod>
               <PayStatus><?= $bill['pay_status'] ?></PayStatus>
-              <PayDate><?= $bill['pay_date'] ?></PayDate>
+              <?php if( isset($bill['pay_date']) ) :?><PayDate><?= $bill['pay_date'] ?></PayDate><?php endif; ?>
               <FirstName><?= $bill['first_name'] ?></FirstName>
               <LastName><?= $bill['last_name'] ?></LastName>
-              <MiddleName><?= $bill['middle_name'] ?></MiddleName>
+              <?php if( isset($bill['middle_name']) ) : ?><MiddleName><?= $bill['middle_name'] ?></MiddleName><?php endif; ?>
               <CompanyName><?= $bill['company_name'] ?></CompanyName>
               <Address1><?= $bill['address1'] ?></Address1>
               <Address2><?= $bill['address2'] ?></Address2>
@@ -49,9 +49,9 @@
               <Country><?= $bill['country'] ?></Country>
               <Email><?= $bill['email'] ?></Email>
               <Phone><?= $bill['phone'] ?></Phone>
-              <PONumber><?= $bill['po_number'] ?></PONumber>
+              <?php if( isset($bill['po_number']) ) : ?><PONumber><?= $bill['po_number'] ?></PONumber><?php endif; ?>
 
-              <?php if( $card = $bill['credit_card'] ) : ?>
+              <?php if( isset($bill['credit_card']) and $card = $bill['credit_card'] ) : ?>
                 <CreditCard>
                   <CreditCardType><?= $card['credit_card_type'] ?></CreditCardType>
                   <CreditCardCharge><?= $card['credit_card_charge'] ?></CreditCardCharge>
@@ -59,23 +59,23 @@
                   <CreditCardName><?= $card['credit_card_name'] ?></CreditCardName>
                   <CreditCardNumber><?= $card['credit_card_number'] ?></CreditCardNumber>
 
-                  <?php if( $card['cvv2'] ) : ?>
+                  <?php if( isset($card['cvv2']) ) : ?>
                     <CVV2><?= $card['cvv2'] ?></CVV2>
                   <?php endif; ?>
 
-                  <?php if( $card['transaction_id'] ) : ?>
+                  <?php if( isset($card['transaction_id']) ) : ?>
                     <TransactionID><?= $card['transaction_id'] ?></TransactionID>
                   <?php endif; ?>
 
-                  <?php if( $card['settlement_batch_id'] ) : ?>
+                  <?php if( isset($card['settlement_batch_id']) ) : ?>
                     <SettlementBatchID><?= $card['settlement_batch_id'] ?></SettlementBatchID>
                   <?php endif; ?>
 
-                  <?php if( $card['auth_details'] ) : ?>
+                  <?php if( isset($card['auth_details']) ) : ?>
                     <AuthDetails><?= $card['auth_details'] ?></AuthDetails>
                   <?php endif; ?>
 
-                  <?php if( $card['reconciliation_data'] ) : ?>
+                  <?php if( isset($card['reconciliation_data']) ) : ?>
                     <ReconciliationData><?= $card['reconciliation_data'] ?></ReconciliationData>
                   <?php endif; ?>
 
@@ -85,7 +85,7 @@
           <?php endif; ?>
 
 
-          <?php if( $ship = $order['ship'] ) : ?>
+          <?php if( isset($order['ship']) and $ship = $order['ship'] ) : ?>
             <Ship>
               <ShipCarrierName><?= $ship['ship_carrier_name'] ?></ShipCarrierName>
               <ShipMethod><?= $ship['ship_method'] ?></ShipMethod>
@@ -99,37 +99,37 @@
               <Email><?= $ship['email'] ?></Email>
               <Phone><?= $ship['phone'] ?></Phone>
 
-              <?php if( $ship['ship_status'] ) : ?>
+              <?php if( isset($ship['ship_status']) ) : ?>
                 <ShipStatus><?= $ship['ship_status'] ?></ShipStatus>
               <?php endif; ?>
 
-              <?php if( $ship['ship_date'] ) : ?>
+              <?php if( isset($ship['ship_date']) ) : ?>
                 <ShipDate><?= $ship['ship_date'] ?></ShipDate>
               <?php endif; ?>
 
-              <?php if( $ship['tracking'] ) : ?>
+              <?php if( isset($ship['tracking']) ) : ?>
                 <Tracking><?= $ship['tracking'] ?></Tracking>
               <?php endif; ?>
 
-              <?php if( $ship['ship_cost'] ) : ?>
+              <?php if( isset($ship['ship_cost']) ) : ?>
                 <ShipCost><?= $ship['ship_cost'] ?></ShipCost>
               <?php endif; ?>
 
-              <?php if( $ship['middle_name'] ) : ?>
+              <?php if( isset($ship['middle_name']) ) : ?>
                 <MiddleName><?= $ship['middle_name'] ?></MiddleName>
               <?php endif; ?>
 
-              <?php if( $ship['company_name'] ) : ?>
+              <?php if( isset($ship['company_name']) ) : ?>
                 <CompanyName><?= $ship['company_name'] ?></CompanyName>
               <?php endif; ?>
 
-              <?php if( $ship['address2'] ) : ?>
+              <?php if( isset($ship['address2']) ) : ?>
                 <Address2><?= $ship['address2'] ?></Address2>
               <?php endif; ?>
             </Ship>
           <?php endif; ?>
 
-          <?php if( $order['order_items'] ) : ?>
+          <?php if( isset($order['order_items']) ) : ?>
             <OrderItems>
               <?php foreach( $order['order_items'] as $item ) : ?>
                 <Item>
@@ -140,15 +140,15 @@
                   <UnitPrice><?= $item['unit_price'] ?></UnitPrice>
                   <ItemTotal><?= $item['item_total'] ?></ItemTotal>
 
-                  <?php if( $item['unit_cost'] ) : ?>
+                  <?php if( isset($item['unit_cost']) ) : ?>
                     <UnitCost><?= $item['unit_cost'] ?></UnitCost>
                   <?php endif; ?>
 
-                  <?php if( $item['vendor'] ) : ?>
+                  <?php if( isset($item['vendor']) ) : ?>
                     <Vendor><?= $item['vendor'] ?></Vendor>
                   <?php endif; ?>
 
-                  <?php if( $item['unit_weight'] ) : ?>
+                  <?php if( isset($item['unit_weight']) ) : ?>
                     <UnitWeight><?= $item['unit_weight'] ?></UnitWeight>
                   <?php endif; ?>
 
@@ -159,7 +159,7 @@
                   <CustomField4 />
                   <CustomField5 />
 
-                  <?php if( $options = $item['item_options'] ) : ?>
+                  <?php if( isset($order['item_options']) and $options = $item['item_options'] ) : ?>
                     <ItemOptions>
                       <?php foreach( $options as $k => $v ) : ?>
                         <Option Name="<?= $k ?>" Value="<?= $v ?>" />
@@ -171,7 +171,7 @@
             </OrderItems>
           <?php endif; ?>
 
-          <?php if( $charges = $order['charges'] ) : ?>
+          <?php if( isset($order['charges']) and $charges = $order['charges'] ) : ?>
             <Charges>
               <Shipping><?= $charges['shipping'] ?></Shipping>
               <Handling><?= $charges['handling'] ?></Handling>
@@ -179,31 +179,31 @@
               <Discount><?= $charges['discount'] ?></Discount>
               <Total><?= $charges['total'] ?></Total>
 
-              <?php if( $charges['tax_other'] ) : ?>
+              <?php if( isset($charges['tax_other']) ) : ?>
                 <TaxOther><?= $charges['tax_other'] ?></TaxOther>
               <?php endif; ?>
 
-              <?php if( $charges['channel_fee'] ) : ?>
+              <?php if( isset($charges['channel_fee']) ) : ?>
                 <ChannelFee><?= $charges['channel_fee'] ?></ChannelFee>
               <?php endif; ?>
 
-              <?php if( $charges['payment_fee'] ) : ?>
+              <?php if( isset($charges['payment_fee']) ) : ?>
                 <PaymentFee><?= $charges['payment_fee'] ?></PaymentFee>
               <?php endif; ?>
 
-              <?php if( $charges['gift_certificate'] ) : ?>
+              <?php if( isset($charges['gift_certificate']) ) : ?>
                 <GiftCertificate><?= $charges['gift_certificate'] ?></GiftCertificate>
               <?php endif; ?>
 
-              <?php if( $charges['other_charge'] ) : ?>
+              <?php if( isset($charges['other_charge']) ) : ?>
                 <OtherCharge><?= $charges['other_charge'] ?></OtherCharge>
               <?php endif; ?>
 
-              <?php if( $charges['item_sub_total'] ) : ?>
+              <?php if( isset($charges['item_sub_total']) ) : ?>
                 <ItemSubTotal><?= $charges['item_sub_total'] ?></ItemSubTotal>
               <?php endif; ?>
 
-              <?php if( $coupons = $charges['coupons'] ) : ?>
+              <?php if( isset($order['coupons']) and $coupons = $charges['coupons'] ) : ?>
                 <Coupons>
                   <?php foreach( $coupons as $coupon ) : ?>
                     <Coupon>

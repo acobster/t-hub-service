@@ -6,9 +6,9 @@ class OrderFixtures {
   protected static function db() {
     if( !self::$DB ) {
       self::$DB = new PDO(
-        'mysql:host=localhost;dbname=planethe_database;unix_socket=/tmp/mysql.sock',
-        'thub_test',
-        'Df3CroK)lELo'
+        'mysql:host=database;dbname=lamp',
+        'lamp',
+        'lamp'
       );
     }
 
@@ -43,7 +43,7 @@ class OrderFixtures {
     $updated = $updatedDT->format( 'Y-m-d H:i:s' );
 
     $sql = <<<_SQL_
-INSERT INTO invoices SET {$setOrderId}
+INSERT INTO orders SET {$setOrderId}
   INVOICE_NUMBER='9876',
   FIRST='{$bill['first_name']}',
   LAST='{$bill['last_name']}',
@@ -75,6 +75,7 @@ INSERT INTO invoices SET {$setOrderId}
   TAX={$charges['tax']},
   SHIPPING={$charges['shipping']},
   TOTAL={$charges['total']},
+  PAYMENT_TYPE={$bill['payment_type']},
   BALANCE=0.0, TAX_RATE=0.9, TAX_CODE='tax-code', TAX_CITY='Taxville',
   TAX_STATE='TX', TAX_COUNTRY='USA', COMMENTS='foo', PROMO_CODE='1235sdfg',
   PROMO_DESCRIPTION='everythingallofthetime', AFFILIATE_CONTACTID=5,
@@ -85,7 +86,6 @@ _SQL_;
     self::write( $sql );
     $orderId = self::lastId();
 
-    self::insertCard( $order, $orderId );
     self::insertShipping( $order, $orderId );
 
     foreach( $order['order_items'] as $item ) {
@@ -104,7 +104,7 @@ _SQL_;
       : $order['bill']['pay_method'];
 
     $sql = <<<_SQL_
-INSERT INTO invoices_activity SET INVOICEID={$orderId},
+INSERT INTO orders_activity SET ORDERID={$orderId},
   PAYMENT_TYPE='$pmtType',
   CCTYPE='{$cardType}',
   NOTES='foo', TRANSACTIONID='1234', LAST4CC='1234', CHECK_NUMBER='123',
@@ -127,7 +127,7 @@ _SQL_;
     $shipped = ( $shipping['ship_status'] == 'Shipped' ) ? 1 : 0;
 
     $sql = <<<_SQL_
-INSERT INTO invoices_shipping_tracking SET INVOICEID={$orderId},
+INSERT INTO orders_shipping_tracking SET ORDERID={$orderId},
   CARRIER = '{$shipping['ship_carrier_name']}',
   SHIPPING_METHOD = '{$shipping['ship_method']}',
   TRACKING_NUMBER = '{$shipping['tracking']}',
@@ -143,7 +143,7 @@ _SQL_;
     $inventoryId = self::insertInventory( $item, $orderId );
 
     $sql = <<<_SQL_
-INSERT INTO invoices_details SET INVOICEID={$orderId},
+INSERT INTO orders_details SET ORDERID={$orderId},
   INVENTORYID={$inventoryId},
   DESCRIPTION='{$item['item_description']}',
   QUANTITY={$item['quantity']},
@@ -168,12 +168,15 @@ _SQL_;
     return self::lastId();
   }
 
+  public static function createSchema() {
+    self::db()->exec(file_get_contents(__DIR__.'/schema.sql'));
+  }
+
   public static function truncateAll() {
     $tables = array(
-      'invoices',
-      'invoices_activity',
-      'invoices_details',
-      'invoices_shipping_tracking',
+      'orders',
+      'orders_details',
+      'orders_shipping_tracking',
       'inventory',
     );
 

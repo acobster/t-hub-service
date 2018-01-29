@@ -52,9 +52,9 @@ class THubService {
 
   protected static $CONFIG = array(
     'viewDir'         => './views/',
-    'user'            => 'user',
-    'passwordFile'    => '/path/to/file',
-    'securityKey'     => 'xyz',
+    'user'            => 'thub_client',
+    'passwordFile'    => '/app/thub.passwd',
+    'securityKey'     => 'ASDFQWERTY',
     'requireKey'      => true,
   );
 
@@ -67,6 +67,7 @@ class THubService {
   // Set up default view variables...
   protected $thirdPartyProvider = self::PROVIDER_GENERIC;
   protected $command = 'UNKNOWN';
+  protected $orders;
 
   /**
    * Configure the THub Service.

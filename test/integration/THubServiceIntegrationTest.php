@@ -8,9 +8,14 @@ require_once realpath(__DIR__.'/OrderFixtures.php');
 
 /**
  * Test the server response at a high level
+ * @group integration
  */
 class THubServiceIntegrationTest extends TestCase {
   use CustomAssertions;
+
+  public static function setUpBeforeClass() {
+    OrderFixtures::createSchema();
+  }
 
   public function tearDown() {
     OrderFixtures::truncateAll();

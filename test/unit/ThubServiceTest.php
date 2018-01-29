@@ -8,10 +8,15 @@ require_once realpath(__DIR__.'/../../lib/THub/InvalidParamError.php');
 require_once realpath(__DIR__.'/../../lib/THub/THubService.php');
 require_once realpath(__DIR__.'/../shared/TestData.php');
 
+/**
+ * Test all the things
+ * @group unit
+ */
 class THubServiceTest extends TestCase {
   use CustomAssertions;
 
   public function setUp() {
+    // TODO mock the filesystem instead of hard-coding lando passwd file
     $this->mockProvider = $this->getMockBuilder('Data\OrderProvider')
       ->setMockClassName( 'OrderModel' )
       ->setMethods( array('getNewOrders', 'updateOrders') )
@@ -67,7 +72,7 @@ class THubServiceTest extends TestCase {
   }
 
   public function testAuthenticate() {
-    $creds = array('user', 'password', 'xyz');
+    $creds = array('thub_client', 'thub', 'ASDFQWERTY');
     $this->assertTrue( $this->callProtectedMethod('authenticate', $creds) );
 
     $cases = array(
@@ -112,6 +117,7 @@ class THubServiceTest extends TestCase {
 
     $orders = $parsed->Orders->Order;
 
+    //die(var_dump($orders[0]->Ship->ShipCarrierName));
     $this->assertOrder( TestData::$orders[0], $orders[0] );
     $this->assertOrder( TestData::$orders[1], $orders[1] );
   }
@@ -158,8 +164,8 @@ class THubServiceTest extends TestCase {
       $this->assertEquals( $orderXml->ShippedVia,               $order['shipped_via'] );
       $this->assertEquals( $orderXml->TrackingNumber,           $order['tracking_number'] );
 
-      $this->assertEqualsIfPresent( $orderXml->NotifyCustomer,  $order['notify_customer'] );
-      $this->assertEqualsIfPresent( $orderXml->ServiceUsed,     $order['service_used'] );
+      $this->assertEquals( $orderXml->NotifyCustomer,  $order['notify_customer'] );
+      $this->assertEquals( $orderXml->ServiceUsed,     $order['service_used'] );
     }
   }
 
@@ -185,13 +191,13 @@ class THubServiceTest extends TestCase {
 
   protected function getParsedResponse( $request ) {
     try {
-      $response = $this->thub->parseRequest( $request );
+      $response = @$this->thub->parseRequest( $request );
       return new SimpleXMLElement( $response );
     } catch( Exception $e ) {
       if( !empty($response) ) {
         $this->fail( "could not parse response: {$response}" );
       } else {
-        $this->fail( 'empty response' );
+        $this->fail( "empty response with exception: {$e->getMessage()}" );
       }
     }
   }

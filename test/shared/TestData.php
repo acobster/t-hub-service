@@ -167,17 +167,17 @@ class TestData {
     array(
       'host_order_id' => '4',
       'local_order_id' => '2345',
-      'success' => true,
+      'host_status' => 'Success',
     ),
     array(
       'host_order_id' => '5',
       'local_order_id' => '4567',
-      'success' => true,
+      'host_status' => 'Success',
     ),
     array(
       'host_order_id' => '6',
       'local_order_id' => '4568',
-      'success' => true,
+      'host_status' => 'Success',
     ),
   );
 
@@ -257,10 +257,10 @@ _XML_;
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <REQUEST Version="2.8">
    <Command>GetOrders</Command>
-   <UserID>user</UserID>
-   <Password>password</Password>
+   <UserID>thub_client</UserID>
+   <Password>thub</Password>
    <Status>all</Status>
-   <SecurityKey>xyz</SecurityKey>
+   <SecurityKey>ASDFQWERTY</SecurityKey>
 </REQUEST>
 _XML_;
 
@@ -268,10 +268,10 @@ _XML_;
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <REQUEST Version="2.8">
    <Command>GetOrders</Command>
-   <UserID>user</UserID>
-   <Password>password</Password>
+   <UserID>thub_client</UserID>
+   <Password>thub</Password>
    <Status>all</Status>
-   <SecurityKey>xyz</SecurityKey>
+   <SecurityKey>ASDFQWERTY</SecurityKey>
    <OrderStartNumber>3</OrderStartNumber>
 </REQUEST>
 _XML_;
@@ -280,10 +280,10 @@ _XML_;
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <REQUEST Version="2.8">
    <Command>GetOrders</Command>
-   <UserID>user</UserID>
-   <Password>password</Password>
+   <UserID>thub_client</UserID>
+   <Password>thub</Password>
    <Status>all</Status>
-   <SecurityKey>xyz</SecurityKey>
+   <SecurityKey>ASDFQWERTY</SecurityKey>
    <OrderStartNumber>0</OrderStartNumber>
    <NumberOfDays>5</NumberOfDays>
 </REQUEST>
@@ -293,10 +293,10 @@ _XML_;
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <REQUEST Version="2.8">
   <Command>UpdateOrdersShippingStatus</Command>
-  <UserID>user</UserID>
-  <Password>password</Password>
+  <UserID>thub_client</UserID>
+  <Password>thub</Password>
   <Status>all</Status>
-  <SecurityKey>xyz</SecurityKey>
+  <SecurityKey>ASDFQWERTY</SecurityKey>
   <Orders>
     <Order>
       <HostOrderID>4</HostOrderID>
@@ -333,10 +333,10 @@ _XML_;
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <REQUEST Version="2.8">
   <Command>UpdateOrdersShippingStatus</Command>
-  <UserID>user</UserID>
-  <Password>password</Password>
+  <UserID>thub_client</UserID>
+  <Password>thub</Password>
   <Status>all</Status>
-  <SecurityKey>xyz</SecurityKey>
+  <SecurityKey>ASDFQWERTY</SecurityKey>
   <Orders>
     <Order>
       <HostOrderID>4</HostOrderID>
@@ -355,10 +355,10 @@ _XML_;
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <REQUEST Version="2.8">
   <Command>UpdateOrdersShippingStatus</Command>
-  <UserID>user</UserID>
-  <Password>password</Password>
+  <UserID>thub_client</UserID>
+  <Password>thub</Password>
   <Status>all</Status>
-  <SecurityKey>xyz</SecurityKey>
+  <SecurityKey>ASDFQWERTY</SecurityKey>
 </REQUEST>
 _XML_;
 
@@ -366,10 +366,10 @@ _XML_;
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <REQUEST Version="2.8">
   <Command>UpdateOrdersShippingStatus</Command>
-  <UserID>user</UserID>
-  <Password>password</Password>
+  <UserID>thub_client</UserID>
+  <Password>thub</Password>
   <Status>all</Status>
-  <SecurityKey>xyz</SecurityKey>
+  <SecurityKey>ASDFQWERTY</SecurityKey>
   <Orders></Orders>
 </REQUEST>
 _XML_;
@@ -380,10 +380,10 @@ _XML_;
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <REQUEST Version="2.8">
    <Command>GetOrders</Command>
-   <UserID>user</UserID>
-   <Password>password</Password>
+   <UserID>thub_client</UserID>
+   <Password>thub</Password>
    <Status>all</Status>
-   <SecurityKey>xyz</SecurityKey>
+   <SecurityKey>ASDFQWERTY</SecurityKey>
    <DownloadStartDate>blah</DownloadStartDate>
 </REQUEST>
 _XML_;
@@ -392,10 +392,10 @@ _XML_;
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <REQUEST Version="2.8">
    <Command>GetOrders</Command>
-   <UserID>user</UserID>
-   <Password>password</Password>
+   <UserID>thub_client</UserID>
+   <Password>thub</Password>
    <Status>all</Status>
-   <SecurityKey>xyz</SecurityKey>
+   <SecurityKey>ASDFQWERTY</SecurityKey>
    <NumberOfDays>blah</NumberOfDays>
 </REQUEST>
 _XML_;
@@ -404,10 +404,10 @@ _XML_;
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <REQUEST Version="2.8">
    <Command>GetOrders</Command>
-   <UserID>user</UserID>
-   <Password>password</Password>
+   <UserID>thub_client</UserID>
+   <Password>thub</Password>
    <Status>all</Status>
-   <SecurityKey>xyz</SecurityKey>
+   <SecurityKey>ASDFQWERTY</SecurityKey>
    <LimitOrderCount>blah</LimitOrderCount>
 </REQUEST>
 _XML_;
@@ -416,10 +416,10 @@ _XML_;
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <REQUEST Version="2.8">
    <Command>GetOrders</Command>
-   <UserID>user</UserID>
-   <Password>password</Password>
+   <UserID>thub_client</UserID>
+   <Password>thub</Password>
    <Status>all</Status>
-   <SecurityKey>xyz</SecurityKey>
+   <SecurityKey>ASDFQWERTY</SecurityKey>
    <OrderStartNumber>blah</OrderStartNumber>
 </REQUEST>
 _XML_;
@@ -428,10 +428,10 @@ _XML_;
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <REQUEST Version="2.8">
    <Command>FOO</Command>
-   <UserID>user</UserID>
-   <Password>password</Password>
+   <UserID>thub_client</UserID>
+   <Password>thub</Password>
    <Status>all</Status>
-   <SecurityKey>xyz</SecurityKey>
+   <SecurityKey>ASDFQWERTY</SecurityKey>
 </REQUEST>
 _XML_;
 
@@ -439,10 +439,10 @@ _XML_;
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <REQUEST Version="2.8">
    <Command>GetOrders</Command>
-   <UserID>user</UserID>
+   <UserID>thub_client</UserID>
    <Password>BAD</Password>
    <Status>all</Status>
-   <SecurityKey>xyz</SecurityKey>
+   <SecurityKey>ASDFQWERTY</SecurityKey>
 </REQUEST>
 _XML_;
 
@@ -451,9 +451,9 @@ _XML_;
 <REQUEST Version="2.8">
    <Command>GetOrders</Command>
    <UserID>BAD</UserID>
-   <Password>password</Password>
+   <Password>thub</Password>
    <Status>all</Status>
-   <SecurityKey>xyz</SecurityKey>
+   <SecurityKey>ASDFQWERTY</SecurityKey>
 </REQUEST>
 _XML_;
 
@@ -461,8 +461,8 @@ _XML_;
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <REQUEST Version="2.8">
    <Command>GetOrders</Command>
-   <UserID>user</UserID>
-   <Password>password</Password>
+   <UserID>thub_client</UserID>
+   <Password>thub</Password>
    <Status>all</Status>
    <SecurityKey>BAD</SecurityKey>
 </REQUEST>
@@ -472,9 +472,9 @@ _XML_;
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <REQUEST Version="2.8">
    <Command>GetOrders</Command>
-   <UserID>user</UserID>
+   <UserID>thub_client</UserID>
    <Status>all</Status>
-   <SecurityKey>xyz</SecurityKey>
+   <SecurityKey>ASDFQWERTY</SecurityKey>
 </REQUEST>
 _XML_;
 
@@ -482,9 +482,9 @@ _XML_;
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <REQUEST Version="2.8">
    <Command>GetOrders</Command>
-   <Password>password</Password>
+   <Password>thub</Password>
    <Status>all</Status>
-   <SecurityKey>xyz</SecurityKey>
+   <SecurityKey>ASDFQWERTY</SecurityKey>
 </REQUEST>
 _XML_;
 }
