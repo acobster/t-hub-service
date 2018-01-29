@@ -117,7 +117,6 @@ class THubServiceTest extends TestCase {
 
     $orders = $parsed->Orders->Order;
 
-    //die(var_dump($orders[0]->Ship->ShipCarrierName));
     $this->assertOrder( TestData::$orders[0], $orders[0] );
     $this->assertOrder( TestData::$orders[1], $orders[1] );
   }

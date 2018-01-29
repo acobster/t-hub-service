@@ -30,24 +30,33 @@ class OrderFixtures {
     $ship     = $order['ship'];
     $charges  = $order['charges'];
 
-    if( $bill['pay_date'] ) {
-      $dt = new DateTime( $bill['pay_date'] );
-      $payDate = "'{$dt->format('Y-m-d H:i:s')}'";
-    } else {
-      $payDate = "'0000-00-00 00:00:00'";
-    }
-
     $createdDT = new DateTime( $order['date'] . ' ' . $order['time'] );
     $created = $createdDT->format( 'Y-m-d H:i:s' );
     $updatedDT = new DateTime( $order['updated_on'] );
     $updated = $updatedDT->format( 'Y-m-d H:i:s' );
 
+    // ensure we have a PAYMENT_TYPE
+    $method = str_replace('CreditCard', 'Credit Card', $order['bill']['pay_method']);
+
+    // Corporate shipping account?
+    if( !empty($order['ship']['corporate_account']) ) {
+      $useCorporateAccount = '1';
+      $corporateAccountCarrier = strtolower($order['ship']['ship_carrier_name']);
+      $corporateAccountNumber = '1234';
+      $corporateAccountMethod = 'carrier pigeon';
+    } else {
+      $useCorporateAccount = '0';
+      $corporateAccountCarrier = '';
+      $corporateAccountNumber = '';
+      $corporateAccountMethod = '';
+    }
+
+    if (empty($method)) die($method);
     $sql = <<<_SQL_
 INSERT INTO orders SET {$setOrderId}
-  INVOICE_NUMBER='9876',
+  ORDER_NUMBER='9876',
   FIRST='{$bill['first_name']}',
   LAST='{$bill['last_name']}',
-  PAID_DATETIME={$payDate},
   PAYSTATUS='{$bill['pay_status']}',
   CREATED='{$created}',
   LASTUPDATED='{$updated}',
@@ -58,8 +67,7 @@ INSERT INTO orders SET {$setOrderId}
   STATE='{$bill['state']}',
   ZIP='{$bill['zip']}',
   COUNTRY='{$bill['country']}',
-  PONUMBER='{$bill['po_number']}',
-  SHIPPING_METHOD='{$ship['shipping_method']}',
+  SHIPPING_METHOD='{$ship['ship_method']}',
   SHIPPING_FIRST='{$ship['first_name']}',
   SHIPPING_LAST='{$ship['last_name']}',
   SHIPPING_ORGANIZATION='{$ship['company_name']}',
@@ -69,17 +77,24 @@ INSERT INTO orders SET {$setOrderId}
   SHIPPING_STATE='{$ship['state']}',
   SHIPPING_ZIP='{$ship['zip']}',
   SHIPPING_COUNTRY='{$ship['country']}',
+  USE_SHIPPING_ACCOUNT='{$useCorporateAccount}',
+  SHIPPING_ACCOUNT_CARRIER='{$corporateAccountCarrier}',
+  SHIPPING_ACCOUNT_NUMBER='{$corporateAccountNumber}',
+  SHIPPING_ACCOUNT_METHOD='{$corporateAccountMethod}',
   PHONE='{$ship['phone']}',
   EMAIL='{$ship['email']}',
   SUBTOTAL={$charges['item_sub_total']},
   TAX={$charges['tax']},
   SHIPPING={$charges['shipping']},
   TOTAL={$charges['total']},
-  PAYMENT_TYPE={$bill['payment_type']},
-  BALANCE=0.0, TAX_RATE=0.9, TAX_CODE='tax-code', TAX_CITY='Taxville',
-  TAX_STATE='TX', TAX_COUNTRY='USA', COMMENTS='foo', PROMO_CODE='1235sdfg',
-  PROMO_DESCRIPTION='everythingallofthetime', AFFILIATE_CONTACTID=5,
-  FULFILLED=1, FULFILLED_ACCOUNTID=5, LOGINKEY='asdf', ACCOUNTID=5432,
+  PAYMENT_TYPE='$method',
+  TRANSACTIONID='1234',
+  CARD_TYPE='Visa',
+  CARD_LAST4='1111',
+  TAX_RATE=0.9,
+  TAX_CODE='tax-code',
+  COMMENTS='foo',
+  FULFILLED=1, ACCOUNTID=5432,
   DATE=CURDATE()
 _SQL_;
 
@@ -117,11 +132,11 @@ _SQL_;
   public static function insertShipping( $order, $orderId ) {
     $shipping = $order['ship'];
 
-    if( $shipping['ship_date'] ) {
+    if( isset($shipping['ship_date']) ) {
       $dt = new DateTime( $shipping['ship_date'] );
       $shipDate = "{$dt->format('Y-m-d')}";
     } else {
-      $shipDate = "0000-00-00";
+      $shipDate = "1970-01-01";
     }
 
     $shipped = ( $shipping['ship_status'] == 'Shipped' ) ? 1 : 0;
@@ -143,13 +158,15 @@ _SQL_;
     $inventoryId = self::insertInventory( $item, $orderId );
 
     $sql = <<<_SQL_
-INSERT INTO orders_details SET ORDERID={$orderId},
+INSERT INTO orders_details SET
+  ORDERID={$orderId},
   INVENTORYID={$inventoryId},
+  NAME='foo',
   DESCRIPTION='{$item['item_description']}',
   QUANTITY={$item['quantity']},
   RATE={$item['unit_price']},
   LINE_TOTAL={$item['item_total']},
-  PARENT_INVENTORYID=1, NAME='foo',  UNIT='unit', PROMOCODEID=321
+  UNIT='unit'
 _SQL_;
 
     self::write( $sql );
@@ -158,10 +175,29 @@ _SQL_;
 
   public static function insertInventory( $item ) {
     $sql = <<<_SQL_
-INSERT INTO inventory SET PRODUCT_CODE='{$item['item_code']}',
-  CONTENTID=123, PARENT_INVENTORYID=10, RETAIL_PRICE=2.00, OUR_PRICE=1.00,
-  SHIPPING_WEIGHT=10.0, ADDITIONAL_SHIPPING=1.00, LABEL='foo',
-  CONNECTION='something'
+INSERT INTO inventory SET
+  PRODUCT_CODE='{$item['item_code']}',
+  CONTENTID=123,
+  DESCRIPTION='the best thing ever',
+  RETAIL_PRICE=2.00,
+  OUR_PRICE=1.00,
+  SHIPPING_WEIGHT=10.0,
+  ADDITIONAL_SHIPPING=1.00,
+  MANUFACTURER='',
+  CONNECTION='something',
+  CONNECTION2='',
+  PIN='',
+  COLOR='',
+  TUBE_COLOR='',
+  EAR_SIDE='',
+  PTT='',
+  `SIZE`='',
+  BOOM='',
+  PRODUCT_TYPE='',
+  WIRE_COUNT='',
+  EAR_PIECE_STYLE='',
+  CASE_TYPE='',
+  HEADSET_TYPE='Tactical'
 _SQL_;
 
     self::write( $sql );

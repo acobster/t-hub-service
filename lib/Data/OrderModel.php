@@ -18,22 +18,21 @@ class OrderModel implements OrderProvider {
 
   public function getNewOrders( $options ) {
     if( $options['start_date'] ) {
-      $whereClause = "invoices.CREATED > '{$options['start_date']}'";
+      $whereClause = "orders.CREATED > '{$options['start_date']}'";
     } elseif( intval($options['start_id']) ) {
-      $whereClause = "invoices.ID > {$options['start_id']}";
+      $whereClause = "orders.ID > {$options['start_id']}";
     } elseif( $options['num_days'] ) {
       $days = intval( $options['num_days'] );
-      $whereClause = "invoices.CREATED > DATE_SUB( CURDATE(), INTERVAL $days DAY )";
+      $whereClause = "orders.CREATED > DATE_SUB( CURDATE(), INTERVAL $days DAY )";
     } else {
-      $whereClause = "invoices.ID > 0";
+      $whereClause = "orders.ID > 0";
     }
 
     $sql = <<<_SQL_
-SELECT invoices.*, card.PAYMENT_TYPE, ship.SHIPPED,
+SELECT orders.*, ship.SHIPPED,
     ship.CARRIER, ship.SHIPPING_METHOD, ship.TRACKING_NUMBER, ship.SHIPPED_DATE
-  FROM invoices
-  LEFT JOIN invoices_shipping_tracking AS ship ON (invoices.ID = ship.INVOICEID)
-  LEFT JOIN invoices_activity AS card ON (invoices.ID = card.INVOICEID)
+  FROM orders
+  LEFT JOIN orders_shipping_tracking AS ship ON (orders.ID = ship.ORDERID)
   WHERE {$whereClause}
   LIMIT {$options['limit']}
 _SQL_;
@@ -55,7 +54,7 @@ _SQL_;
 
   protected function updateOrder( $order ) {
     $sql = <<<_SQL_
-UPDATE invoices SET QUICKBOOKS_ORDERID = :quickbooks_id, LASTUPDATED = NOW()
+UPDATE orders SET QUICKBOOKS_ORDERID = :quickbooks_id, LASTUPDATED = NOW()
   WHERE ID = :id LIMIT 1
 _SQL_;
 
@@ -81,12 +80,12 @@ _SQL_;
     $formattedDate = $shipDate->format('Y-m-d');
 
     $sql = <<<_SQL_
-UPDATE invoices_shipping_tracking SET SHIPPED = 1,
+UPDATE orders_shipping_tracking SET SHIPPED = 1,
   SHIPPED_DATE = :date,
   CARRIER = :carrier,
   SHIPPING_METHOD = :method,
   TRACKING_NUMBER = :tracking
-  WHERE INVOICEID = :id LIMIT 1
+  WHERE ORDERID = :id LIMIT 1
 _SQL_;
 
     if( ! $this->db->write( $sql, array(
@@ -102,9 +101,9 @@ _SQL_;
 
   protected function getOrderItems( $order ) {
     $sql = <<<_SQL_
-SELECT invoices_details.*, inventory.PRODUCT_CODE FROM invoices_details
-  LEFT JOIN inventory ON (invoices_details.INVENTORYID = inventory.ID)
-  WHERE INVOICEID = {$order['ID']}
+SELECT orders_details.*, inventory.PRODUCT_CODE FROM orders_details
+  LEFT JOIN inventory ON (orders_details.INVENTORYID = inventory.ID)
+  WHERE ORDERID = {$order['ID']}
 _SQL_;
 
     return $this->db->read( $sql );

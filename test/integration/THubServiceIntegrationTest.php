@@ -142,13 +142,12 @@ class THubServiceIntegrationTest extends TestCase {
   }
 
   protected function postTHub( $requestXml ) {
-    $uri = 'http://' . WEB_SERVER_HOST . ':' . WEB_SERVER_PORT;
-    $handle = curl_init( $uri );
+    $handle = curl_init( SERVICE_URL );
 
     $options = array(
       CURLOPT_HEADER => 0,
       CURLOPT_POST => 1,
-      CURLOPT_POSTFIELDS => array( 'XML' => $requestXml ),
+      CURLOPT_POSTFIELDS => $requestXml,
       CURLOPT_RETURNTRANSFER => true,
     );
 

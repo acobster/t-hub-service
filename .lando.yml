@@ -19,7 +19,7 @@ services:
 tooling:
   test:
     service: appserver
-    cmd: vendor/bin/phpunit --bootstrap test/integration/bootstrap.php --colors=auto ./test
+    cmd: vendor/bin/phpunit --bootstrap ./test/integration/bootstrap.php --colors=auto ./test
   unit:
     service: appserver
     cmd: vendor/bin/phpunit --colors=auto ./test/unit

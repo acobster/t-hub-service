@@ -122,6 +122,8 @@ class TestData {
       'ship' => array(
         'ship_status'       => 'New',
         'ship_carrier_name' => 'FedEx',
+        'tracking'          => '',
+        'corporate_account' => true,
         'ship_method'       => 'Ground',
         'first_name'        => 'Bob',
         'last_name'         => 'Barker',
@@ -195,10 +197,10 @@ class TestData {
       $dt->sub( new DateInterval('P7D') );
       $oldOrder['date'] = $dt->format('Y-m-d');
       $oldOrder['time'] = $dt->format('H:i:s');
-      $oldOrder['ship'] = array(
+      $oldOrder['ship'] = array_merge($oldOrder['ship'], array(
         'ship_date' => $dt->format('Y-m-d'),
         'ship_status' => 'Shipped',
-      );
+      ));
       $allOrders[] = $oldOrder;
 
       // Some orders from today
@@ -206,11 +208,11 @@ class TestData {
       $newOrder['order_id'] = $i+$numEach;
       $newOrder['date'] = date('Y-m-d');
       $newOrder['time'] = date('H:i:s');
-      $newOrder['ship'] = array(
+      $newOrder['ship'] = array_merge($newOrder['ship'], array(
         'ship_date'   => null,
         'ship_status' => 'New',
         'tracking'    => '',
-      );
+      ));
       $allOrders[] = $newOrder;
     }
 
