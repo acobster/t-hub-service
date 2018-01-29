@@ -29,6 +29,30 @@
 				"description": ""
 			},
 			"response": []
+		},
+		{
+			"name": "UpdateOrdersShippingStatus",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<REQUEST Version=\"2.8\">\n  <Command>UpdateOrdersShippingStatus</Command>\n  <UserID>{{API_USERNAME}}</UserID>\n  <Password>{{API_PASSWORD}}</Password>\n  <Status>all</Status>\n  <SecurityKey>{{API_SECURITY_KEY}}</SecurityKey>\n  <Orders>\n    <Order>\n      <HostOrderID>4</HostOrderID>\n      <LocalOrderID>4122</LocalOrderID>\n      <NotifyCustomer>Yes</NotifyCustomer>\n      <ShippedOn>12/05/2005</ShippedOn>\n      <ShippedVia>UPS</ShippedVia>\n      <ServiceUsed>Ground</ServiceUsed>\n      <TrackingNumber>Z3121231213243455</TrackingNumber>\n    </Order>\n    <Order>\n      <HostOrderID>5</HostOrderID>\n      <LocalOrderID>4123</LocalOrderID>\n      <NotifyCustomer>No</NotifyCustomer>\n      <ShippedOn>12/04/2005</ShippedOn>\n      <ShippedVia>FEDEX</ShippedVia>\n      <ServiceUsed>2nd Day Air</ServiceUsed>\n      <TrackingNumber>F334523234234555</TrackingNumber>\n    </Order>\n    <Order>\n      <HostOrderID>6</HostOrderID>\n      <LocalOrderID>4124</LocalOrderID>\n      <NotifyCustomer>No</NotifyCustomer>\n      <ShippedOn>12/04/2005</ShippedOn>\n      <ShippedVia>FEDEX</ShippedVia>\n      <ServiceUsed>2nd Day Air</ServiceUsed>\n      <TrackingNumber>F334523234234555</TrackingNumber>\n    </Order>\n  </Orders>\n</REQUEST>"
+				},
+				"url": {
+					"raw": "{{SERVICE_URL}}",
+					"host": [
+						"{{SERVICE_URL}}"
+					]
+				},
+				"description": ""
+			},
+			"response": []
 		}
 	]
 }
