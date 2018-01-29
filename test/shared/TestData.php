@@ -320,7 +320,7 @@ _XML_;
     </Order>
     <Order>
       <HostOrderID>6</HostOrderID>
-      <LocalOrderID>4123</LocalOrderID>
+      <LocalOrderID>4124</LocalOrderID>
       <NotifyCustomer>No</NotifyCustomer>
       <ShippedOn>12/04/2005</ShippedOn>
       <ShippedVia>FEDEX</ShippedVia>

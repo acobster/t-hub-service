@@ -91,6 +91,7 @@ class THubServiceIntegrationTest extends TestCase {
       TestData::GET_ORDERS_REQUEST_XML_BY_ORDER_START_NUMBER );
     $orders = $parsed->Orders->Order;
     $newOrderIds = array(4, 5, 6);
+    $localOrderIds = array(4122, 4123, 4124);
 
     foreach( $orders as $order ) {
       $this->assertContains( intval($order->OrderID), $newOrderIds );
@@ -98,7 +99,7 @@ class THubServiceIntegrationTest extends TestCase {
       // testUpdateOrdersShippingStatus to change
       $this->assertEquals( 'New', $order->Ship->ShipStatus );
       $this->assertEmpty( $order->Ship->ShipDate );
-      $this->assertEmpty( $order->Ship->Tracking );
+      $this->assertEquals( '', $order->Ship->Tracking );
     }
 
     $parsed = $this->getParsedResponse(
@@ -112,6 +113,7 @@ class THubServiceIntegrationTest extends TestCase {
     // check IDs and status
     foreach( $orders as $order ) {
       $this->assertContains( intval($order->HostOrderID), $newOrderIds );
+      $this->assertContains( intval($order->LocalOrderID), $localOrderIds );
       $this->assertEquals( 'Success', $order->HostStatus );
     }
 

@@ -70,7 +70,8 @@ _SQL_;
     $this->updateShipping( $order );
 
     return array(
-      'order_id'      => $order['host_order_id'],
+      'host_order_id'      => $order['host_order_id'],
+      'local_order_id'      => $order['local_order_id'],
       'host_status'   => 'Success',
     );
   }
@@ -114,7 +115,7 @@ _SQL_;
     $updatedOnDateTime = new \DateTime( $data['LASTUPDATED'] );
     $payDateTime = new \DateTime( $data['PAID_DATETIME'] );
 
-    if( $data['SHIPPED_DATE'] != '0000-00-00' ) {
+    if( $data['SHIPPED_DATE'] != '0000-00-00' && $data['SHIPPED_DATE'] != '1970-01-01' ) {
       $shipDate = new \DateTime( $data['SHIPPED_DATE'] );
       $shipDate = $shipDate->format('Y-m-d');
     }
