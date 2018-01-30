@@ -17,6 +17,12 @@ class DB {
     $connectionString = 'mysql:host=' . DB_HOST . ';dbname=' . DB_NAME;
     if( defined('DB_SOCKET') ) $connectionString .= ';unix_socket=' . DB_SOCKET;
     $this->pdo = new \PDO( $connectionString, DB_USER, DB_PASSWORD );
+
+    // throw an exception on PDO error
+    $this->pdo->setAttribute( \PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION );
+
+    // turn off MySQL number-quoting
+    $this->pdo->setAttribute( \PDO::ATTR_EMULATE_PREPARES, false );
   }
 
   /**
@@ -28,14 +34,17 @@ class DB {
     return $statement->execute( $values );
   }
 
-  public function read( $sql ) {
-    $query = $this->pdo->query( $sql );
+  public function read( $sql, $values ) {
+    try {
+      $statement = $this->pdo->prepare( $sql );
+      $statement->execute( $values );
+      $results = $statement->fetchAll( \PDO::FETCH_ASSOC );
 
-    if( !$query ) {
-      throw DBException::fromPDO( $this->pdo );
+    } catch (\PDOException $e) {
+      throw new DBException($e->getMessage());
     }
 
-    return $query->fetchAll( \PDO::FETCH_ASSOC );
+    return $results;
   }
 
   public function quote( $str ) {

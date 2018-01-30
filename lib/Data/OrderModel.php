@@ -17,27 +17,36 @@ class OrderModel implements OrderProvider {
   }
 
   public function getNewOrders( $options ) {
+    $bindings = array(
+      ':limit' => intval($options['limit']),
+    );
+
     if( $options['start_date'] ) {
-      $whereClause = "orders.CREATED > '{$options['start_date']}'";
+      $bindings[':start_date'] = $options['start_date'];
+      $whereClause = "orders.CREATED > :start_date";
+
     } elseif( intval($options['start_id']) ) {
-      $whereClause = "orders.ID > {$options['start_id']}";
+      $bindings[':start_id'] = $options['start_id'];
+      $whereClause = "orders.ID > :start_id";
+
     } elseif( $options['num_days'] ) {
-      $days = intval( $options['num_days'] );
-      $whereClause = "orders.CREATED > DATE_SUB( CURDATE(), INTERVAL $days DAY )";
+      $bindings[':days'] = intval( $options['num_days'] );
+      $whereClause = "orders.CREATED > DATE_SUB( CURDATE(), INTERVAL :days DAY )";
+
     } else {
       $whereClause = "orders.ID > 0";
     }
 
     $sql = <<<_SQL_
 SELECT orders.*, ship.SHIPPED,
-    ship.CARRIER, ship.SHIPPING_METHOD, ship.TRACKING_NUMBER, ship.SHIPPED_DATE
+    ship.CARRIER, ship.TRACKING_NUMBER, ship.SHIPPED_DATE
   FROM orders
   LEFT JOIN orders_shipping_tracking AS ship ON (orders.ID = ship.ORDERID)
   WHERE {$whereClause}
-  LIMIT {$options['limit']}
+  LIMIT :limit
 _SQL_;
 
-    $results = $this->db->read( $sql );
+    $results = $this->db->read( $sql, $bindings );
 
     $structuredOrders = array();
     foreach( $results as $order ) {
@@ -104,10 +113,10 @@ _SQL_;
     $sql = <<<_SQL_
 SELECT orders_details.*, inventory.PRODUCT_CODE FROM orders_details
   LEFT JOIN inventory ON (orders_details.INVENTORYID = inventory.ID)
-  WHERE ORDERID = {$order['ID']}
+  WHERE ORDERID = :id
 _SQL_;
 
-    return $this->db->read( $sql );
+    return $this->db->read( $sql, array(':id' => $order['ID']) );
   }
 
   protected function structureOrderData( $data ) {
