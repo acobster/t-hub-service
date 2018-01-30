@@ -113,7 +113,7 @@ _SQL_;
   protected function structureOrderData( $data ) {
     $dateTime = new \DateTime( $data['CREATED'] );
     $updatedOnDateTime = new \DateTime( $data['LASTUPDATED'] );
-    $payDateTime = $dateTime;
+    $payDateTime = new \DateTime( $data['PAID_DATETIME'] );
 
     if( $data['SHIPPED_DATE'] != '0000-00-00' && $data['SHIPPED_DATE'] != '1970-01-01' ) {
       $shipDate = new \DateTime( $data['SHIPPED_DATE'] );

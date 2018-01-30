@@ -44,6 +44,7 @@ CREATE TABLE `orders` (
   `SHIPPING_ACCOUNT_NUMBER` varchar(32) NOT NULL,
   `SHIPPING_ACCOUNT_METHOD` varchar(32) NOT NULL,
   `PAYSTATUS` enum('Cleared','Pending') NOT NULL,
+  `PAID_DATETIME` datetime NOT NULL,
   `PAYMENT_TYPE` enum('Credit Card','PayPal') NOT NULL,
   `TRANSACTIONID` varchar(60) NOT NULL,
   `CARD_TYPE` enum('Visa','Mastercard','Discover','American Express') NOT NULL,

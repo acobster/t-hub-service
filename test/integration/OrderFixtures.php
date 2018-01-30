@@ -60,6 +60,7 @@ INSERT INTO orders SET {$setOrderId}
   FIRST='{$bill['first_name']}',
   LAST='{$bill['last_name']}',
   PAYSTATUS='{$bill['pay_status']}',
+  PAID_DATETIME='{$bill['pay_date']}',
   CREATED='{$created}',
   LASTUPDATED='{$updated}',
   ORGANIZATION='{$bill['company_name']}',

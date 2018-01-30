@@ -106,6 +106,7 @@ class TestData {
       'bill'                => array(
         'pay_method'          => 'CreditCard',
         'pay_status'          => 'Pending',
+        'pay_date'            => '2014-12-17',
         'first_name'          => 'Bob',
         'last_name'           => 'Barker',
         'company_name'        => 'ACME',
