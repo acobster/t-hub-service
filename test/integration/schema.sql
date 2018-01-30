@@ -11,6 +11,7 @@ CREATE TABLE `orders` (
   `ORDER_NUMBER` varchar(60) NOT NULL,
   `QUICKBOOKS_ORDERID` int(10) unsigned DEFAULT NULL,
   `DATE` date NOT NULL,
+  `PONUMBER` varchar(32) NOT NULL,
   `FIRST` varchar(32) NOT NULL,
   `LAST` varchar(32) NOT NULL,
   `ORGANIZATION` varchar(100) NOT NULL,

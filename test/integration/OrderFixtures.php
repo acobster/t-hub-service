@@ -35,6 +35,8 @@ class OrderFixtures {
     $updatedDT = new DateTime( $order['updated_on'] );
     $updated = $updatedDT->format( 'Y-m-d H:i:s' );
 
+    $poNumber = isset($bill['po_number']) ? $bill['po_number'] : '';
+
     // ensure we have a PAYMENT_TYPE
     $method = str_replace('CreditCard', 'Credit Card', $order['bill']['pay_method']);
 
@@ -67,6 +69,7 @@ INSERT INTO orders SET {$setOrderId}
   STATE='{$bill['state']}',
   ZIP='{$bill['zip']}',
   COUNTRY='{$bill['country']}',
+  PONUMBER='{$poNumber}',
   SHIPPING_METHOD='{$ship['ship_method']}',
   SHIPPING_FIRST='{$ship['first_name']}',
   SHIPPING_LAST='{$ship['last_name']}',

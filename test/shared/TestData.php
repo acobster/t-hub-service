@@ -25,7 +25,7 @@ class TestData {
         'country'             => 'USA',
         'email'               => 'me@email.com',
         'phone'               => '123-456-2345',
-        //'po_number'           => '1234',
+        'po_number'           => '1234',
         // no credit card info for now.
       ),
       'ship' => array(
@@ -117,7 +117,7 @@ class TestData {
         'country'             => 'USA',
         'email'               => 'me@email.com',
         'phone'               => '123-456-2345',
-        //'po_number'           => '1234',
+        'po_number'           => '1234',
       ),
       'ship' => array(
         'ship_status'       => 'New',

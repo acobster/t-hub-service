@@ -150,7 +150,7 @@ _SQL_;
         'country'           => $data['COUNTRY'],
         'email'             => $data['EMAIL'],
         'phone'             => $data['PHONE'],
-        //'po_number'         => $data['PONUMBER'],
+        'po_number'         => $data['PONUMBER'],
         // No credit card info for now.
       ),
       'ship' => array(
