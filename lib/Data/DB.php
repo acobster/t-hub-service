@@ -46,8 +46,4 @@ class DB {
 
     return $results;
   }
-
-  public function quote( $str ) {
-    return $this->pdo->quote();
-  }
 }
