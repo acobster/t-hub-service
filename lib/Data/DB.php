@@ -2,7 +2,7 @@
 
 namespace Data;
 
-class DB {
+class DB implements DatabaseWrapperInterface {
   protected static $singleton;
 
   public static function get() {
@@ -29,12 +29,12 @@ class DB {
    * INSERT or UPDATE
    * @return int number of rows affected
    */
-  public function write( $sql, $values ) {
+  public function write( $sql, array $values = [] ) {
     $statement = $this->pdo->prepare( $sql );
     return $statement->execute( $values );
   }
 
-  public function read( $sql, $values ) {
+  public function read( $sql, array $values = [] ) {
     try {
       $statement = $this->pdo->prepare( $sql );
       $statement->execute( $values );
