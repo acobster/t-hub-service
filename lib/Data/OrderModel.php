@@ -39,7 +39,8 @@ class OrderModel implements OrderProvider {
 
     $sql = <<<_SQL_
 SELECT orders.*, ship.SHIPPED,
-    ship.CARRIER, ship.TRACKING_NUMBER, ship.SHIPPED_DATE
+    ship.TRACKING_NUMBER, ship.SHIPPED_DATE,
+    ship.CARRIER AS UPDATED_CARRIER, ship.SHIPPING_METHOD AS UPDATED_SHIPPING_METHOD
   FROM orders
   LEFT JOIN orders_shipping_tracking AS ship ON (orders.ID = ship.ORDERID)
   WHERE {$whereClause}
@@ -165,10 +166,13 @@ _SQL_;
       'ship' => array(
         'ship_status'         => $shipStatus,
         'ship_date'           => $shipDate,
-        'ship_carrier_name'   => $data['CARRIER'],
+
+        // these can come from either orders or orders_shipping_tracking
+        'ship_carrier_name'   => $data['UPDATED_CARRIER'] ?: $data['CARRIER'],
+        'ship_method'         => $data['UPDATED_SHIPPING_METHOD'] ?: $data['SHIPPING_METHOD'],
+
         'tracking'            => $data['TRACKING_NUMBER'],
         'ship_cost'           => $data['SHIPPING'],
-        'ship_method'         => $data['SHIPPING_METHOD'],
         'first_name'          => $data['SHIPPING_FIRST'],
         'last_name'           => $data['SHIPPING_LAST'],
         'company_name'        => $data['SHIPPING_ORGANIZATION'],

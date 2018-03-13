@@ -71,6 +71,7 @@ INSERT INTO orders SET {$setOrderId}
   ZIP='{$bill['zip']}',
   COUNTRY='{$bill['country']}',
   PONUMBER='{$poNumber}',
+  CARRIER='{$ship['ship_carrier_name']}',
   SHIPPING_METHOD='{$ship['ship_method']}',
   SHIPPING_FIRST='{$ship['first_name']}',
   SHIPPING_LAST='{$ship['last_name']}',

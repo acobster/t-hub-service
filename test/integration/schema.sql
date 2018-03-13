@@ -21,6 +21,7 @@ CREATE TABLE `orders` (
   `STATE` char(32) NOT NULL,
   `ZIP` varchar(10) NOT NULL,
   `COUNTRY` char(20) NOT NULL,
+  `CARRIER` varchar(32) NOT NULL,
   `SHIPPING_FIRST` varchar(32) NOT NULL,
   `SHIPPING_LAST` varchar(32) NOT NULL,
   `SHIPPING_ORGANIZATION` varchar(100) NOT NULL,

@@ -98,8 +98,10 @@ class THubServiceIntegrationTest extends TestCase {
       // make sure there's actually some state for
       // testUpdateOrdersShippingStatus to change
       $this->assertEquals( 'New', $order->Ship->ShipStatus );
-      $this->assertEmpty( $order->Ship->ShipDate );
+      $this->assertEmpty( (string) $order->Ship->ShipDate );
       $this->assertEquals( '', $order->Ship->Tracking );
+      $this->assertEmpty( (string) $order->Ship->ShipMethod );
+      $this->assertEmpty( (string) $order->Ship->ShipCarrierName );
     }
 
     $parsed = $this->getParsedResponse(
@@ -122,10 +124,15 @@ class THubServiceIntegrationTest extends TestCase {
       TestData::GET_ORDERS_REQUEST_XML_BY_ORDER_START_NUMBER );
     $orders = $parsed->Orders->Order;
 
+    $i = 0;
     foreach( $orders as $order ) {
       $this->assertEquals( 'Shipped', $order->Ship->ShipStatus );
-      $this->assertNotEmpty( $order->Ship->ShipDate );
-      $this->assertNotEmpty( $order->Ship->Tracking );
+      $this->assertNotEmpty( (string) $order->Ship->ShipDate );
+      $this->assertNotEmpty( (string) $order->Ship->Tracking );
+      $this->assertEquals( TestData::UPDATED_SHIPPING_METHODS[$i], $order->Ship->ShipMethod );
+      $this->assertEquals( TestData::UPDATED_SHIPPING_CARRIERS[$i], $order->Ship->ShipCarrierName );
+
+      $i++;
     }
   }
 
