@@ -146,10 +146,12 @@ class THubServiceIntegrationTest extends TestCase {
   protected function postTHub( $requestXml ) {
     $handle = curl_init( SERVICE_URL );
 
+    $body = http_build_query(['request' => $requestXml]);
+
     $options = array(
       CURLOPT_HEADER => 0,
       CURLOPT_POST => 1,
-      CURLOPT_POSTFIELDS => array('request' => $requestXml),
+      CURLOPT_POSTFIELDS => $body,
       CURLOPT_RETURNTRANSFER => true,
     );
 
