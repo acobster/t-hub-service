@@ -149,7 +149,7 @@ class THubServiceIntegrationTest extends TestCase {
     $options = array(
       CURLOPT_HEADER => 0,
       CURLOPT_POST => 1,
-      CURLOPT_POSTFIELDS => $requestXml,
+      CURLOPT_POSTFIELDS => array('request' => $requestXml),
       CURLOPT_RETURNTRANSFER => true,
     );
 
