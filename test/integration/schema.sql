@@ -1,17 +1,18 @@
 --
--- Table structure for table `orders`
+-- Table structure for table `invoices`
 --
 
-DROP TABLE IF EXISTS `orders`;
+DROP TABLE IF EXISTS `invoices`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `orders` (
+CREATE TABLE `invoices` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `ACCOUNTID` int(11) NOT NULL,
-  `ORDER_NUMBER` varchar(60) NOT NULL,
-  `QUICKBOOKS_ORDERID` int(10) unsigned DEFAULT NULL,
+  `CONTACTID` int(11) NOT NULL,
+  `INVOICE_NUMBER` int(60) NOT NULL,
   `DATE` date NOT NULL,
-  `PONUMBER` varchar(32) NOT NULL,
+  `DATE_DUE` date NOT NULL,
+  `DATE_DUE_CALC` tinyint(1) NOT NULL DEFAULT '1',
+  `DATE_AUTO` tinyint(1) NOT NULL DEFAULT '1',
   `FIRST` varchar(32) NOT NULL,
   `LAST` varchar(32) NOT NULL,
   `ORGANIZATION` varchar(100) NOT NULL,
@@ -20,8 +21,7 @@ CREATE TABLE `orders` (
   `CITY` char(32) NOT NULL,
   `STATE` char(32) NOT NULL,
   `ZIP` varchar(10) NOT NULL,
-  `COUNTRY` char(20) NOT NULL,
-  `CARRIER` varchar(32) NOT NULL,
+  `COUNTRY` varchar(60) NOT NULL,
   `SHIPPING_FIRST` varchar(32) NOT NULL,
   `SHIPPING_LAST` varchar(32) NOT NULL,
   `SHIPPING_ORGANIZATION` varchar(100) NOT NULL,
@@ -31,104 +31,210 @@ CREATE TABLE `orders` (
   `SHIPPING_STATE` varchar(32) NOT NULL,
   `SHIPPING_ZIP` varchar(10) NOT NULL,
   `SHIPPING_COUNTRY` varchar(60) NOT NULL,
+  `SHIPPING_CARRIER` varchar(20) NOT NULL,
   `SHIPPING_METHOD` varchar(60) NOT NULL,
+  `SHIPPING_WEIGHT` double NOT NULL,
+  `SHIPPING_TRACKING` varchar(60) NOT NULL,
+  `SHIPPING_DATE` date NOT NULL,
+  `SERVICE_LOCATION` tinyint(1) NOT NULL DEFAULT '0',
   `PHONE` varchar(20) NOT NULL,
   `EMAIL` varchar(100) NOT NULL,
   `SUBTOTAL` decimal(10,2) NOT NULL,
   `TAX` decimal(10,2) NOT NULL,
   `TAX_RATE` double NOT NULL,
   `TAX_CODE` varchar(32) NOT NULL,
+  `TAX_ADDRESS` varchar(100) NOT NULL,
+  `TAX_CITY` varchar(60) NOT NULL,
+  `TAX_STATE` varchar(32) NOT NULL,
+  `TAX_ZIP` varchar(10) NOT NULL,
+  `TAX_COUNTRY` varchar(32) NOT NULL,
+  `TAX_EXEMPT` tinyint(1) NOT NULL DEFAULT '0',
   `SHIPPING` decimal(10,2) NOT NULL,
+  `OTHER_TAX` decimal(10,2) NOT NULL,
   `TOTAL` decimal(10,2) NOT NULL,
+  `BALANCE` decimal(10,2) NOT NULL,
+  `PAID` decimal(10,2) NOT NULL DEFAULT '0.00',
+  `PAID_FULL` date NOT NULL,
+  `COMMENTS` text NOT NULL,
+  `PROMOCODEID` int(11) NOT NULL DEFAULT '0',
+  `PROMO_CODE` varchar(32) NOT NULL,
+  `PROMO_DESCRIPTION` varchar(100) NOT NULL,
+  `STATUSID` int(11) NOT NULL,
+  `LOGIN_KEY` varchar(12) NOT NULL,
+  `INCENTIVE` decimal(10,2) NOT NULL,
+  `INCENTIVE_EXPIRATION` date NOT NULL,
+  `STORE` tinyint(1) NOT NULL DEFAULT '0',
+  `AFFILIATEID` int(11) NOT NULL,
+  `AFFILIATE_BATCHID` int(11) NOT NULL DEFAULT '0',
+  `AFFILIATE_COMMISSION` decimal(10,2) NOT NULL,
+  `INVENTORY_ADJUSTED` tinyint(1) NOT NULL DEFAULT '0',
+  `FULFILLED` tinyint(1) NOT NULL DEFAULT '0',
+  `FULFILLED_DATETIME` datetime NOT NULL,
+  `FULFILLED_USERID` int(11) NOT NULL,
+  `PO_NUMBER` char(60) NOT NULL,
+  `FOOTER_MESSAGE` text NOT NULL,
+  `BOTTOM_MESSAGE` text NOT NULL,
+  `PACKING_MESSAGE` text NOT NULL,
+  `ADMIN_NOTES` text NOT NULL,
+  `ADMIN_NOTES_UPDATED` datetime NOT NULL,
+  `MERCHANT_SERVICES_PAYMENT` tinyint(1) NOT NULL DEFAULT '1',
+  `MERCHANT_SERVICES_CCKEYID` int(11) NOT NULL DEFAULT '0',
+  `SUBSCRIPTIONID` int(11) NOT NULL,
+  `CAMPAIGNID` int(11) NOT NULL DEFAULT '0',
+  `ASSIGNED_USERID` int(11) NOT NULL DEFAULT '0',
+  `LAST_EXPORT` date NOT NULL,
+  `LAST_VIEWED` datetime NOT NULL,
+  `LAST_PRINTED` datetime NOT NULL,
+  `LAST_UPDATED` datetime NOT NULL,
+  `CREATED` datetime NOT NULL,
   `USE_SHIPPING_ACCOUNT` tinyint(1) NOT NULL DEFAULT '0',
   `SHIPPING_ACCOUNT_CARRIER` varchar(32) NOT NULL,
   `SHIPPING_ACCOUNT_NUMBER` varchar(32) NOT NULL,
   `SHIPPING_ACCOUNT_METHOD` varchar(32) NOT NULL,
-  `PAYSTATUS` enum('Cleared','Pending') NOT NULL,
   `PAID_DATETIME` datetime NOT NULL,
   `PAYMENT_TYPE` enum('Credit Card','PayPal') NOT NULL,
   `TRANSACTIONID` varchar(60) NOT NULL,
   `CARD_TYPE` enum('Visa','Mastercard','Discover','American Express') NOT NULL,
   `CARD_LAST4` varchar(4) NOT NULL,
-  `COMMENTS` text NOT NULL,
-  `FULFILLED` tinyint(1) NOT NULL,
-  `LASTUPDATED` datetime NOT NULL,
-  `CREATED` datetime NOT NULL,
   PRIMARY KEY (`ID`),
-  KEY `ACCOUNTID` (`ACCOUNTID`),
-  KEY `PAYSTATUS` (`PAYSTATUS`),
-  KEY `ORDER_NUMBER` (`ORDER_NUMBER`),
-  KEY `QUICKBOOKS_ORDERID` (`QUICKBOOKS_ORDERID`)
-) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=latin1;
+  UNIQUE KEY `INVOICE_NUMBER` (`INVOICE_NUMBER`),
+  KEY `CONTACTID` (`CONTACTID`),
+  KEY `DATE` (`DATE`),
+  KEY `STATUSID` (`STATUSID`),
+  KEY `TAX_CITY` (`TAX_CITY`,`TAX_STATE`,`TAX_COUNTRY`),
+  KEY `FULFILLED` (`FULFILLED`),
+  KEY `LOGIN_KEY` (`LOGIN_KEY`),
+  KEY `PROMOCODEID` (`PROMOCODEID`),
+  KEY `LAST_EXPORT` (`LAST_EXPORT`),
+  KEY `CAMPAIGNID` (`CAMPAIGNID`),
+  KEY `ASSIGNED_USERID` (`ASSIGNED_USERID`),
+  KEY `PAID_DATETIME` (`PAID_DATETIME`)
+) ENGINE=MyISAM AUTO_INCREMENT=25 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `orders_details`
+-- Table structure for table `invoices_details`
 --
 
-DROP TABLE IF EXISTS `orders_details`;
+DROP TABLE IF EXISTS `invoices_details`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `orders_details` (
+CREATE TABLE `invoices_details` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `ORDERID` int(11) NOT NULL,
-  `INVENTORYID` int(11) NOT NULL,
+  `INVOICEID` int(11) NOT NULL,
+  `SERVICEID` int(11) NOT NULL,
+  `PRODUCTID` int(11) NOT NULL,
+  `SKU` varchar(60) NOT NULL,
   `NAME` varchar(200) NOT NULL,
   `DESCRIPTION` text NOT NULL,
   `QUANTITY` double NOT NULL,
-  `RATE` decimal(10,2) NOT NULL,
+  `RATE` double NOT NULL,
   `TAXABLE` tinyint(1) NOT NULL DEFAULT '1',
   `UNIT` varchar(32) NOT NULL,
   `LINE_TOTAL` decimal(10,2) NOT NULL,
+  `AUTO_ADD` tinyint(1) NOT NULL DEFAULT '0',
+  `DOWNLOADS_REMAINING` int(11) NOT NULL,
+  `PROMOCODEID` int(11) NOT NULL,
+  `BULK_DISCOUNT` tinyint(1) NOT NULL DEFAULT '0',
+  `MISC_RATE` decimal(10,2) NOT NULL,
+  `MISC_RATE2` decimal(10,2) NOT NULL,
+  `DESCRIPTION_OPTION` varchar(32) NOT NULL,
+  `QUANTITY_SHIPPED` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID`),
-  KEY `ORDERID` (`ORDERID`)
-) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=latin1;
+  KEY `INVOICEID` (`INVOICEID`),
+  KEY `INVENTORYID` (`PRODUCTID`),
+  KEY `NAME` (`NAME`),
+  KEY `SKU` (`SKU`),
+  KEY `MISC_RATE` (`MISC_RATE`,`DESCRIPTION_OPTION`),
+  KEY `SERVICEID` (`SERVICEID`)
+) ENGINE=MyISAM AUTO_INCREMENT=37 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `orders_shipping_tracking`
+-- Table structure for table `invoices_shipping_tracking`
 --
 
-DROP TABLE IF EXISTS `orders_shipping_tracking`;
+DROP TABLE IF EXISTS `invoices_shipping_tracking`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `orders_shipping_tracking` (
+CREATE TABLE `invoices_shipping_tracking` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
-  `ORDERID` int(11) NOT NULL,
-  `CARRIER` varchar(32) NOT NULL,
-  `SHIPPING_METHOD` varchar(60) NOT NULL,
-  `TRACKING_NUMBER` varchar(100) NOT NULL,
-  `SHIPPED_EMAIL_NOTICE` tinyint(1) NOT NULL DEFAULT '0',
-  `SHIPPED` tinyint(1) NOT NULL DEFAULT '0',
-  `SHIPPED_DATE` date NOT NULL,
+  `INVOICEID` int(11) NOT NULL,
+  `CARRIER` enum('USPS','UPS','FedEx') NOT NULL,
+  `SHIPPING_METHOD` varchar(32) NOT NULL,
+  `TRACKING_NUMBER` varchar(60) NOT NULL,
+  `BOXID` int(11) NOT NULL,
+  `PREDEFINED_TYPE` enum('custom','flatrate','parcel') NOT NULL,
+  `PREDEFINED_PACKAGE` varchar(60) NOT NULL,
+  `WEIGHT` double NOT NULL,
+  `WEIGHT_UNIT` enum('pounds','ounces') NOT NULL,
+  `LENGTH` double NOT NULL,
+  `WIDTH` double NOT NULL,
+  `HEIGHT` double NOT NULL,
+  `POSTAGE` decimal(10,2) NOT NULL,
+  `RETURN_SHIPMENT` tinyint(1) NOT NULL DEFAULT '0',
+  `POSTAGE_LINK` varchar(255) NOT NULL,
+  `CREATED` datetime NOT NULL,
   PRIMARY KEY (`ID`),
-  KEY `ORDERID` (`ORDERID`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  KEY `INVOICEID` (`INVOICEID`),
+  KEY `RETURN_SHIPMENT` (`RETURN_SHIPMENT`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `inventory`
+-- Table structure for table `content_products`
 --
 
-DROP TABLE IF EXISTS `inventory`;
+DROP TABLE IF EXISTS `content_products`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `inventory` (
+CREATE TABLE `content_products` (
   `ID` int(11) NOT NULL AUTO_INCREMENT,
   `CONTENTID` int(11) NOT NULL,
-  `PRODUCT_CODE` varchar(100) NOT NULL,
-  `DESCRIPTION` varchar(255) NOT NULL,
-  `RETAIL_PRICE` decimal(10,2) NOT NULL,
-  `OUR_PRICE` decimal(10,2) NOT NULL,
+  `PARENTID` int(11) NOT NULL DEFAULT '0',
+  `DOWNLOAD` tinyint(1) NOT NULL DEFAULT '0',
+  `SKU` varchar(100) NOT NULL,
+  `GTIN` varchar(60) NOT NULL,
+  `MPN` varchar(60) NOT NULL,
+  `COST` decimal(10,2) NOT NULL,
+  `MISC_RATE` decimal(10,2) NOT NULL,
+  `MISC_RATE2` decimal(10,2) NOT NULL,
+  `RETAIL_RATE` decimal(10,2) NOT NULL,
+  `SALE_RATE` decimal(10,2) NOT NULL,
+  `ON_SALE` tinyint(1) NOT NULL DEFAULT '0',
+  `SALE_START` date NOT NULL,
+  `SALE_END` date NOT NULL,
   `ALLOW_SALES` tinyint(1) NOT NULL DEFAULT '1',
   `TAXABLE` tinyint(1) NOT NULL DEFAULT '1',
+  `STOCK` int(11) NOT NULL,
+  `LOW_STOCK_NOTICE` tinyint(1) NOT NULL DEFAULT '0',
+  `SELL_ZERO_STOCK` tinyint(1) NOT NULL DEFAULT '1',
+  `DISPLAY_STOCK` tinyint(1) NOT NULL DEFAULT '0',
   `SHIPPING_WEIGHT` double NOT NULL,
+  `SHIPPING_WEIGHT_UNIT` enum('pounds','ounces') NOT NULL DEFAULT 'pounds',
   `SHIPPING_LENGTH` varchar(32) NOT NULL DEFAULT '12',
   `SHIPPING_WIDTH` varchar(32) NOT NULL DEFAULT '12',
   `SHIPPING_HEIGHT` varchar(32) NOT NULL DEFAULT '6',
-  `ADDITIONAL_SHIPPING` decimal(10,2) NOT NULL,
+  `SHIPPING_VOLUME` double NOT NULL,
+  `SHIPPING_GIRTH` double NOT NULL,
+  `ADDITIONAL_SHIPPING_US` decimal(10,2) NOT NULL,
+  `ADDITIONAL_SHIPPING_CANADA` decimal(10,2) NOT NULL,
+  `ADDITIONAL_SHIPPING_INTERNATIONAL` decimal(10,2) NOT NULL,
+  `SHIP_INDIVIDUAL` tinyint(1) NOT NULL DEFAULT '0',
+  `SHIP_BOXED` tinyint(1) NOT NULL DEFAULT '1',
   `FREE_SHIP` tinyint(1) NOT NULL DEFAULT '0',
-  `INDIVIDUAL_SHIPPING` tinyint(1) NOT NULL DEFAULT '0',
+  `FREE_SHIP_LOCATION` tinyint(1) NOT NULL DEFAULT '0',
+  `LABEL` varchar(255) NOT NULL,
+  `SIZE_LABEL` varchar(100) NOT NULL,
+  `UNIT_LABEL` varchar(32) NOT NULL,
+  `SEQUENCE` int(11) NOT NULL,
+  `UNITS_INCLUDED` int(11) NOT NULL DEFAULT '1',
+  `VENDORID` int(11) NOT NULL DEFAULT '0',
+  `BRANDID` int(11) NOT NULL DEFAULT '0',
+  `DESCRIPTION_OPTION` varchar(60) NOT NULL,
+  `ORIGIN_COUNTRY` varchar(32) NOT NULL,
+  `ALLOW_LOW_STOCK_NOTICE` tinyint(1) NOT NULL DEFAULT '1',
+  `LOW_STOCK_NOTICE_SENT` datetime NOT NULL,
   `MANUFACTURER` varchar(60) NOT NULL,
   `CONNECTION` varchar(32) NOT NULL,
   `CONNECTION2` varchar(32) NOT NULL,
@@ -140,7 +246,6 @@ CREATE TABLE `inventory` (
   `PTT` enum('','No Spare PTT','Ring','Barrel') NOT NULL,
   `SIZE` char(32) NOT NULL,
   `BOOM` varchar(100) NOT NULL,
-  `QUANTITY` int(11) NOT NULL DEFAULT '1',
   `PRODUCT_TYPE` varchar(32) NOT NULL,
   `WIRE_COUNT` varchar(32) NOT NULL,
   `EAR_PIECE_STYLE` varchar(32) NOT NULL,
@@ -150,8 +255,15 @@ CREATE TABLE `inventory` (
   `UPSELLID` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`ID`),
   KEY `MANUFACTURER` (`MANUFACTURER`),
-  KEY `CONTENTID` (`CONTENTID`)
-) ENGINE=MyISAM AUTO_INCREMENT=3792 DEFAULT CHARSET=latin1;
+  KEY `CONTENTID` (`CONTENTID`),
+  KEY `SKU` (`SKU`),
+  KEY `PARENTID` (`PARENTID`),
+  KEY `DOWNLOAD` (`DOWNLOAD`),
+  KEY `LOW_STOCK_NOTICE` (`LOW_STOCK_NOTICE`),
+  KEY `SELL_ZERO_STOCK` (`SELL_ZERO_STOCK`),
+  KEY `BRANDID` (`BRANDID`),
+  KEY `ALLOW_LOW_STOCK_NOTICE` (`ALLOW_LOW_STOCK_NOTICE`)
+) ENGINE=MyISAM AUTO_INCREMENT=3868 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
-
+-- Dump completed on 2018-11-08 22:35:42

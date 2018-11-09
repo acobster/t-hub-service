@@ -23,26 +23,29 @@ class OrderModel implements OrderProvider {
 
     if( $options['start_date'] ) {
       $bindings[':start_date'] = $options['start_date'];
-      $whereClause = "orders.CREATED > :start_date";
+      $whereClause = "invoices.CREATED > :start_date";
 
     } elseif( intval($options['start_id']) ) {
       $bindings[':start_id'] = $options['start_id'];
-      $whereClause = "orders.ID > :start_id";
+      $whereClause = "invoices.ID > :start_id";
 
     } elseif( $options['num_days'] ) {
       $bindings[':days'] = intval( $options['num_days'] );
-      $whereClause = "orders.CREATED > DATE_SUB( CURDATE(), INTERVAL :days DAY )";
+      $whereClause = "invoices.CREATED > DATE_SUB( CURDATE(), INTERVAL :days DAY )";
 
     } else {
-      $whereClause = "orders.ID > 0";
+      $whereClause = "invoices.ID > 0";
     }
 
     $sql = <<<_SQL_
-SELECT orders.*, ship.SHIPPED,
-    ship.TRACKING_NUMBER, ship.SHIPPED_DATE,
-    ship.CARRIER AS UPDATED_CARRIER, ship.SHIPPING_METHOD AS UPDATED_SHIPPING_METHOD
-  FROM orders
-  LEFT JOIN orders_shipping_tracking AS ship ON (orders.ID = ship.ORDERID)
+SELECT invoices.*,
+    (ship.ID IS NOT NULL) AS SHIPPED,
+    ship.TRACKING_NUMBER,
+    ship.CREATED,
+    ship.CARRIER AS UPDATED_CARRIER,
+    ship.SHIPPING_METHOD AS UPDATED_SHIPPING_METHOD
+  FROM invoices
+  LEFT JOIN invoices_shipping_tracking AS ship ON (invoices.ID = ship.INVOICEID)
   WHERE {$whereClause}
   LIMIT :limit
 _SQL_;
@@ -63,14 +66,15 @@ _SQL_;
   }
 
   protected function updateOrder( $order ) {
+    // TODO what happened to QUICKBOOKS_ORDERID?
     $sql = <<<_SQL_
-UPDATE orders SET QUICKBOOKS_ORDERID = :quickbooks_id, LASTUPDATED = NOW()
+UPDATE invoices SET
+  LAST_UPDATED = NOW()
   WHERE ID = :id LIMIT 1
 _SQL_;
 
     $bindings = array(
       ':id' =>  $order['host_order_id'],
-      ':quickbooks_id' => $order['local_order_id'],
     );
 
     if( ! $this->db->write( $sql, $bindings ) ) {
@@ -90,13 +94,14 @@ _SQL_;
     $shipDate = new \DateTime( $order['shipped_on'], new \DateTimeZone('GST') );
     $formattedDate = $shipDate->format('Y-m-d');
 
+    // TODO insert a new row; don't count on there being an old one
     $sql = <<<_SQL_
-UPDATE orders_shipping_tracking SET SHIPPED = 1,
-  SHIPPED_DATE = :date,
+UPDATE invoices_shipping_tracking SET
+  CREATED = :date,
   CARRIER = :carrier,
   SHIPPING_METHOD = :method,
   TRACKING_NUMBER = :tracking
-  WHERE ORDERID = :id LIMIT 1
+  WHERE INVOICEID = :id LIMIT 1
 _SQL_;
 
     if( ! $this->db->write( $sql, array(
@@ -112,9 +117,12 @@ _SQL_;
 
   protected function getOrderItems( $order ) {
     $sql = <<<_SQL_
-SELECT orders_details.*, inventory.PRODUCT_CODE FROM orders_details
-  LEFT JOIN inventory ON (orders_details.INVENTORYID = inventory.ID)
-  WHERE ORDERID = :id
+SELECT invoices_details.*,
+  inventory.PRODUCT_CODE
+FROM invoices_details
+LEFT JOIN content_products AS inventory
+  ON (invoices_details.INVENTORYID = inventory.ID)
+WHERE INVOICEID = :id
 _SQL_;
 
     return $this->db->read( $sql, array(':id' => $order['ID']) );
@@ -122,11 +130,11 @@ _SQL_;
 
   protected function structureOrderData( $data ) {
     $dateTime = new \DateTime( $data['CREATED'] );
-    $updatedOnDateTime = new \DateTime( $data['LASTUPDATED'] );
+    $updatedOnDateTime = new \DateTime( $data['LAST_UPDATED'] );
     $payDateTime = new \DateTime( $data['PAID_DATETIME'] );
 
-    if( $data['SHIPPED_DATE'] != '0000-00-00' && $data['SHIPPED_DATE'] != '1970-01-01' ) {
-      $shipDate = new \DateTime( $data['SHIPPED_DATE'] );
+    if( $data['CREATED'] != '0000-00-00' && $data['CREATED'] != '1970-01-01' ) {
+      $shipDate = new \DateTime( $data['CREATED'] );
       $shipDate = $shipDate->format('Y-m-d');
     }
 
@@ -160,7 +168,7 @@ _SQL_;
         'country'           => $data['COUNTRY'],
         'email'             => $data['EMAIL'],
         'phone'             => $data['PHONE'],
-        'po_number'         => $data['PONUMBER'],
+        'po_number'         => $data['PO_NUMBER'],
         // No credit card info for now.
       ),
       'ship' => array(

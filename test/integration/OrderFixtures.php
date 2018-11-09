@@ -55,14 +55,14 @@ class OrderFixtures {
 
     if (empty($method)) die($method);
     $sql = <<<_SQL_
-INSERT INTO orders SET {$setOrderId}
-  ORDER_NUMBER='9876',
+INSERT INTO invoices SET {$setOrderId}
+  INVOICE_NUMBER='9876',
   FIRST='{$bill['first_name']}',
   LAST='{$bill['last_name']}',
   PAYSTATUS='{$bill['pay_status']}',
   PAID_DATETIME='{$bill['pay_date']}',
   CREATED='{$created}',
-  LASTUPDATED='{$updated}',
+  LAST_UPDATED='{$updated}',
   ORGANIZATION='{$bill['company_name']}',
   ADDRESS='{$bill['address1']}',
   ADDRESS2='{$bill['address2']}',
@@ -70,7 +70,7 @@ INSERT INTO orders SET {$setOrderId}
   STATE='{$bill['state']}',
   ZIP='{$bill['zip']}',
   COUNTRY='{$bill['country']}',
-  PONUMBER='{$poNumber}',
+  PO_NUMBER='{$poNumber}',
   CARRIER='{$ship['ship_carrier_name']}',
   SHIPPING_METHOD='{$ship['ship_method']}',
   SHIPPING_FIRST='{$ship['first_name']}',
@@ -99,7 +99,8 @@ INSERT INTO orders SET {$setOrderId}
   TAX_RATE=0.9,
   TAX_CODE='tax-code',
   COMMENTS='foo',
-  FULFILLED=1, ACCOUNTID=5432,
+  FULFILLED=1,
+  CONTACTID=5432,
   DATE=CURDATE()
 _SQL_;
 
@@ -124,11 +125,11 @@ _SQL_;
       : $order['bill']['pay_method'];
 
     $sql = <<<_SQL_
-INSERT INTO orders_activity SET ORDERID={$orderId},
+INSERT INTO invoices_activity SET INVOICEID={$orderId},
   PAYMENT_TYPE='$pmtType',
   CCTYPE='{$cardType}',
   NOTES='foo', TRANSACTIONID='1234', LAST4CC='1234', CHECK_NUMBER='123',
-  PAYMENT=2.00, IP_ADDRESS='1.2.3.4', ACCOUNTID=4321, CREATED=NOW()
+  PAYMENT=2.00, IP_ADDRESS='1.2.3.4', CONTACTID=4321, CREATED=NOW()
 _SQL_;
 
     self::write( $sql );
@@ -147,7 +148,7 @@ _SQL_;
     $shipped = ( $shipping['ship_status'] == 'Shipped' ) ? 1 : 0;
 
     $sql = <<<_SQL_
-INSERT INTO orders_shipping_tracking SET ORDERID={$orderId},
+INSERT INTO invoices_shipping_tracking SET INVOICEID={$orderId},
   CARRIER = '{$shipping['ship_carrier_name']}',
   SHIPPING_METHOD = '{$shipping['ship_method']}',
   TRACKING_NUMBER = '{$shipping['tracking']}',
@@ -163,8 +164,8 @@ _SQL_;
     $inventoryId = self::insertInventory( $item, $orderId );
 
     $sql = <<<_SQL_
-INSERT INTO orders_details SET
-  ORDERID={$orderId},
+INSERT INTO invoices_details SET
+  INVOICEID={$orderId},
   INVENTORYID={$inventoryId},
   NAME='foo',
   DESCRIPTION='{$item['item_description']}',
@@ -180,7 +181,7 @@ _SQL_;
 
   public static function insertInventory( $item ) {
     $sql = <<<_SQL_
-INSERT INTO inventory SET
+INSERT INTO content_products SET
   PRODUCT_CODE='{$item['item_code']}',
   CONTENTID=123,
   DESCRIPTION='the best thing ever',
@@ -215,10 +216,10 @@ _SQL_;
 
   public static function truncateAll() {
     $tables = array(
-      'orders',
-      'orders_details',
-      'orders_shipping_tracking',
-      'inventory',
+      'invoices',
+      'invoices_details',
+      'invoices_shipping_tracking',
+      'content_products',
     );
 
     foreach( $tables as $table ) {

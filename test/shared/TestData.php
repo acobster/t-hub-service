@@ -8,7 +8,7 @@ class TestData {
 
     // NOTE THE DIFFERENT DATES HERE
     'CREATED'                 => '2017-01-01',
-    'LASTUPDATED'             => '2017-01-02',
+    'LAST_UPDATED'            => '2017-01-02',
     'PAID_DATETIME'           => '2017-01-03',
     'SHIPPED_DATE'            => '2017-01-04',
 
@@ -27,7 +27,7 @@ class TestData {
     'COUNTRY'                 => 'The U.S. of A.',
     'EMAIL'                   => 'me@example.com',
     'PHONE'                   => '1234567890',
-    'PONUMBER'                => '123456',
+    'PO_NUMBER'               => '123456',
     'CARRIER'                 => 'FedEx',
     'TRACKING_NUMBER'         => '67890',
     'SHIPPING'                => '10.00',
