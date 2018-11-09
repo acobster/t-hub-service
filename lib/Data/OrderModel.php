@@ -69,7 +69,7 @@ _SQL_;
     // TODO what happened to QUICKBOOKS_ORDERID?
     $sql = <<<_SQL_
 UPDATE invoices SET
-  LAST_UPDATED = NOW()
+  LAST_UPDATED = UTC_TIMESTAMP()
   WHERE ID = :id LIMIT 1
 _SQL_;
 
