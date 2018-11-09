@@ -6,7 +6,7 @@ config:
 
 services:
   appserver:
-    build:
+    run:
       - "cd $LANDO_MOUNT && composer install"
       - "cd $LANDO_MOUNT && php -r 'echo password_hash(\"thub\", PASSWORD_DEFAULT);' > thub.passwd"
       - "cd $LANDO_MOUNT && cp lando.thub_config.php thub_config.php"
