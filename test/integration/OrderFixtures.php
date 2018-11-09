@@ -114,27 +114,6 @@ _SQL_;
     }
   }
 
-  public static function insertCard( $order, $orderId ) {
-    $card = $order['bill']['credit_card'];
-    $cardType = ( $card && $card['credit_card_type'] )
-      ? $card['credit_card_type']
-      : '';
-
-    $pmtType = ( $order['bill']['pay_method'] == 'CreditCard' )
-      ? 'Credit Card'
-      : $order['bill']['pay_method'];
-
-    $sql = <<<_SQL_
-INSERT INTO invoices_activity SET INVOICEID={$orderId},
-  PAYMENT_TYPE='$pmtType',
-  CCTYPE='{$cardType}',
-  NOTES='foo', TRANSACTIONID='1234', LAST4CC='1234', CHECK_NUMBER='123',
-  PAYMENT=2.00, IP_ADDRESS='1.2.3.4', CONTACTID=4321, CREATED=NOW()
-_SQL_;
-
-    self::write( $sql );
-  }
-
   public static function insertShipping( $order, $orderId ) {
     $shipping = $order['ship'];
 
