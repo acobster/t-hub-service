@@ -66,15 +66,16 @@ _SQL_;
   }
 
   protected function updateOrder( $order ) {
-    // TODO what happened to QUICKBOOKS_ORDERID?
     $sql = <<<_SQL_
 UPDATE invoices SET
-  LAST_UPDATED = UTC_TIMESTAMP()
+  QUICKBOOKS_ORDERID = :quickbooks_id,
+  LAST_UPDATED       = UTC_TIMESTAMP()
   WHERE ID = :id LIMIT 1
 _SQL_;
 
     $bindings = array(
-      ':id' =>  $order['host_order_id'],
+      ':id'            =>  $order['host_order_id'],
+      ':quickbooks_id' =>  $order['local_order_id'],
     );
 
     if( ! $this->db->write( $sql, $bindings ) ) {
