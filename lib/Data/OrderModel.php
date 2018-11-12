@@ -84,9 +84,9 @@ _SQL_;
     $this->updateShipping( $order );
 
     return array(
-      'host_order_id'      => $order['host_order_id'],
-      'local_order_id'      => $order['local_order_id'],
-      'host_status'   => 'Success',
+      'host_order_id'  => $order['host_order_id'],
+      'local_order_id' => $order['local_order_id'],
+      'host_status'    => 'Success',
     );
   }
 
