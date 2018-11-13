@@ -134,7 +134,6 @@
               <?php foreach( $order['order_items'] as $item ) : ?>
                 <Item>
                   <ItemCode><?= $item['item_code'] ?></ItemCode>
-                  <ItemCode><?= $item['item_code'] ?></ItemCode>
                   <ItemDescription><?= $item['item_description'] ?></ItemDescription>
                   <Quantity><?= $item['quantity'] ?></Quantity>
                   <UnitPrice><?= $item['unit_price'] ?></UnitPrice>

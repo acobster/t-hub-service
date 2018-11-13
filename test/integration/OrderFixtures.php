@@ -39,6 +39,8 @@ class OrderFixtures {
 
     // ensure we have a PAYMENT_TYPE
     $method = str_replace('CreditCard', 'Credit Card', $order['bill']['pay_method']);
+    // TODO delete?
+    if (empty($method)) die($method);
 
     // Corporate shipping account?
     if( !empty($order['ship']['corporate_account']) ) {
@@ -53,13 +55,14 @@ class OrderFixtures {
       $corporateAccountMethod = '';
     }
 
-    if (empty($method)) die($method);
+    $invoiceNum = rand();
+
     $sql = <<<_SQL_
 INSERT INTO invoices SET {$setOrderId}
-  INVOICE_NUMBER='9876',
+  INVOICE_NUMBER=$invoiceNum,
   FIRST='{$bill['first_name']}',
   LAST='{$bill['last_name']}',
-  PAYSTATUS='{$bill['pay_status']}',
+  STATUSID='{$bill['statusid']}',
   PAID_DATETIME='{$bill['pay_date']}',
   CREATED='{$created}',
   LAST_UPDATED='{$updated}',
@@ -71,8 +74,6 @@ INSERT INTO invoices SET {$setOrderId}
   ZIP='{$bill['zip']}',
   COUNTRY='{$bill['country']}',
   PO_NUMBER='{$poNumber}',
-  CARRIER='{$ship['ship_carrier_name']}',
-  SHIPPING_METHOD='{$ship['ship_method']}',
   SHIPPING_FIRST='{$ship['first_name']}',
   SHIPPING_LAST='{$ship['last_name']}',
   SHIPPING_ORGANIZATION='{$ship['company_name']}',
@@ -82,6 +83,11 @@ INSERT INTO invoices SET {$setOrderId}
   SHIPPING_STATE='{$ship['state']}',
   SHIPPING_ZIP='{$ship['zip']}',
   SHIPPING_COUNTRY='{$ship['country']}',
+  SHIPPING_CARRIER='',
+  SHIPPING_METHOD='{$ship['ship_method']}',
+  SHIPPING_WEIGHT=10,
+  SHIPPING_TRACKING='',
+  SHIPPING_DATE=NOW(),
   USE_SHIPPING_ACCOUNT='{$useCorporateAccount}',
   SHIPPING_ACCOUNT_CARRIER='{$corporateAccountCarrier}',
   SHIPPING_ACCOUNT_NUMBER='{$corporateAccountNumber}',
@@ -92,22 +98,49 @@ INSERT INTO invoices SET {$setOrderId}
   TAX={$charges['tax']},
   SHIPPING={$charges['shipping']},
   TOTAL={$charges['total']},
+  COMMENTS='{$order['comment']}',
   PAYMENT_TYPE='$method',
   TRANSACTIONID='1234',
   CARD_TYPE='Visa',
   CARD_LAST4='1111',
   TAX_RATE=0.9,
   TAX_CODE='tax-code',
-  COMMENTS='foo',
+  TAX_ADDRESS='123 Fake St',
+  TAX_CITY='Springfield',
+  TAX_STATE='IL',
+  TAX_ZIP='12345',
+  TAX_COUNTRY='USA',
+  OTHER_TAX=10.0,
+  BALANCE=10.0,
+  PROMO_CODE='#acmepromo',
+  PROMO_DESCRIPTION='Hash Tag ACME Promo',
+  LOGIN_KEY='user',
+  INCENTIVE=666,
+  INCENTIVE_EXPIRATION=NOW(),
+  AFFILIATEID=567,
+  AFFILIATE_COMMISSION=420,
+  FULFILLED_DATETIME=NOW(),
+  FULFILLED_USERID=345,
+  FOOTER_MESSAGE='blah',
+  BOTTOM_MESSAGE='blah blah',
+  PACKING_MESSAGE='blah blah blah',
+  ADMIN_NOTES='blah blah blah blah',
+  ADMIN_NOTES_UPDATED=NOW(),
+  SUBSCRIPTIONID=9876,
+  LAST_EXPORT=CURDATE(),
+  LAST_VIEWED=CURDATE(),
+  LAST_PRINTED=CURDATE(),
+  PAID_FULL=CURDATE(),
   FULFILLED=1,
   CONTACTID=5432,
-  DATE=CURDATE()
+  DATE=CURDATE(),
+  DATE_DUE=CURDATE()
 _SQL_;
 
     self::write( $sql );
     $orderId = self::lastId();
 
-    self::insertShipping( $order, $orderId );
+    //self::insertShipping( $order, $orderId );
 
     foreach( $order['order_items'] as $item ) {
       self::insertOrderItem( $item, $orderId );
@@ -131,9 +164,17 @@ INSERT INTO invoices_shipping_tracking SET INVOICEID={$orderId},
   CARRIER = '{$shipping['ship_carrier_name']}',
   SHIPPING_METHOD = '{$shipping['ship_method']}',
   TRACKING_NUMBER = '{$shipping['tracking']}',
-  SHIPPED_DATE = '{$shipDate}',
-  SHIPPED = {$shipped},
-  SHIPPED_EMAIL_NOTICE = 0
+  CREATED = '{$shipDate}',
+  BOXID=1234,
+  PREDEFINED_TYPE='parcel',
+  PREDEFINED_PACKAGE='in a box',
+  WEIGHT=3,
+  WEIGHT_UNIT='pounds',
+  LENGTH=10,
+  WIDTH=10,
+  HEIGHT=10,
+  POSTAGE=10,
+  POSTAGE_LINK=''
 _SQL_;
 
     self::write( $sql );
@@ -145,13 +186,20 @@ _SQL_;
     $sql = <<<_SQL_
 INSERT INTO invoices_details SET
   INVOICEID={$orderId},
-  INVENTORYID={$inventoryId},
+  PRODUCTID={$inventoryId},
+  SKU='{$item['item_code']}',
   NAME='foo',
   DESCRIPTION='{$item['item_description']}',
   QUANTITY={$item['quantity']},
   RATE={$item['unit_price']},
   LINE_TOTAL={$item['item_total']},
-  UNIT='unit'
+  DOWNLOADS_REMAINING=3,
+  PROMOCODEID=3,
+  MISC_RATE=3,
+  MISC_RATE2=3,
+  DESCRIPTION_OPTION='lorem ipsum dolor sit amet',
+  UNIT='unit',
+  SERVICEID=123
 _SQL_;
 
     self::write( $sql );
@@ -161,13 +209,21 @@ _SQL_;
   public static function insertInventory( $item ) {
     $sql = <<<_SQL_
 INSERT INTO content_products SET
-  PRODUCT_CODE='{$item['item_code']}',
+  SKU='{$item['item_code']}',
   CONTENTID=123,
-  DESCRIPTION='the best thing ever',
-  RETAIL_PRICE=2.00,
-  OUR_PRICE=1.00,
   SHIPPING_WEIGHT=10.0,
-  ADDITIONAL_SHIPPING=1.00,
+  SHIPPING_VOLUME=20.0,
+  SHIPPING_GIRTH=20.0,
+  ADDITIONAL_SHIPPING_US=0,
+  ADDITIONAL_SHIPPING_CANADA=0,
+  ADDITIONAL_SHIPPING_INTERNATIONAL=0,
+  LABEL='',
+  SIZE_LABEL='',
+  UNIT_LABEL='',
+  SEQUENCE=0,
+  DESCRIPTION_OPTION='',
+  ORIGIN_COUNTRY='',
+  LOW_STOCK_NOTICE_SENT=NOW(),
   MANUFACTURER='',
   CONNECTION='something',
   CONNECTION2='',
@@ -176,7 +232,17 @@ INSERT INTO content_products SET
   TUBE_COLOR='',
   EAR_SIDE='',
   PTT='',
-  `SIZE`='',
+  GTIN='',
+  MPN='',
+  COST=10.0,
+  MISC_RATE=10.0,
+  MISC_RATE2=10.0,
+  RETAIL_RATE=10.0,
+  SALE_RATE=10.0,
+  SALE_START=CURDATE(),
+  SALE_END=CURDATE(),
+  STOCK=45,
+ `SIZE`='',
   BOOM='',
   PRODUCT_TYPE='',
   WIRE_COUNT='',

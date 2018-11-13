@@ -119,10 +119,10 @@ _SQL_;
   protected function getOrderItems( $order ) {
     $sql = <<<_SQL_
 SELECT invoices_details.*,
-  inventory.PRODUCT_CODE
+  inventory.SKU
 FROM invoices_details
 LEFT JOIN content_products AS inventory
-  ON (invoices_details.INVENTORYID = inventory.ID)
+  ON (invoices_details.PRODUCTID = inventory.ID)
 WHERE INVOICEID = :id
 _SQL_;
 
@@ -156,7 +156,7 @@ _SQL_;
       'updated_on'          => $updatedOnDateTime->format('Y-m-d H:i:s'),
       'bill' => array(
         'pay_method'        => $method,
-        'pay_status'        => $data['PAYSTATUS'],
+        //'pay_status'        => $data['PAY_STATUS'],
         'pay_date'          => $payDateTime->format('Y-m-d'),
         'first_name'        => $data['FIRST'],
         'last_name'         => $data['LAST'],
@@ -208,7 +208,7 @@ _SQL_;
 
     foreach( $data['items'] as $item ) {
       $order['order_items'][] = array(
-        'item_code'           => $item['PRODUCT_CODE'],
+        'item_code'           => $item['SKU'],
         'item_description'    => $item['DESCRIPTION'],
         'quantity'            => $item['QUANTITY'],
         'unit_price'          => $item['RATE'],

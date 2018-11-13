@@ -1,61 +1,10 @@
 <?php
 
 class TestData {
-  /**
-   * Intended to be passed to OrderModel
-   */
-  public static $rawOrder = array(
-
-    // NOTE THE DIFFERENT DATES HERE
-    'CREATED'                 => '2017-01-01',
-    'LAST_UPDATED'            => '2017-01-02',
-    'PAID_DATETIME'           => '2017-01-03',
-    'SHIPPED_DATE'            => '2017-01-04',
-
-    'SHIPPED'                 => 0,
-    'PAYMENT_TYPE'            => 'Credit Card',
-    'ID'                      => '321',
-    'PAYSTATUS'               => 'Cleared',
-    'FIRST'                   => 'Bob',
-    'LAST'                    => 'Belcher',
-    'ORGANIZATION'            => 'Bob\'s Burgers',
-    'ADDRESS'                 => '123 Fake St',
-    'ADDRESS2'                => 'Burger Joint',
-    'CITY'                    => 'Springfield',
-    'STATE'                   => 'KY',
-    'ZIP'                     => '12345',
-    'COUNTRY'                 => 'The U.S. of A.',
-    'EMAIL'                   => 'me@example.com',
-    'PHONE'                   => '1234567890',
-    'PO_NUMBER'               => '123456',
-    'CARRIER'                 => 'FedEx',
-    'TRACKING_NUMBER'         => '67890',
-    'SHIPPING'                => '10.00',
-    'SHIPPING_METHOD'         => 'Ground',
-    'SHIPPING_FIRST'          => 'Bobby',
-    'SHIPPING_LAST'           => 'Bee',
-    'SHIPPING_ORGANIZATION'   => 'Bob\'s Burgers, LLC',
-    'SHIPPING_ADDRESS'        => '123 Fake St.',
-    'SHIPPING_ADDRESS2'       => 'Corporate Suite',
-    'SHIPPING_CITY'           => 'Springfield',
-    'SHIPPING_STATE'          => 'KY',
-    'SHIPPING_ZIP'            => '12345',
-    'SHIPPING_COUNTRY'        => 'USA',
-    'TAX'                     => 1.00,
-    'TOTAL'                   => 10.00,
-    'SUBTOTAL'                => 9.00,
-    'items'                   => array(
-      'PRODUCT_CODE'      => '654',
-      'DESCRIPTION'       => 'the best item',
-      'QUANTITY'          => 3,
-      'RATE'              => 3.00,
-      'LINE_TOTAL'        => 9.00
-    )
-  );
-
   public static $orders = array(
     array(
       'order_id'            => '1',
+      'comment'             => 'Hello There!',
       'provider_order_ref'  => '1',
       'transaction_type'    => 'Sale',
       'date'                => '2014-12-16',
@@ -64,6 +13,7 @@ class TestData {
       'updated_on'          => '2014-12-16 22:40:21',
       'bill'                => array(
         'pay_method'          => 'CreditCard',
+        'statusid'            => 7,
         'pay_status'          => 'Cleared',
         'pay_date'            => '2014-12-16',
         'first_name'          => 'Bob',
@@ -157,6 +107,7 @@ class TestData {
       'updated_on'          => '2014-12-16 22:45:21',
       'bill'                => array(
         'pay_method'          => 'CreditCard',
+        'statusid'            => 0,
         'pay_status'          => 'Pending',
         'pay_date'            => '2014-12-17',
         'first_name'          => 'Bob',

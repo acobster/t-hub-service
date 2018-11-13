@@ -105,7 +105,8 @@ class THubServiceTest extends TestCase {
   }
 
   public function testGetOrdersXmlWithArray() {
-    $this->mockProvider->method('getNewOrders')
+    $this->mockProvider
+      ->method('getNewOrders')
       ->willReturn( TestData::$orders );
 
     $parsed = $this->getParsedResponse( TestData::GET_ORDERS_REQUEST_XML );

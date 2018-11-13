@@ -31,7 +31,7 @@ class THubServiceIntegrationTest extends TestCase {
     }
   }
 
-  public function xtestEmptyGetOrdersResponse() {
+  public function testEmptyGetOrdersResponse() {
     $parsed = $this->getParsedResponse( TestData::GET_ORDERS_REQUEST_XML );
     $this->assertEquals( 'GetOrders', $parsed->Envelope->Command );
     $this->assertEquals( 'No new orders', $parsed->Envelope->StatusMessage );
@@ -51,7 +51,7 @@ class THubServiceIntegrationTest extends TestCase {
     $this->assertOrder( TestData::$orders[1], $orders[1] );
   }
 
-  public function xtestGetOrdersResponseByOrderStartNumber() {
+  public function testGetOrdersResponseByOrderStartNumber() {
     OrderFixtures::insertOrders( TestData::newAndOldOrders() );
     $parsed = $this->getParsedResponse(
       TestData::GET_ORDERS_REQUEST_XML_BY_ORDER_START_NUMBER );
@@ -66,7 +66,7 @@ class THubServiceIntegrationTest extends TestCase {
     }
   }
 
-  public function xtestGetOrdersResponseByNumDays() {
+  public function testGetOrdersResponseByNumDays() {
     OrderFixtures::insertOrders( TestData::newAndOldOrders() );
     $parsed = $this->getParsedResponse(
       TestData::GET_ORDERS_REQUEST_XML_BY_NUM_DAYS );
