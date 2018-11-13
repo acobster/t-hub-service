@@ -99,6 +99,7 @@ class TestData {
     ),
     array(
       'order_id'            => '2',
+      'comment'             => 'LEAVE ON BACK PORCH',
       'provider_order_ref'  => '2',
       'transaction_type'    => 'Sale',
       'date'                => '2014-12-16',
