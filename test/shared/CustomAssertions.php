@@ -2,13 +2,13 @@
 
 trait CustomAssertions {
   protected function assertOrder( $expected, $actual ) {
-    $this->assertEquals( $expected['order_id'],           $actual->OrderID );
-    $this->assertEquals( $expected['provider_order_ref'], $actual->OrderID );
-    $this->assertEquals( $expected['transaction_type'],   $actual->TransactionType );
-    $this->assertEquals( $expected['date'],               $actual->Date );
-    $this->assertEquals( $expected['time'],               $actual->Time );
-    $this->assertEquals( $expected['time_zone'],          $actual->TimeZone );
-    $this->assertEquals( $expected['updated_on'],         $actual->UpdatedOn );
+    $this->assertIndexEquals( $expected, 'order_id',           $actual->OrderID );
+    $this->assertIndexEquals( $expected, 'provider_order_ref', $actual->OrderID );
+    $this->assertIndexEquals( $expected, 'transaction_type',   $actual->TransactionType );
+    $this->assertIndexEquals( $expected, 'date',               $actual->Date );
+    $this->assertIndexEquals( $expected, 'time',               $actual->Time );
+    $this->assertIndexEquals( $expected, 'time_zone',          $actual->TimeZone );
+    $this->assertIndexEquals( $expected, 'updated_on',         $actual->UpdatedOn );
 
     $this->assertOrderBill( $expected['bill'],          $actual->Bill );
     $this->assertOrderShip( $expected['ship'],          $actual->Ship );
@@ -17,18 +17,18 @@ trait CustomAssertions {
   }
 
   protected function assertOrderBill( $expected, $actual ) {
-    $this->assertEquals( $expected['pay_method'],   $actual->PayMethod );
-    $this->assertEquals( $expected['pay_status'],   $actual->PayStatus );
-    $this->assertEquals( $expected['first_name'],   $actual->FirstName );
-    $this->assertEquals( $expected['last_name'],    $actual->LastName );
-    $this->assertEquals( $expected['address1'],     $actual->Address1 );
-    $this->assertEquals( $expected['address2'],     $actual->Address2 );
-    $this->assertEquals( $expected['city' ],        $actual->City );
-    $this->assertEquals( $expected['state'],        $actual->State );
-    $this->assertEquals( $expected['zip'],          $actual->Zip );
-    $this->assertEquals( $expected['country'],      $actual->Country );
-    $this->assertEquals( $expected['email'],        $actual->Email );
-    $this->assertEquals( $expected['phone'],        $actual->Phone );
+    $this->assertIndexEquals( $expected, 'pay_method',   $actual->PayMethod );
+    $this->assertIndexEquals( $expected, 'pay_status',   $actual->PayStatus );
+    $this->assertIndexEquals( $expected, 'first_name',   $actual->FirstName );
+    $this->assertIndexEquals( $expected, 'last_name',    $actual->LastName );
+    $this->assertIndexEquals( $expected, 'address1',     $actual->Address1 );
+    $this->assertIndexEquals( $expected, 'address2',     $actual->Address2 );
+    $this->assertIndexEquals( $expected, 'city' ,        $actual->City );
+    $this->assertIndexEquals( $expected, 'state',        $actual->State );
+    $this->assertIndexEquals( $expected, 'zip',          $actual->Zip );
+    $this->assertIndexEquals( $expected, 'country',      $actual->Country );
+    $this->assertIndexEquals( $expected, 'email',        $actual->Email );
+    $this->assertIndexEquals( $expected, 'phone',        $actual->Phone );
 
     $this->assertEqualsIfPresent( $expected, 'pay_date',     $actual->PayDate );
     $this->assertEqualsIfPresent( $expected, 'middle_name', $actual->MiddleName );
@@ -43,10 +43,10 @@ trait CustomAssertions {
   }
 
   protected function assertOrderBillCard( $expected, $actual ) {
-    $this->assertEquals( $expected['credit_card_type'],     $actual->CreditCardType );
-    $this->assertEquals( $expected['credit_card_charge'],   $actual->CreditCardCharge );
-    $this->assertEquals( $expected['expiration_date'],      $actual->ExpirationDate );
-    $this->assertEquals( $expected['credit_card_number'],   $actual->CreditCardNumber );
+    $this->assertIndexEquals( $expected, 'credit_card_type',     $actual->CreditCardType );
+    $this->assertIndexEquals( $expected, 'credit_card_charge',   $actual->CreditCardCharge );
+    $this->assertIndexEquals( $expected, 'expiration_date',      $actual->ExpirationDate );
+    $this->assertIndexEquals( $expected, 'credit_card_number',   $actual->CreditCardNumber );
 
     $this->assertEqualsIfPresent( $expected, 'cvv2', $actual->CVV2 );
     $this->assertEqualsIfPresent( $expected, 'auth_details', $actual->AuthDetails );
@@ -56,17 +56,17 @@ trait CustomAssertions {
   }
 
   protected function assertOrderShip( $expected, $actual ) {
-    $this->assertEquals( $expected['ship_carrier_name'],    $actual->ShipCarrierName );
-    $this->assertEquals( $expected['ship_method'],          $actual->ShipMethod );
-    $this->assertEquals( $expected['first_name'],           $actual->FirstName );
-    $this->assertEquals( $expected['last_name'],            $actual->LastName );
-    $this->assertEquals( $expected['address1'],             $actual->Address1 );
-    $this->assertEquals( $expected['city'],                 $actual->City );
-    $this->assertEquals( $expected['state'],                $actual->State );
-    $this->assertEquals( $expected['zip'],                  $actual->Zip );
-    $this->assertEquals( $expected['country'],              $actual->Country );
-    $this->assertEquals( $expected['email'],                $actual->Email );
-    $this->assertEquals( $expected['phone'],                $actual->Phone );
+    $this->assertIndexEquals( $expected, 'ship_carrier_name',    $actual->ShipCarrierName );
+    $this->assertIndexEquals( $expected, 'ship_method',          $actual->ShipMethod );
+    $this->assertIndexEquals( $expected, 'first_name',           $actual->FirstName );
+    $this->assertIndexEquals( $expected, 'last_name',            $actual->LastName );
+    $this->assertIndexEquals( $expected, 'address1',             $actual->Address1 );
+    $this->assertIndexEquals( $expected, 'city',                 $actual->City );
+    $this->assertIndexEquals( $expected, 'state',                $actual->State );
+    $this->assertIndexEquals( $expected, 'zip',                  $actual->Zip );
+    $this->assertIndexEquals( $expected, 'country',              $actual->Country );
+    $this->assertIndexEquals( $expected, 'email',                $actual->Email );
+    $this->assertIndexEquals( $expected, 'phone',                $actual->Phone );
 
     $this->assertEqualsIfPresent( $expected, 'ship_status',     $actual->ShipStatus );
     $this->assertEqualsIfPresent( $expected, 'ship_date',       $actual->ShipDate );
@@ -87,11 +87,11 @@ trait CustomAssertions {
   }
 
   protected function assertSingleOrderItem( $expected, $actual ) {
-    $this->assertEquals( $expected['item_code'],          $actual->ItemCode );
-    $this->assertEquals( $expected['item_description'],   $actual->ItemDescription );
-    $this->assertEquals( $expected['quantity'],           $actual->Quantity );
-    $this->assertEquals( $expected['unit_price'],         $actual->UnitPrice );
-    $this->assertEquals( $expected['item_total'],         $actual->ItemTotal );
+    $this->assertIndexEquals( $expected, 'item_code',          $actual->ItemCode );
+    $this->assertIndexEquals( $expected, 'item_description',   $actual->ItemDescription );
+    $this->assertIndexEquals( $expected, 'quantity',           $actual->Quantity );
+    $this->assertIndexEquals( $expected, 'unit_price',         $actual->UnitPrice );
+    $this->assertIndexEquals( $expected, 'item_total',         $actual->ItemTotal );
 
     $this->assertEqualsIfPresent( $expected, 'unit_cost',   $actual->UnitCost );
     $this->assertEqualsIfPresent( $expected, 'vendor',      $actual->Vendor );
@@ -118,11 +118,11 @@ trait CustomAssertions {
   }
 
   protected function assertOrderCharges( $expected, $actual ) {
-    $this->assertEquals( $expected['shipping'],   $actual->Shipping );
-    $this->assertEquals( $expected['handling'],   $actual->Handling );
-    $this->assertEquals( $expected['tax'],        $actual->Tax );
-    $this->assertEquals( $expected['discount'],   $actual->Discount );
-    $this->assertEquals( $expected['total'],      $actual->Total );
+    $this->assertIndexEquals( $expected, 'shipping',   $actual->Shipping );
+    $this->assertIndexEquals( $expected, 'handling',   $actual->Handling );
+    $this->assertIndexEquals( $expected, 'tax',        $actual->Tax );
+    $this->assertIndexEquals( $expected, 'discount',   $actual->Discount );
+    $this->assertIndexEquals( $expected, 'total',      $actual->Total );
 
     $this->assertEqualsIfPresent( $expected, 'tax_other',         $actual->TaxOther );
     $this->assertEqualsIfPresent( $expected, 'channel_fee',       $actual->ChannelFee );
@@ -142,16 +142,28 @@ trait CustomAssertions {
 
     foreach( $expected as $i => $coupon ) {
       $actualCoupon = $actual->children()[$i];
-      $this->assertEquals( $coupon['coupon_code'],         $actualCoupon->CouponCode );
-      $this->assertEquals( $coupon['coupon_id'],           $actualCoupon->CouponID );
-      $this->assertEquals( $coupon['coupon_description'],  $actualCoupon->CouponDescription );
-      $this->assertEquals( $coupon['coupon_value'],        $actualCoupon->CouponValue );
+      $this->assertIndexEquals( $coupon, 'coupon_code',         $actualCoupon->CouponCode );
+      $this->assertIndexEquals( $coupon, 'coupon_id',           $actualCoupon->CouponID );
+      $this->assertIndexEquals( $coupon, 'coupon_description',  $actualCoupon->CouponDescription );
+      $this->assertIndexEquals( $coupon, 'coupon_value',        $actualCoupon->CouponValue );
+    }
+  }
+
+  protected function assertIndexEquals( $expected, $index, $actual ) {
+    try {
+      return $this->assertEquals( $expected[$index], $actual );
+    } catch (PHPUnit_Framework_ExpectationFailedException $e){
+      $this->fail("`{$index}` {$actual} did not match expected {$expected[$index]}");
     }
   }
 
   protected function assertEqualsIfPresent( $expected, $index, $actual ) {
-    if( isset($expected[$index]) ) {
-      $this->assertEquals( $expected[$index], $actual );
+    try {
+      if( isset($expected[$index]) ) {
+        return $this->assertEquals( $expected[$index], $actual );
+      }
+    } catch (\Exception $e) {
+      $this->fail("{$index} {$actual} did not match expected {$expected[$index]}");
     }
   }
 }
