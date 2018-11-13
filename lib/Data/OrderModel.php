@@ -39,9 +39,10 @@ class OrderModel implements OrderProvider {
 
     $sql = <<<_SQL_
 SELECT invoices.*,
+    IF(invoices.STATUSID = '7', 'Cleared', 'Pending') AS PAY_STATUS,
     (ship.ID IS NOT NULL) AS SHIPPED,
     ship.TRACKING_NUMBER,
-    ship.CREATED,
+    ship.CREATED AS SHIPPED_DATE,
     ship.CARRIER AS UPDATED_CARRIER,
     ship.SHIPPING_METHOD AS UPDATED_SHIPPING_METHOD
   FROM invoices
@@ -134,8 +135,8 @@ _SQL_;
     $updatedOnDateTime = new \DateTime( $data['LAST_UPDATED'] );
     $payDateTime = new \DateTime( $data['PAID_DATETIME'] );
 
-    if( $data['CREATED'] != '0000-00-00' && $data['CREATED'] != '1970-01-01' ) {
-      $shipDate = new \DateTime( $data['CREATED'] );
+    if( $data['SHIPPED_DATE'] != '0000-00-00' && $data['SHIPPED_DATE'] != '1970-01-01' ) {
+      $shipDate = new \DateTime( $data['SHIPPED_DATE'] );
       $shipDate = $shipDate->format('Y-m-d');
     }
 
@@ -156,7 +157,7 @@ _SQL_;
       'updated_on'          => $updatedOnDateTime->format('Y-m-d H:i:s'),
       'bill' => array(
         'pay_method'        => $method,
-        //'pay_status'        => $data['PAY_STATUS'],
+        'pay_status'        => $data['PAY_STATUS'],
         'pay_date'          => $payDateTime->format('Y-m-d'),
         'first_name'        => $data['FIRST'],
         'last_name'         => $data['LAST'],
