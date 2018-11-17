@@ -165,7 +165,7 @@ _SQL_;
     $sql = <<<_SQL_
 INSERT INTO invoices_shipping_tracking SET INVOICEID={$orderId},
   CARRIER = '{$shipping['ship_carrier_name']}',
-  SHIPPING_METHOD = '{$shipping['ship_method']}',
+  SHIPPING_METHOD = '{$shipping['ship_carrier_name']} {$shipping['ship_method']}',
   TRACKING_NUMBER = '{$shipping['tracking']}',
   CREATED = '{$shipDate}',
   BOXID=1234,

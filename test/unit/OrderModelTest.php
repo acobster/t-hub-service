@@ -40,4 +40,14 @@ class OrderModelTest extends TestCase {
       ])
     );
   }
+
+  public function testGetShippingCarrierAndMethodWithOverride() {
+    $this->assertEquals(
+      ['UPS', 'Express'],
+      $this->model->getShippingCarrierAndMethod([
+        'UPDATED_SHIPPING_METHOD' => 'UPS Express',
+        'SHIPPING_METHOD'         => 'TOTALLY BOGUS',
+      ])
+    );
+  }
 }

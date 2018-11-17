@@ -73,8 +73,12 @@ _SQL_;
   }
 
   public function getShippingCarrierAndMethod( $data ) {
+    // check shipping table, fallback to original order data to get
+    // the shipping method, which includes carrier name
     // e.g. "FedEx Ground"
-    $method = $data['SHIPPING_METHOD'];
+    $method = !empty($data['UPDATED_SHIPPING_METHOD'])
+      ? $data['UPDATED_SHIPPING_METHOD']
+      : $data['SHIPPING_METHOD'];
 
     foreach (self::$CARRIERS as $carrier) {
       if (stripos($method, $carrier) !== false) {
