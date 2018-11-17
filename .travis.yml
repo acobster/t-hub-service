@@ -1,0 +1,22 @@
+#
+# T-HUB build process for Travis CI
+#
+
+language: node_js
+node_js: 6.11
+cache:
+  - ~/.lando
+  - ~/.cache
+
+before_install:
+  - sudo apt-get -y update
+  - sudo apt-get -y install cgroup-bin curl
+  - curl -fsSL -o /tmp/lando-latest.deb https://github.com/lando/lando/releases/download/v3.0.0-beta.47/lando-v3.0.0-beta.47.deb
+  - sudo dpkg -i /tmp/lando-latest.deb
+  - lando version
+
+install:
+  - lando start
+
+script:
+  - lando test
