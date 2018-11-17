@@ -84,7 +84,7 @@ INSERT INTO invoices SET {$setOrderId}
   SHIPPING_ZIP='{$ship['zip']}',
   SHIPPING_COUNTRY='{$ship['country']}',
   SHIPPING_CARRIER='',
-  SHIPPING_METHOD='{$ship['ship_method']}',
+  SHIPPING_METHOD='{$ship['ship_carrier_name']} {$ship['ship_method']}',
   SHIPPING_WEIGHT=10,
   SHIPPING_TRACKING='',
   SHIPPING_DATE=NOW(),
@@ -140,7 +140,10 @@ _SQL_;
     self::write( $sql );
     $orderId = self::lastId();
 
-    //self::insertShipping( $order, $orderId );
+    // Don't INSERT shipping row for "New" orders
+    if ( $order['ship']['ship_status'] === 'Shipped' ) {
+      self::insertShipping( $order, $orderId );
+    }
 
     foreach( $order['order_items'] as $item ) {
       self::insertOrderItem( $item, $orderId );

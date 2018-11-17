@@ -33,10 +33,14 @@ class TestData {
       'ship' => array(
         'ship_status'       => 'Shipped',
         'ship_date'         => '2014-12-01',
-        'tracking'          => 'TRACKING-NO-234',
-        'ship_cost'         => '4.20',
+
+        // NOTE: these are inserted together as SHIPPING_METHOD,
+        // but returned in XML response as separate fields
         'ship_carrier_name' => 'USPS',
         'ship_method'       => 'Ground',
+
+        'tracking'          => 'TRACKING-NO-234',
+        'ship_cost'         => '4.20',
         'first_name'        => 'Bobby',
         'last_name'         => 'Baker',
         'company_name'      => 'ACME c/o Bobby Baker',
@@ -127,9 +131,10 @@ class TestData {
       'ship' => array(
         'ship_status'       => 'New',
         'ship_carrier_name' => 'FedEx',
+        'ship_method'       => 'Ground',
+
         'tracking'          => '',
         'corporate_account' => true,
-        'ship_method'       => 'Ground',
         'first_name'        => 'Bob',
         'last_name'         => 'Barker',
         'company_name'      => 'ACME',
