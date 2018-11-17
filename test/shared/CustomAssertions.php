@@ -3,13 +3,14 @@
 trait CustomAssertions {
   protected function assertOrder( $expected, $actual ) {
     $this->assertIndexEquals( $expected, 'order_id',           $actual->OrderID );
-    $this->assertIndexEquals( $expected, 'provider_order_ref', $actual->OrderID );
     $this->assertIndexEquals( $expected, 'transaction_type',   $actual->TransactionType );
     $this->assertIndexEquals( $expected, 'date',               $actual->Date );
     $this->assertIndexEquals( $expected, 'time',               $actual->Time );
     $this->assertIndexEquals( $expected, 'time_zone',          $actual->TimeZone );
     $this->assertIndexEquals( $expected, 'updated_on',         $actual->UpdatedOn );
     $this->assertIndexEquals( $expected, 'comment',            $actual->Comment );
+
+    $this->assertRegExp( '/^W\d+$/', (string) $actual->ProviderOrderRef );
 
     $this->assertOrderBill( $expected['bill'],          $actual->Bill );
     $this->assertOrderShip( $expected['ship'],          $actual->Ship );

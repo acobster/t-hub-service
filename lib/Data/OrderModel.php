@@ -193,7 +193,7 @@ _SQL_;
 
     $order = array(
       'order_id'            => $data['ID'],
-      'provider_order_ref'  => $data['ID'],
+      'provider_order_ref'  => 'W' . $data['INVOICE_NUMBER'], // prepend "W" for web
       'transaction_type'    => self::TRANSACTION_TYPE_SALE,
       'date'                => $dateTime->format('Y-m-d'),
       'time'                => $dateTime->format('H:i:s'),

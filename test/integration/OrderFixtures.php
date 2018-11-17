@@ -55,6 +55,7 @@ class OrderFixtures {
       $corporateAccountMethod = '';
     }
 
+    // this can be whatever, just needs to be numeric
     $invoiceNum = rand();
 
     $sql = <<<_SQL_

@@ -5,7 +5,10 @@ class TestData {
     array(
       'order_id'            => '1',
       'comment'             => 'Hello There!',
-      'provider_order_ref'  => '1',
+
+      // for testing only; never inserted
+      'provider_order_ref'  => 'W123',
+
       'transaction_type'    => 'Sale',
       'date'                => '2014-12-16',
       'time'                => '11:40:21',
@@ -104,7 +107,10 @@ class TestData {
     array(
       'order_id'            => '2',
       'comment'             => 'LEAVE ON BACK PORCH',
-      'provider_order_ref'  => '2',
+
+      // for testing only; never inserted
+      'provider_order_ref'  => 'W234',
+
       'transaction_type'    => 'Sale',
       'date'                => '2014-12-16',
       'time'                => '11:45:21',
