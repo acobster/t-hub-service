@@ -84,10 +84,10 @@ _SQL_;
     foreach (self::$CARRIERS as $carrier) {
       if (stripos($method, $carrier) !== false) {
         return [
-          // e.g. "FedEx"
+          // e.g. "FedEx" or "FEDEX"
           $carrier,
           // e.g. "Ground"
-          trim(explode($carrier, $method)[1]),
+          trim(preg_split("/$carrier/i", $method)[1]),
         ];
       }
     }

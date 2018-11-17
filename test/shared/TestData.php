@@ -311,8 +311,8 @@ _XML_;
 
   const UPDATED_SHIPPING_CARRIERS = [
     'UPS',
-    'FEDEX',
-    'FEDEX',
+    'FedEx', // case gets translated,
+    'FedEx', // i.e. "FEDEX" -> "FedEx"
   ];
 
   const UPDATE_ORDERS_SHIPPING_STATUS_REQUEST_XML = <<<_XML_

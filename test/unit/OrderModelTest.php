@@ -41,6 +41,15 @@ class OrderModelTest extends TestCase {
     );
   }
 
+  public function testGetShippingCarrierAndMethodCaseInsensitive() {
+    $this->assertEquals(
+      ['FedEx', 'Express'],
+      $this->model->getShippingCarrierAndMethod([
+        'SHIPPING_METHOD' => 'FEDEX Express',
+      ])
+    );
+  }
+
   public function testGetShippingCarrierAndMethodWithOverride() {
     // TODO Honor UPDATED_CARRIER/UPDATED_SHIPPING_METHOD separately?
     $this->assertEquals(
