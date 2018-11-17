@@ -10,6 +10,12 @@ class OrderModel implements OrderProvider {
   const DEFAULT_HANDLING = 0.00;
   const DEFAULT_DISCOUNT = 0.00;
 
+  protected static $CARRIERS = [
+    'USPS',
+    'UPS',
+    'FedEx',
+  ];
+
   protected $db;
 
   public function __construct(DB $db) {
@@ -64,6 +70,22 @@ _SQL_;
 
   public function updateOrders( $orders ) {
     return array_map( array(&$this, 'updateOrder'), $orders );
+  }
+
+  public function getShippingCarrierAndMethod( $data ) {
+    // e.g. "FedEx Ground"
+    $method = $data['SHIPPING_METHOD'];
+
+    foreach (self::$CARRIERS as $carrier) {
+      if (stripos($method, $carrier) !== false) {
+        return [
+          // e.g. "FedEx"
+          $carrier,
+          // e.g. "Ground"
+          trim(explode($carrier, $method)[1]),
+        ];
+      }
+    }
   }
 
   protected function updateOrder( $order ) {
@@ -135,6 +157,10 @@ _SQL_;
     $updatedOnDateTime = new \DateTime( $data['LAST_UPDATED'] );
     $payDateTime = new \DateTime( $data['PAID_DATETIME'] );
 
+    // determine shipping carrier and method
+    // based on invoices.SHIPPING_METHOD value
+    list($carrier, $shippingMethod) = $this->getShippingCarrierAndMethod( $data );
+
     if( $data['SHIPPED_DATE'] != '0000-00-00' && $data['SHIPPED_DATE'] != '1970-01-01' ) {
       $shipDate = new \DateTime( $data['SHIPPED_DATE'] );
       $shipDate = $shipDate->format('Y-m-d');
@@ -145,7 +171,7 @@ _SQL_;
       : self::SHIP_STATUS_NEW;
 
     // "Credit Card" -> "CreditCard"
-    $method = str_replace( ' ', '', $data['PAYMENT_TYPE'] );
+    $paymentMethod = str_replace( ' ', '', $data['PAYMENT_TYPE'] );
 
     $order = array(
       'order_id'            => $data['ID'],
@@ -156,7 +182,7 @@ _SQL_;
       'time_zone'           => 'UTC',
       'updated_on'          => $updatedOnDateTime->format('Y-m-d H:i:s'),
       'bill' => array(
-        'pay_method'        => $method,
+        'pay_method'        => $paymentMethod,
         'pay_status'        => $data['PAY_STATUS'],
         'pay_date'          => $payDateTime->format('Y-m-d'),
         'first_name'        => $data['FIRST'],
@@ -178,8 +204,8 @@ _SQL_;
         'ship_date'           => $shipDate,
 
         // these can come from either orders or orders_shipping_tracking
-        'ship_carrier_name'   => $data['UPDATED_CARRIER'] ?: $data['CARRIER'],
-        'ship_method'         => $data['UPDATED_SHIPPING_METHOD'] ?: $data['SHIPPING_METHOD'],
+        'ship_carrier_name'   => $carrier,
+        'ship_method'         => $shippingMethod,
 
         'tracking'            => $data['TRACKING_NUMBER'],
         'ship_cost'           => $data['SHIPPING'],
