@@ -135,6 +135,28 @@ class THubServiceIntegrationTest extends TestCase {
     }
   }
 
+  public function testUpdateOrdersMarkedFulfilled() {
+    OrderFixtures::insertOrders( TestData::newAndOldOrders() );
+    $parsed = $this->getParsedResponse(
+      TestData::UPDATE_ORDERS_SHIPPING_STATUS_REQUEST_XML );
+
+    $updatedIds = [];
+    foreach ( $parsed->Orders->Order as $order ) {
+      $updatedIds[] = (string) $order->HostOrderID;
+    }
+
+    // Now check database was updated properly
+    $realOrderData = OrderFixtures::read(sprintf(
+      'SELECT FULFILLED, FULFILLED_DATETIME FROM invoices WHERE ID IN(%s)',
+      implode(',', $updatedIds)
+    ));
+
+    foreach ($realOrderData as $order) {
+      $this->assertEquals('1', $order['FULFILLED']);
+      $this->assertEquals(gmdate('Y-m-d H:i:s'), $order['FULFILLED_DATETIME']);
+    }
+  }
+
   protected function getParsedResponse( $request ) {
     try {
       $response = $this->postTHub($request);

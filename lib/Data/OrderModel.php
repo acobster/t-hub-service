@@ -97,7 +97,9 @@ _SQL_;
     $sql = <<<_SQL_
 UPDATE invoices SET
   QUICKBOOKS_ORDERID = :quickbooks_id,
-  LAST_UPDATED       = UTC_TIMESTAMP()
+  LAST_UPDATED       = UTC_TIMESTAMP(),
+  FULFILLED          = 1,
+  FULFILLED_DATETIME = UTC_TIMESTAMP()
   WHERE ID = :id LIMIT 1
 _SQL_;
 

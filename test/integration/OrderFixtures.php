@@ -119,7 +119,7 @@ INSERT INTO invoices SET {$setOrderId}
   INCENTIVE_EXPIRATION=NOW(),
   AFFILIATEID=567,
   AFFILIATE_COMMISSION=420,
-  FULFILLED_DATETIME=NOW(),
+  FULFILLED_DATETIME='1970-01-01 00:00:00',
   FULFILLED_USERID=345,
   FOOTER_MESSAGE='blah',
   BOTTOM_MESSAGE='blah blah',
@@ -131,7 +131,7 @@ INSERT INTO invoices SET {$setOrderId}
   LAST_VIEWED=CURDATE(),
   LAST_PRINTED=CURDATE(),
   PAID_FULL=CURDATE(),
-  FULFILLED=1,
+  FULFILLED=0,
   CONTACTID=5432,
   DATE=CURDATE(),
   DATE_DUE=CURDATE()
@@ -273,6 +273,16 @@ _SQL_;
     foreach( $tables as $table ) {
       self::db()->exec( "TRUNCATE $table" );
     }
+  }
+
+  public static function read( $sql ) {
+    $result = self::db()->query($sql, PDO::FETCH_ASSOC);
+    if( $result === false ) {
+      $info = self::db()->errorInfo();
+      $message = sprintf( 'DB ERROR: %s (%s:%d)', $info[2], $info[0], $info[1] );
+      throw new RuntimeException( $message );
+    }
+    return $result;
   }
 
   protected static function write( $sql ) {
