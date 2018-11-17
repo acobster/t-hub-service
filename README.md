@@ -2,6 +2,8 @@
 
 ![Atandra](http://www.atandra.com/images/logo.png)
 
+[![Build Status](https://travis-ci.org/acobster/t-hub-service.svg?branch=master)](https://travis-ci.org/acobster/t-hub-service)
+
 ## Overview
 
 An HTTP-service-style application for integrating a database-driven online store with the T-HUB desktop application. The included `index.php` file can serve as an independent web-facing script.
