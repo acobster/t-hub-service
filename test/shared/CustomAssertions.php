@@ -12,7 +12,7 @@ trait CustomAssertions {
 
     $this->assertOrderBill( $expected['bill'],          $actual->Bill );
     $this->assertOrderShip( $expected['ship'],          $actual->Ship );
-    $this->assertOrderItems( $expected['order_items'],        $actual->OrderItems );
+    $this->assertOrderItems( $expected['order_items'],  $actual->OrderItems );
     $this->assertOrderCharges( $expected['charges'],    $actual->Charges );
   }
 
@@ -153,7 +153,7 @@ trait CustomAssertions {
     try {
       return $this->assertEquals( $expected[$index], $actual );
     } catch (PHPUnit_Framework_ExpectationFailedException $e){
-      $this->fail("`{$index}` {$actual} did not match expected {$expected[$index]}");
+      $this->fail("`{$index}` '{$actual}' did not match expected '{$expected[$index]}'");
     }
   }
 
@@ -163,7 +163,7 @@ trait CustomAssertions {
         return $this->assertEquals( $expected[$index], $actual );
       }
     } catch (\Exception $e) {
-      $this->fail("{$index} {$actual} did not match expected {$expected[$index]}");
+      $this->fail("{$index} '{$actual}' did not match expected '{$expected[$index]}'");
     }
   }
 }
