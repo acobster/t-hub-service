@@ -12,8 +12,8 @@ class OrderModel implements OrderProvider {
 
   protected $db;
 
-  public function __construct() {
-    $this->db = DB::get();
+  public function __construct(DB $db) {
+    $this->db = $db;
   }
 
   public function getNewOrders( $options ) {
