@@ -120,24 +120,31 @@ _SQL_;
   }
 
   protected function updateShipping( $order ) {
-    $shipDate = new \DateTime( $order['shipped_on'], new \DateTimeZone('GST') );
-    $formattedDate = $shipDate->format('Y-m-d');
-
-    // TODO insert a new row; don't count on there being an old one
     $sql = <<<_SQL_
-UPDATE invoices_shipping_tracking SET
-  CREATED = :date,
-  CARRIER = :carrier,
-  SHIPPING_METHOD = :method,
-  TRACKING_NUMBER = :tracking
-  WHERE INVOICEID = :id LIMIT 1
+INSERT INTO invoices_shipping_tracking SET
+  CARRIER            = :carrier,
+  SHIPPING_METHOD    = :method,
+  TRACKING_NUMBER    = :tracking,
+  INVOICEID          = :id,
+
+  CREATED            = UTC_TIMESTAMP(),
+  BOXID              = 0,
+  PREDEFINED_TYPE    = 'custom',
+  PREDEFINED_PACKAGE = '',
+  WEIGHT             = 0,
+  WEIGHT_UNIT        = 'pounds',
+  LENGTH             = 0,
+  WIDTH              = 0,
+  HEIGHT             = 0,
+  POSTAGE            = 0.00,
+  POSTAGE_LINK       = ''
 _SQL_;
 
     if( ! $this->db->write( $sql, array(
       ':id'       => intval( $order['host_order_id'] ),
-      ':date'     => $formattedDate,
       ':carrier'  => $order['shipped_via'],
-      ':method'   => $order['service_used'],
+      // TODO only do this in invoices?
+      ':method'   => "{$order['shipped_via']} {$order['service_used']}",
       ':tracking' => $order['tracking_number'],
     ))) {
       throw new \Data\DBException( 'Database error' );
@@ -166,7 +173,11 @@ _SQL_;
     // based on invoices.SHIPPING_METHOD value
     list($carrier, $shippingMethod) = $this->getShippingCarrierAndMethod( $data );
 
-    if( $data['SHIPPED_DATE'] != '0000-00-00' && $data['SHIPPED_DATE'] != '1970-01-01' ) {
+    if(
+      !empty($data['SHIPPED_DATE'])
+      && $data['SHIPPED_DATE'] != '0000-00-00'
+      && $data['SHIPPED_DATE'] != '1970-01-01'
+    ) {
       $shipDate = new \DateTime( $data['SHIPPED_DATE'] );
       $shipDate = $shipDate->format('Y-m-d');
     }

@@ -51,7 +51,6 @@ class THubServiceIntegrationTest extends TestCase {
   }
 
   public function testGetOrdersResponseByOrderStartNumber() {
-    return $this->markTestSkipped();
     OrderFixtures::insertOrders( TestData::newAndOldOrders() );
     $parsed = $this->getParsedResponse(
       TestData::GET_ORDERS_REQUEST_XML_BY_ORDER_START_NUMBER );
@@ -67,7 +66,6 @@ class THubServiceIntegrationTest extends TestCase {
   }
 
   public function testGetOrdersResponseByNumDays() {
-    return $this->markTestSkipped();
     OrderFixtures::insertOrders( TestData::newAndOldOrders() );
     $parsed = $this->getParsedResponse(
       TestData::GET_ORDERS_REQUEST_XML_BY_NUM_DAYS );
@@ -86,7 +84,6 @@ class THubServiceIntegrationTest extends TestCase {
   }
 
   public function testUpdateOrdersShippingStatus() {
-    return $this->markTestSkipped();
     OrderFixtures::insertOrders( TestData::newAndOldOrders() );
 
     $parsed = $this->getParsedResponse(
@@ -100,7 +97,7 @@ class THubServiceIntegrationTest extends TestCase {
       // make sure there's actually some state for
       // testUpdateOrdersShippingStatus to change
       $this->assertEquals( 'New', $order->Ship->ShipStatus );
-      $this->assertEmpty( (string) $order->Ship->ShipDate );
+      $this->assertEquals( '', (string) $order->Ship->ShipDate );
       $this->assertEquals( '', $order->Ship->Tracking );
       $this->assertEmpty( (string) $order->Ship->ShipMethod );
       $this->assertEmpty( (string) $order->Ship->ShipCarrierName );
