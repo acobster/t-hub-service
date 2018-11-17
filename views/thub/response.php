@@ -32,6 +32,10 @@
             <HostStatus><?= $order['host_status'] ?></HostStatus>
           <?php endif; ?>
 
+          <?php if( $order['comment'] ) : ?>
+            <Comment><?= $order['comment'] ?></Comment>
+          <?php endif; ?>
+
           <?php if( isset($order['bill']) and $bill = $order['bill'] ) : ?>
             <Bill>
               <PayMethod><?= $bill['pay_method'] ?></PayMethod>

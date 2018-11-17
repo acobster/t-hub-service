@@ -197,6 +197,7 @@ _SQL_;
       'time'                => $dateTime->format('H:i:s'),
       'time_zone'           => 'UTC',
       'updated_on'          => $updatedOnDateTime->format('Y-m-d H:i:s'),
+      'comment'             => $data['COMMENTS'],
       'bill' => array(
         'pay_method'        => $paymentMethod,
         'pay_status'        => $data['PAY_STATUS'],

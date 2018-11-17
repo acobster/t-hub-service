@@ -9,6 +9,7 @@ trait CustomAssertions {
     $this->assertIndexEquals( $expected, 'time',               $actual->Time );
     $this->assertIndexEquals( $expected, 'time_zone',          $actual->TimeZone );
     $this->assertIndexEquals( $expected, 'updated_on',         $actual->UpdatedOn );
+    $this->assertIndexEquals( $expected, 'comment',            $actual->Comment );
 
     $this->assertOrderBill( $expected['bill'],          $actual->Bill );
     $this->assertOrderShip( $expected['ship'],          $actual->Ship );
