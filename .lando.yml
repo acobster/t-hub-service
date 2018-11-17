@@ -20,7 +20,15 @@ tooling:
   test:
     service: appserver
     cmd: vendor/bin/phpunit --bootstrap ./test/integration/bootstrap.php --colors=auto ./test
+    description: Run all tests
+
+  e2e:
+    service: appserver
+    cmd: vendor/bin/phpunit --bootstrap ./test/integration/bootstrap.php --colors=auto ./test/integration
+    description: Run integration tests
+
   unit:
     service: appserver
     cmd: vendor/bin/phpunit --colors=auto ./test/unit
+    description: Run unit tests
 
