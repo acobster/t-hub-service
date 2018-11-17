@@ -73,6 +73,7 @@ _SQL_;
   }
 
   public function getShippingCarrierAndMethod( $data ) {
+    // TODO honor updated fields separately?
     // check shipping table, fallback to original order data to get
     // the shipping method, which includes carrier name
     // e.g. "FedEx Ground"

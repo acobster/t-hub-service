@@ -42,6 +42,7 @@ class OrderModelTest extends TestCase {
   }
 
   public function testGetShippingCarrierAndMethodWithOverride() {
+    // TODO Honor UPDATED_CARRIER/UPDATED_SHIPPING_METHOD separately?
     $this->assertEquals(
       ['UPS', 'Express'],
       $this->model->getShippingCarrierAndMethod([
