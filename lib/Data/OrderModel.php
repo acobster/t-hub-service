@@ -23,29 +23,8 @@ class OrderModel implements OrderProvider {
   }
 
   public function getNewOrders( $options ) {
-    // TODO outsource this to a helper
-    $query = array(
-      'bindings' => array(
-        ':limit' => intval($options['limit']),
-      ),
-      'where'    => 'invoices.ID > 0',
-    );
-
-    if( $options['start_date'] ) {
-      $query['bindings'][':start_date'] = $options['start_date'];
-      $query['where'] = "invoices.CREATED > :start_date";
-
-    } elseif( intval($options['start_id']) ) {
-      $query['bindings'][':start_id'] = $options['start_id'];
-      $query['where'] = "invoices.ID > :start_id";
-
-    } elseif( $options['num_days'] ) {
-      $query['bindings'][':days'] = intval( $options['num_days'] );
-      $query['where'] = "invoices.CREATED > DATE_SUB( CURDATE(), INTERVAL :days DAY )";
-
-    } else {
-      $query['where'] = "invoices.ID > 0";
-    }
+    // get WHERE clause and bindings based on our params
+    $query = $this->getNewOrdersQuery( $options );
 
     $sql = <<<_SQL_
 SELECT invoices.*,
@@ -70,6 +49,31 @@ _SQL_;
     }
 
     return $structuredOrders;
+  }
+
+  public function getNewOrdersQuery( $options ) {
+    // set up query defaults
+    $query = array(
+      'bindings' => array(
+        ':limit' => intval($options['limit']),
+      ),
+      'where'    => 'invoices.ID > 0',
+    );
+
+    if( !empty($options['start_date']) ) {
+      $query['bindings'][':start_date'] = $options['start_date'];
+      $query['where'] = "invoices.CREATED > :start_date";
+
+    } elseif( !empty($options['start_id']) && intval($options['start_id']) ) {
+      $query['bindings'][':start_id'] = $options['start_id'];
+      $query['where'] = "invoices.ID > :start_id";
+
+    } elseif( !empty($options['num_days']) && $options['num_days'] ) {
+      $query['bindings'][':days'] = intval( $options['num_days'] );
+      $query['where'] = "invoices.CREATED > DATE_SUB( CURDATE(), INTERVAL :days DAY )";
+    }
+
+    return $query;
   }
 
   public function updateOrders( $orders ) {

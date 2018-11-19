@@ -60,4 +60,43 @@ class OrderModelTest extends TestCase {
       ])
     );
   }
+
+  public function testGetNewOrdersQueryDefault() {
+    $this->assertEquals([
+      'bindings' => [
+        ':limit' => 10,
+      ],
+      'where'    => 'invoices.ID > 0',
+    ], $this->model->getNewOrdersQuery(['limit' => 10]));
+  }
+
+  public function testGetNewOrdersQueryWithStartDate() {
+    $this->assertEquals([
+      'bindings'      => [
+        ':limit'      => 10,
+        ':start_date' => '2019-01-01',
+      ],
+      'where'         => 'invoices.CREATED > :start_date',
+    ], $this->model->getNewOrdersQuery(['limit' => 10, 'start_date' => '2019-01-01']));
+  }
+
+  public function testGetNewOrdersQueryWithStartId() {
+    $this->assertEquals([
+      'bindings'    => [
+        ':limit'    => 10,
+        ':start_id' => 123,
+      ],
+      'where'       => 'invoices.ID > :start_id',
+    ], $this->model->getNewOrdersQuery(['limit' => 10, 'start_id' => 123]));
+  }
+
+  public function testGetNewOrdersQueryWithNumDays() {
+    $this->assertEquals([
+      'bindings' => [
+        ':limit' => 10,
+        ':days'  => 3,
+      ],
+      'where'    => 'invoices.CREATED > DATE_SUB( CURDATE(), INTERVAL :days DAY )',
+    ], $this->model->getNewOrdersQuery(['limit' => 10, 'num_days' => 3]));
+  }
 }
