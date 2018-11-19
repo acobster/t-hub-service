@@ -23,24 +23,28 @@ class OrderModel implements OrderProvider {
   }
 
   public function getNewOrders( $options ) {
-    $bindings = array(
-      ':limit' => intval($options['limit']),
+    // TODO outsource this to a helper
+    $query = array(
+      'bindings' => array(
+        ':limit' => intval($options['limit']),
+      ),
+      'where'    => 'invoices.ID > 0',
     );
 
     if( $options['start_date'] ) {
-      $bindings[':start_date'] = $options['start_date'];
-      $whereClause = "invoices.CREATED > :start_date";
+      $query['bindings'][':start_date'] = $options['start_date'];
+      $query['where'] = "invoices.CREATED > :start_date";
 
     } elseif( intval($options['start_id']) ) {
-      $bindings[':start_id'] = $options['start_id'];
-      $whereClause = "invoices.ID > :start_id";
+      $query['bindings'][':start_id'] = $options['start_id'];
+      $query['where'] = "invoices.ID > :start_id";
 
     } elseif( $options['num_days'] ) {
-      $bindings[':days'] = intval( $options['num_days'] );
-      $whereClause = "invoices.CREATED > DATE_SUB( CURDATE(), INTERVAL :days DAY )";
+      $query['bindings'][':days'] = intval( $options['num_days'] );
+      $query['where'] = "invoices.CREATED > DATE_SUB( CURDATE(), INTERVAL :days DAY )";
 
     } else {
-      $whereClause = "invoices.ID > 0";
+      $query['where'] = "invoices.ID > 0";
     }
 
     $sql = <<<_SQL_
@@ -53,11 +57,11 @@ SELECT invoices.*,
     ship.SHIPPING_METHOD AS UPDATED_SHIPPING_METHOD
   FROM invoices
   LEFT JOIN invoices_shipping_tracking AS ship ON (invoices.ID = ship.INVOICEID)
-  WHERE {$whereClause}
+  WHERE {$query['where']}
   LIMIT :limit
 _SQL_;
 
-    $results = $this->db->read( $sql, $bindings );
+    $results = $this->db->read( $sql, $query['bindings'] );
 
     $structuredOrders = array();
     foreach( $results as $order ) {
