@@ -12,7 +12,8 @@
 				"header": [
 					{
 						"key": "Content-Type",
-						"value": "application/x-www-form-urlencoded"
+						"value": "application/x-www-form-urlencoded",
+						"disabled": true
 					}
 				],
 				"body": {
@@ -22,6 +23,12 @@
 							"key": "request",
 							"value": "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<REQUEST Version=\"2.8\">\n   <Command>GetOrders</Command>\n   <UserID>{{API_USERNAME}}</UserID>\n   <Password>{{API_PASSWORD}}</Password>\n   <Status>all</Status>\n   <SecurityKey>{{API_SECURITY_KEY}}</SecurityKey>\n</REQUEST>",
 							"type": "text"
+						},
+						{
+							"key": "foo",
+							"value": "bar",
+							"type": "text",
+							"disabled": true
 						}
 					]
 				},
@@ -78,7 +85,7 @@
 					"formdata": [
 						{
 							"key": "request",
-							"value": "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<REQUEST Version=\"2.8\">\n   <Command>GetOrders</Command>\n   <UserID>{{API_USERNAME}}</UserID>\n   <Password>{{API_PASSWORD}}</Password>\n   <Status>all</Status>\n   <SecurityKey>{{API_SECURITY_KEY}}</SecurityKey>\n   <OrderStartNumber>0</OrderStartNumber>\n   <NumberOfDays>5</NumberOfDays>\n</REQUEST>",
+							"value": "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<REQUEST Version=\"2.8\">\n   <Command>GetOrders</Command>\n   <UserID>{{API_USERNAME}}</UserID>\n   <Password>{{API_PASSWORD}}</Password>\n   <Status>all</Status>\n   <SecurityKey>{{API_SECURITY_KEY}}</SecurityKey>\n   <NumberOfDays>5</NumberOfDays>\n</REQUEST>",
 							"type": "text"
 						}
 					]
