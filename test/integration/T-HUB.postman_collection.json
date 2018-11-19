@@ -1,8 +1,7 @@
 {
 	"info": {
+		"_postman_id": "da910206-aad5-4c4d-a630-4f5041b741fc",
 		"name": "T-HUB",
-		"_postman_id": "1385ca79-8029-94b2-43df-b5993ac40289",
-		"description": "",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -17,16 +16,166 @@
 					}
 				],
 				"body": {
-					"mode": "raw",
-					"raw": "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<REQUEST Version=\"2.8\">\n   <Command>GetOrders</Command>\n   <UserID>{{API_USERNAME}}</UserID>\n   <Password>{{API_PASSWORD}}</Password>\n   <Status>all</Status>\n   <SecurityKey>{{API_SECURITY_KEY}}</SecurityKey>\n</REQUEST>"
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "request",
+							"value": "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<REQUEST Version=\"2.8\">\n   <Command>GetOrders</Command>\n   <UserID>{{API_USERNAME}}</UserID>\n   <Password>{{API_PASSWORD}}</Password>\n   <Status>all</Status>\n   <SecurityKey>{{API_SECURITY_KEY}}</SecurityKey>\n</REQUEST>",
+							"type": "text"
+						}
+					]
 				},
 				"url": {
 					"raw": "{{SERVICE_URL}}",
 					"host": [
 						"{{SERVICE_URL}}"
 					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetOrders / OrderStartNumber",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "request",
+							"value": "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<REQUEST Version=\"2.8\">\n   <Command>GetOrders</Command>\n   <UserID>{{API_USERNAME}}</UserID>\n   <Password>{{API_PASSWORD}}</Password>\n   <Status>all</Status>\n   <SecurityKey>{{API_SECURITY_KEY}}</SecurityKey>\n   <OrderStartNumber>{{ORDER_START_NUMBER}}</OrderStartNumber>\n</REQUEST>",
+							"type": "text"
+						}
+					]
 				},
-				"description": ""
+				"url": {
+					"raw": "{{SERVICE_URL}}",
+					"host": [
+						"{{SERVICE_URL}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetOrders / NumberOfDays",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "request",
+							"value": "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<REQUEST Version=\"2.8\">\n   <Command>GetOrders</Command>\n   <UserID>{{API_USERNAME}}</UserID>\n   <Password>{{API_PASSWORD}}</Password>\n   <Status>all</Status>\n   <SecurityKey>{{API_SECURITY_KEY}}</SecurityKey>\n   <OrderStartNumber>0</OrderStartNumber>\n   <NumberOfDays>5</NumberOfDays>\n</REQUEST>",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{SERVICE_URL}}",
+					"host": [
+						"{{SERVICE_URL}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetOrders BAD USERID",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "request",
+							"value": "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<REQUEST Version=\"2.8\">\n   <Command>GetOrders</Command>\n   <UserID>BAD USERID</UserID>\n   <Password>{{API_PASSWORD}}</Password>\n   <Status>all</Status>\n   <SecurityKey>{{API_SECURITY_KEY}}</SecurityKey>\n</REQUEST>",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{SERVICE_URL}}",
+					"host": [
+						"{{SERVICE_URL}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetOrders BAD PASSWORD",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "request",
+							"value": "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<REQUEST Version=\"2.8\">\n   <Command>GetOrders</Command>\n   <UserID>{{API_USERNAME}}</UserID>\n   <Password>BAD PASSWORD</Password>\n   <Status>all</Status>\n   <SecurityKey>{{API_SECURITY_KEY}}</SecurityKey>\n</REQUEST>",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{SERVICE_URL}}",
+					"host": [
+						"{{SERVICE_URL}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetOrders BAD SECURITY KEY",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "request",
+							"value": "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<REQUEST Version=\"2.8\">\n   <Command>GetOrders</Command>\n   <UserID>{{API_USERNAME}}</UserID>\n   <Password>{{API_PASSWORD}}</Password>\n   <Status>all</Status>\n   <SecurityKey>BAD SECURITY KEY</SecurityKey>\n</REQUEST>",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{SERVICE_URL}}",
+					"host": [
+						"{{SERVICE_URL}}"
+					]
+				}
 			},
 			"response": []
 		},
@@ -41,16 +190,21 @@
 					}
 				],
 				"body": {
-					"mode": "raw",
-					"raw": "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<REQUEST Version=\"2.8\">\n  <Command>UpdateOrdersShippingStatus</Command>\n  <UserID>{{API_USERNAME}}</UserID>\n  <Password>{{API_PASSWORD}}</Password>\n  <Status>all</Status>\n  <SecurityKey>{{API_SECURITY_KEY}}</SecurityKey>\n  <Orders>\n    <Order>\n      <HostOrderID>4</HostOrderID>\n      <LocalOrderID>4122</LocalOrderID>\n      <NotifyCustomer>Yes</NotifyCustomer>\n      <ShippedOn>12/05/2005</ShippedOn>\n      <ShippedVia>UPS</ShippedVia>\n      <ServiceUsed>Ground</ServiceUsed>\n      <TrackingNumber>Z3121231213243455</TrackingNumber>\n    </Order>\n    <Order>\n      <HostOrderID>5</HostOrderID>\n      <LocalOrderID>4123</LocalOrderID>\n      <NotifyCustomer>No</NotifyCustomer>\n      <ShippedOn>12/04/2005</ShippedOn>\n      <ShippedVia>FEDEX</ShippedVia>\n      <ServiceUsed>2nd Day Air</ServiceUsed>\n      <TrackingNumber>F334523234234555</TrackingNumber>\n    </Order>\n    <Order>\n      <HostOrderID>6</HostOrderID>\n      <LocalOrderID>4124</LocalOrderID>\n      <NotifyCustomer>No</NotifyCustomer>\n      <ShippedOn>12/04/2005</ShippedOn>\n      <ShippedVia>FEDEX</ShippedVia>\n      <ServiceUsed>2nd Day Air</ServiceUsed>\n      <TrackingNumber>F334523234234555</TrackingNumber>\n    </Order>\n  </Orders>\n</REQUEST>"
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "request",
+							"value": "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n<REQUEST Version=\"2.8\">\n  <Command>UpdateOrdersShippingStatus</Command>\n  <UserID>{{API_USERNAME}}</UserID>\n  <Password>{{API_PASSWORD}}</Password>\n  <Status>all</Status>\n  <SecurityKey>{{API_SECURITY_KEY}}</SecurityKey>\n  <Orders>\n    <Order>\n      <HostOrderID>4</HostOrderID>\n      <LocalOrderID>4122</LocalOrderID>\n      <NotifyCustomer>Yes</NotifyCustomer>\n      <ShippedOn>12/05/2005</ShippedOn>\n      <ShippedVia>UPS</ShippedVia>\n      <ServiceUsed>Ground</ServiceUsed>\n      <TrackingNumber>Z3121231213243455</TrackingNumber>\n    </Order>\n    <Order>\n      <HostOrderID>5</HostOrderID>\n      <LocalOrderID>4123</LocalOrderID>\n      <NotifyCustomer>No</NotifyCustomer>\n      <ShippedOn>12/04/2005</ShippedOn>\n      <ShippedVia>FEDEX</ShippedVia>\n      <ServiceUsed>2nd Day Air</ServiceUsed>\n      <TrackingNumber>F334523234234555</TrackingNumber>\n    </Order>\n    <Order>\n      <HostOrderID>6</HostOrderID>\n      <LocalOrderID>4124</LocalOrderID>\n      <NotifyCustomer>No</NotifyCustomer>\n      <ShippedOn>12/04/2005</ShippedOn>\n      <ShippedVia>FEDEX</ShippedVia>\n      <ServiceUsed>2nd Day Air</ServiceUsed>\n      <TrackingNumber>F334523234234555</TrackingNumber>\n    </Order>\n  </Orders>\n</REQUEST>",
+							"type": "text"
+						}
+					]
 				},
 				"url": {
 					"raw": "{{SERVICE_URL}}",
 					"host": [
 						"{{SERVICE_URL}}"
 					]
-				},
-				"description": ""
+				}
 			},
 			"response": []
 		}
