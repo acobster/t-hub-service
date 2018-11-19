@@ -75,11 +75,11 @@ class THubServiceIntegrationTest extends TestCase {
     $orders = $parsed->Orders->Order;
 
     $this->assertEquals( 3, $orders->count() );
-    $nDaysAgo = new DateTime();
-    $nDaysAgo->sub( new DateInterval('P5D') );
+    $fiveDaysAgo = new DateTime();
+    $fiveDaysAgo->sub( new DateInterval('P5D') );
     foreach( $orders = $parsed->Orders->Order as $order ) {
       $orderDate = new DateTime( $order->Date );
-      $this->assertGreaterThanOrEqual( $nDaysAgo, $orderDate );
+      $this->assertGreaterThanOrEqual( $fiveDaysAgo, $orderDate );
     }
   }
 
