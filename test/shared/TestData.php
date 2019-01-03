@@ -3,7 +3,7 @@
 class TestData {
   public static $orders = array(
     array(
-      'order_id'            => '1',
+      'order_id'            => 'W123',
       'comment'             => 'Hello There!',
 
       // for testing only; never inserted
@@ -105,7 +105,7 @@ class TestData {
       ),
     ),
     array(
-      'order_id'            => '2',
+      'order_id'            => 'W234',
       'comment'             => 'LEAVE ON BACK PORCH',
 
       // for testing only; never inserted
@@ -271,7 +271,7 @@ _XML_;
    <Password>thub</Password>
    <Status>all</Status>
    <SecurityKey>ASDFQWERTY</SecurityKey>
-   <OrderStartNumber>3</OrderStartNumber>
+   <OrderStartNumber>W3</OrderStartNumber>
 </REQUEST>
 _XML_;
 
@@ -310,7 +310,7 @@ _XML_;
   <SecurityKey>ASDFQWERTY</SecurityKey>
   <Orders>
     <Order>
-      <HostOrderID>4</HostOrderID>
+      <HostOrderID>W4</HostOrderID>
       <LocalOrderID>4122</LocalOrderID>
       <NotifyCustomer>Yes</NotifyCustomer>
       <ShippedOn>12/05/2005</ShippedOn>
@@ -319,7 +319,7 @@ _XML_;
       <TrackingNumber>Z3121231213243455</TrackingNumber>
     </Order>
     <Order>
-      <HostOrderID>5</HostOrderID>
+      <HostOrderID>W5</HostOrderID>
       <LocalOrderID>4123</LocalOrderID>
       <NotifyCustomer>No</NotifyCustomer>
       <ShippedOn>12/04/2005</ShippedOn>
@@ -328,7 +328,7 @@ _XML_;
       <TrackingNumber>F334523234234555</TrackingNumber>
     </Order>
     <Order>
-      <HostOrderID>6</HostOrderID>
+      <HostOrderID>W6</HostOrderID>
       <LocalOrderID>4124</LocalOrderID>
       <NotifyCustomer>No</NotifyCustomer>
       <ShippedOn>12/04/2005</ShippedOn>

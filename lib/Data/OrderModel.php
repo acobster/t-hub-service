@@ -60,12 +60,16 @@ _SQL_;
       'where'    => 'invoices.ID > 0',
     );
 
+    $startId = isset($options['start_id'])
+      ? intval( ltrim( $options['start_id'], 'W' ) )
+      : false;
+
     if( !empty($options['start_date']) ) {
       $query['bindings'][':start_date'] = $options['start_date'];
       $query['where'] = "invoices.CREATED > :start_date";
 
-    } elseif( !empty($options['start_id']) && intval($options['start_id']) ) {
-      $query['bindings'][':start_id'] = $options['start_id'];
+    } elseif( !empty($startId) ) {
+      $query['bindings'][':start_id'] = $startId;
       $query['where'] = "invoices.ID > :start_id";
 
     } elseif( !empty($options['num_days']) && $options['num_days'] ) {
@@ -112,7 +116,7 @@ UPDATE invoices SET
 _SQL_;
 
     $bindings = array(
-      ':id'            =>  $order['host_order_id'],
+      ':id'            =>  ltrim($order['host_order_id'], 'W'),
       ':quickbooks_id' =>  $order['local_order_id'],
     );
 
@@ -151,7 +155,7 @@ INSERT INTO invoices_shipping_tracking SET
 _SQL_;
 
     if( ! $this->db->write( $sql, array(
-      ':id'       => intval( $order['host_order_id'] ),
+      ':id'       => intval( ltrim($order['host_order_id'], 'W') ),
       ':carrier'  => $order['shipped_via'],
       // TODO only do this in invoices?
       ':method'   => "{$order['shipped_via']} {$order['service_used']}",
@@ -200,14 +204,16 @@ _SQL_;
     $paymentMethod = str_replace( ' ', '', $data['PAYMENT_TYPE'] );
 
     $order = array(
-      'order_id'            => $data['ID'],
-      'provider_order_ref'  => 'W' . $data['INVOICE_NUMBER'], // prepend "W" for web
+      'order_id'            => 'W' . $data['ID'], // prepend "W" for web
+      'provider_order_ref'  => 'W' . $data['INVOICE_NUMBER'], // ^ ditto
+
       'transaction_type'    => self::TRANSACTION_TYPE_SALE,
       'date'                => $dateTime->format('Y-m-d'),
       'time'                => $dateTime->format('H:i:s'),
       'time_zone'           => 'UTC',
       'updated_on'          => $updatedOnDateTime->format('Y-m-d H:i:s'),
       'comment'             => $data['COMMENTS'],
+
       'bill' => array(
         'pay_method'        => $paymentMethod,
         'pay_status'        => $data['PAY_STATUS'],
@@ -226,6 +232,7 @@ _SQL_;
         'po_number'         => $data['PO_NUMBER'],
         // No credit card info for now.
       ),
+
       'ship' => array(
         'ship_status'         => $shipStatus,
         'ship_date'           => $shipDate,

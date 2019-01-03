@@ -87,7 +87,7 @@ class OrderModelTest extends TestCase {
         ':start_id' => 123,
       ],
       'where'       => 'invoices.ID > :start_id',
-    ], $this->model->getNewOrdersQuery(['limit' => 10, 'start_id' => 123]));
+    ], $this->model->getNewOrdersQuery(['limit' => 10, 'start_id' => 'W123']));
   }
 
   public function testGetNewOrdersQueryWithNumDays() {

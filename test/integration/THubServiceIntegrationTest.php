@@ -53,28 +53,39 @@ class THubServiceIntegrationTest extends TestCase {
   public function testGetOrdersResponseByOrderStartNumber() {
     OrderFixtures::insertOrders( TestData::newAndOldOrders() );
     $parsed = $this->getParsedResponse(
-      TestData::GET_ORDERS_REQUEST_XML_BY_ORDER_START_NUMBER );
+      TestData::GET_ORDERS_REQUEST_XML_BY_ORDER_START_NUMBER
+    );
+
     $this->assertEquals( 'GetOrders', $parsed->Envelope->Command );
     $this->assertEquals( 'All Ok', $parsed->Envelope->StatusMessage );
 
     $orders = $parsed->Orders->Order;
 
     $this->assertEquals( 3, $orders->count() );
+
+    $ids = array();
     foreach( $orders as $order ) {
-      $this->assertGreaterThanOrEqual( 3, $order->OrderID );
+      $ids[] = $order->OrderID;
     }
+    $this->assertEquals( array(
+      'W4',
+      'W5',
+      'W6',
+    ), $ids);
   }
 
   public function testGetOrdersResponseByNumDays() {
     OrderFixtures::insertOrders( TestData::newAndOldOrders() );
     $parsed = $this->getParsedResponse(
-      TestData::GET_ORDERS_REQUEST_XML_BY_NUM_DAYS );
+      TestData::GET_ORDERS_REQUEST_XML_BY_NUM_DAYS
+    );
     $this->assertEquals( 'GetOrders', $parsed->Envelope->Command );
     $this->assertEquals( 'All Ok', $parsed->Envelope->StatusMessage );
 
     $orders = $parsed->Orders->Order;
 
     $this->assertEquals( 3, $orders->count() );
+
     $fiveDaysAgo = new DateTime();
     $fiveDaysAgo->sub( new DateInterval('P5D') );
     foreach( $orders = $parsed->Orders->Order as $order ) {
@@ -86,25 +97,12 @@ class THubServiceIntegrationTest extends TestCase {
   public function testUpdateOrdersShippingStatus() {
     OrderFixtures::insertOrders( TestData::newAndOldOrders() );
 
-    $parsed = $this->getParsedResponse(
-      TestData::GET_ORDERS_REQUEST_XML_BY_ORDER_START_NUMBER );
-    $orders = $parsed->Orders->Order;
-    $newOrderIds = array(4, 5, 6);
+    $newOrderIds = array('W4', 'W5', 'W6');
     $localOrderIds = array(4122, 4123, 4124);
 
-    foreach( $orders as $order ) {
-      $this->assertContains( intval($order->OrderID), $newOrderIds );
-      // make sure there's actually some state for
-      // testUpdateOrdersShippingStatus to change
-      $this->assertEquals( 'New', $order->Ship->ShipStatus );
-      $this->assertEquals( '', (string) $order->Ship->ShipDate );
-      $this->assertEquals( '', $order->Ship->Tracking );
-      $this->assertEmpty( (string) $order->Ship->ShipMethod );
-      $this->assertEmpty( (string) $order->Ship->ShipCarrierName );
-    }
-
     $parsed = $this->getParsedResponse(
-      TestData::UPDATE_ORDERS_SHIPPING_STATUS_REQUEST_XML );
+      TestData::UPDATE_ORDERS_SHIPPING_STATUS_REQUEST_XML
+    );
     $this->assertEquals( 'UpdateOrdersShippingStatus', $parsed->Envelope->Command );
     $this->assertEquals( 'All Ok', $parsed->Envelope->StatusMessage );
 
@@ -120,7 +118,8 @@ class THubServiceIntegrationTest extends TestCase {
 
     // now test the persistence...
     $parsed = $this->getParsedResponse(
-      TestData::GET_ORDERS_REQUEST_XML_BY_ORDER_START_NUMBER );
+      TestData::GET_ORDERS_REQUEST_XML_BY_ORDER_START_NUMBER
+    );
     $orders = $parsed->Orders->Order;
 
     $i = 0;
@@ -142,7 +141,7 @@ class THubServiceIntegrationTest extends TestCase {
 
     $updatedIds = [];
     foreach ( $parsed->Orders->Order as $order ) {
-      $updatedIds[] = (string) $order->HostOrderID;
+      $updatedIds[] = (string) ltrim($order->HostOrderID, 'W');
     }
 
     // Now check database was updated properly

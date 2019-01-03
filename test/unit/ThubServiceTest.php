@@ -147,6 +147,36 @@ class THubServiceTest extends TestCase {
     $this->assertEquals( 'All Ok', $parsed->Envelope->StatusMessage );
   }
 
+  public function testGetQueryOptions() {
+    $simple = new SimpleXMLElement( TestData::GET_ORDERS_REQUEST_XML );
+
+    $this->assertEquals(array(
+      'limit'    => 25,
+      'start_id' => 0,
+      'num_days' => 0,
+    ), $this->callProtectedMethod('getQueryOptions', array($simple)));
+  }
+
+  public function testGetQueryOptionsWithNumDays() {
+    $simple = new SimpleXMLElement( TestData::GET_ORDERS_REQUEST_XML_BY_NUM_DAYS );
+
+    $this->assertEquals(array(
+      'limit'    => 25,
+      'start_id' => 0,
+      'num_days' => 5,
+    ), $this->callProtectedMethod('getQueryOptions', array($simple)));
+  }
+
+  public function testGetQueryOptionsWithOrderStartNumber() {
+    $simple = new SimpleXMLElement( TestData::GET_ORDERS_REQUEST_XML_BY_ORDER_START_NUMBER );
+
+    $this->assertEquals(array(
+      'limit'    => 25,
+      'start_id' => 'W3',
+      'num_days' => 0,
+    ), $this->callProtectedMethod('getQueryOptions', array($simple)));
+  }
+
   public function testGetOrdersFromXml() {
     $simple = new SimpleXMLElement( TestData::UPDATE_ORDERS_SHIPPING_STATUS_REQUEST_XML );
     $ordersXml = $simple->Orders->Order;
@@ -158,7 +188,7 @@ class THubServiceTest extends TestCase {
 
     foreach( $orders as $i => $order ) {
       $orderXml = $ordersXml[$i];
-      $this->assertEquals( intval($orderXml->HostOrderID),      $order['host_order_id'] );
+      $this->assertEquals( $orderXml->HostOrderID,              $order['host_order_id'] );
       $this->assertEquals( intval($orderXml->LocalOrderID),     $order['local_order_id'] );
       $this->assertEquals( $orderXml->ShippedOn,                $order['shipped_on'] );
       $this->assertEquals( $orderXml->ShippedVia,               $order['shipped_via'] );

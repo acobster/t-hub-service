@@ -197,18 +197,20 @@ class THubService {
    */
   protected function getQueryOptions( $request ) {
     $options = array(
-      'limit'       => self::DEFAULT_LIMIT_ORDER_COUNT,
-      'start_id'    => self::DEFAULT_START_ORDER_ID,
+      'limit'    => self::DEFAULT_LIMIT_ORDER_COUNT,
+      'start_id' => self::DEFAULT_START_ORDER_ID,
     );
 
     if( $request->DownloadStartDate ) {
       $date = new \DateTime( $request->DownloadStartDate );
       $options['start_date'] = $date->format('Y-m-d H:i:s');
-    } elseif( intval($request->OrderStartNumber) ) {
-      $options['start_id'] = intval( $request->OrderStartNumber );
-    } elseif( intval($request->NumberOfDays) ) {
-      $options['num_days'] = intval( $request->NumberOfDays );
     }
+
+    // coerce XML element to a string
+    $options['start_id'] = ''.$request->OrderStartNumber ?: 0;
+
+    // coerce to an int
+    $options['num_days'] = intval( $request->NumberOfDays );
 
     return $options;
   }
@@ -217,7 +219,7 @@ class THubService {
     $orders = array();
     foreach( $requested as $orderXml ) {
       $order = array(
-        'host_order_id'     => intval( $orderXml->HostOrderID ),
+        'host_order_id'     => $orderXml->HostOrderID,
         'local_order_id'    => intval( $orderXml->LocalOrderID ),
         'shipped_on'        => strval( $orderXml->ShippedOn ),
         'shipped_via'       => strval( $orderXml->ShippedVia ),
@@ -295,7 +297,6 @@ class THubService {
     $intParams = array(
       'NumberOfDays',
       'LimitOrderCount',
-      'OrderStartNumber',
     );
 
     foreach( $intParams as $param ) {
@@ -303,6 +304,14 @@ class THubService {
       if( $val && filter_var($val, FILTER_VALIDATE_INT) === false ) {
         throw new InvalidParamError( "Invalid $param" );
       }
+    }
+
+    $startNum = ltrim($request->OrderStartNumber, 'W');
+    if (
+      !empty($startNum)
+      && filter_var($startNum, FILTER_VALIDATE_INT) === false
+    ) {
+      throw new InvalidParamError( "Invalid OrderStartNumber" );
     }
 
     if( $request->Orders && $request->Orders->Order ) {
@@ -313,8 +322,10 @@ class THubService {
   protected function validateOrders( $orders ) {
     foreach( $orders as $order ) {
       $hostOrderId = $order->HostOrderID;
-      if( $hostOrderId
-          && filter_var($hostOrderId, FILTER_VALIDATE_INT) === false ) {
+      if(
+        !empty($hostOrderID)
+        && filter_var($hostOrderId, FILTER_VALIDATE_INT) === false
+      ) {
         throw new InvalidParamError( 'Invalid HostOrderID' );
       }
 

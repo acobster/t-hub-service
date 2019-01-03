@@ -23,8 +23,11 @@ class OrderFixtures {
 
   public static function insertOrder( $order ) {
     $setOrderId = $order['order_id']
-      ? "ID = {$order['order_id']},"
+      // trim the W for "Web" from the order ID
+      ? sprintf('ID = "%d",', ltrim($order['order_id'], 'W'))
       : '';
+
+    $invoiceNum = ltrim($order['order_id'], 'W');
 
     $bill     = $order['bill'];
     $ship     = $order['ship'];
@@ -54,9 +57,6 @@ class OrderFixtures {
       $corporateAccountNumber = '';
       $corporateAccountMethod = '';
     }
-
-    // this can be whatever, just needs to be numeric
-    $invoiceNum = rand();
 
     $sql = <<<_SQL_
 INSERT INTO invoices SET {$setOrderId}
@@ -289,7 +289,13 @@ _SQL_;
   protected static function write( $sql ) {
     if( self::db()->exec($sql) === false ) {
       $info = self::db()->errorInfo();
-      $message = sprintf( 'DB ERROR: %s (%s:%d)', $info[2], $info[0], $info[1] );
+      $message = sprintf(
+        "DB ERROR: %s (%s:%d)\n\nSQL:\n\n%s",
+        $info[2],
+        $info[0],
+        $info[1],
+        $sql
+      );
       throw new RuntimeException( $message );
     }
   }
