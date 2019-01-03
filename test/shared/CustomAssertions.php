@@ -14,7 +14,7 @@ trait CustomAssertions {
 
     $this->assertOrderBill( $expected['bill'],          $actual->Bill );
     $this->assertOrderShip( $expected['ship'],          $actual->Ship );
-    $this->assertOrderItems( $expected['order_items'],  $actual->OrderItems );
+    $this->assertOrderItems( $expected['order_items'],  $actual->Items );
     $this->assertOrderCharges( $expected['charges'],    $actual->Charges );
   }
 

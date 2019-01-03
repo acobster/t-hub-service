@@ -134,7 +134,7 @@
           <?php endif; ?>
 
           <?php if( isset($order['order_items']) ) : ?>
-            <OrderItems>
+            <Items>
               <?php foreach( $order['order_items'] as $item ) : ?>
                 <Item>
                   <ItemCode><?= $item['item_code'] ?></ItemCode>
@@ -171,7 +171,7 @@
                   <?php endif; ?>
                 </Item>
               <?php endforeach; ?>
-            </OrderItems>
+            </Items>
           <?php endif; ?>
 
           <?php if( isset($order['charges']) and $charges = $order['charges'] ) : ?>
