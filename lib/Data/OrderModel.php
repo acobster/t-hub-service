@@ -201,7 +201,7 @@ _SQL_;
 
     $order = array(
       'order_id'            => 'W' . $data['ID'], // prepend "W" for web
-      'provider_order_ref'  => 'W' . $data['INVOICE_NUMBER'], // ^ ditto
+      'provider_order_ref'  => 'W' . $data['ID'], // ^ ditto
 
       'transaction_type'    => self::TRANSACTION_TYPE_SALE,
       'date'                => $dateTime->format('Y-m-d'),
