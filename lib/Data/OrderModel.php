@@ -60,16 +60,12 @@ _SQL_;
       'where'    => 'invoices.ID > 0',
     );
 
-    $startId = isset($options['start_id'])
-      ? intval( ltrim( $options['start_id'], 'W' ) )
-      : false;
-
     if( !empty($options['start_date']) ) {
       $query['bindings'][':start_date'] = $options['start_date'];
       $query['where'] = "invoices.CREATED > :start_date";
 
-    } elseif( !empty($startId) ) {
-      $query['bindings'][':start_id'] = $startId;
+    } elseif( !empty($options['start_id']) ) {
+      $query['bindings'][':start_id'] = $this->parseId( $options['start_id'] );
       $query['where'] = "invoices.ID > :start_id";
 
     } elseif( !empty($options['num_days']) && $options['num_days'] ) {
@@ -116,7 +112,7 @@ UPDATE invoices SET
 _SQL_;
 
     $bindings = array(
-      ':id'            =>  ltrim($order['host_order_id'], 'W'),
+      ':id'            =>  $this->parseId( $order['host_order_id'] ),
       ':quickbooks_id' =>  $order['local_order_id'],
     );
 
@@ -155,7 +151,7 @@ INSERT INTO invoices_shipping_tracking SET
 _SQL_;
 
     if( ! $this->db->write( $sql, array(
-      ':id'       => intval( ltrim($order['host_order_id'], 'W') ),
+      ':id'       => $this->parseId( $order['host_order_id'] ),
       ':carrier'  => $order['shipped_via'],
       // TODO only do this in invoices?
       ':method'   => "{$order['shipped_via']} {$order['service_used']}",
@@ -278,6 +274,16 @@ _SQL_;
     }
 
     return $order;
+  }
+
+  /**
+   * Trim leading "W" for "Web" off an order ID and return it as an int
+   *
+   * @param string $id the ID in the XML request
+   * @return int
+   */
+  public function parseId( $id ) {
+    return intval( ltrim( $id, 'W' ) );
   }
 }
 

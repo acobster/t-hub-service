@@ -99,4 +99,12 @@ class OrderModelTest extends TestCase {
       'where'    => 'invoices.CREATED > DATE_SUB( CURDATE(), INTERVAL :days DAY )',
     ], $this->model->getNewOrdersQuery(['limit' => 10, 'num_days' => 3]));
   }
+
+  public function testParseId() {
+    $this->assertEquals( 123, $this->model->parseId( 'W123') );
+  }
+
+  public function testParseIdWithoutW() {
+    $this->assertEquals( 123, $this->model->parseId( '123') );
+  }
 }

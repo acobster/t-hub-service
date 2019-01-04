@@ -306,6 +306,7 @@ class THubService {
       }
     }
 
+    // TODO push this down into OrderModel somehow...
     $startNum = ltrim($request->OrderStartNumber, 'W');
     if (
       !empty($startNum)
